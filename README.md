@@ -31,3 +31,8 @@ cp -v banana /sbin/<br/>
 cp -v banana.conf /etc/banana<br/>
 <br/>
 *Enjoy ;)*
+
+## Instalação Automática / Automatic Install
+**Permission and Execute Script**<br>
+chmod +x install.sh<br>
+bash install.sh
