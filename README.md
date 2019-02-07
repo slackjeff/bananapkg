@@ -6,7 +6,7 @@
 
 🇧🇷 **Para uma melhor Documentação consulte** <br/>
 :us: **For better Documentation see** <br/><br/>
-https://www.slackjeff.com.br/bananapkg/
+https://bananapkg.github.io/
 
 ----
 
@@ -28,6 +28,6 @@ mkdir -v /etc/banana<br/>
 <br/>
 **Copy archives**<br/>
 cp -v banana /sbin/<br/>
-cp -v banana.conf /etc<br/>
+cp -v banana.conf /etc/banana<br/>
 <br/>
 *Enjoy ;)*
