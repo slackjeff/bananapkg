@@ -3,10 +3,10 @@
 #AUTOR
 # Jefferson 'slackjeff' Rocha <root@slackjeff.com.br>
 #
-#LICENCE
+#LICENÇA
 # MIT
 #
-#VERSION
+#VERSÃO
 # 2.0
 #
 #changelog.txt
@@ -168,22 +168,16 @@ case $1 in
         exit 0
     ;;
 
-    -h|--help)
-        if [[ "$LANG" = "pt_BR.utf8" ]]; then
-            _HELP_PT
-            exit 0
-        else
-            _HELP_US
-            exit 0
-        fi
+    -s|search)
+        shift # elaia, rebaixamos.
+        while [[ -n "$1" ]]; do
+            inputsearch="$1"
+            _SEARCH_PKG # Chamando função de check
+            shift
+        done
     ;;
 
-    *) 
-     if [[ "$LANG" = "pt_BR.utf8" ]]; then
-         _HELP_PT
-         exit 0
-     else
-         _HELP_US
-         exit 0
-     fi
+    -h|--help) [[ "$LANG" = "pt_BR.utf8" ]] && { _HELP_PT; exit 0 ;} || { _HELP_US; exit 0 ;} ;;
+
+    *) [[ "$LANG" = "pt_BR.utf8" ]] && { _HELP_PT; exit 0 ;} || { _HELP_US; exit 0 ;} ;;
 esac

@@ -1,0 +1,35 @@
+#----------------------------06/02/2018-----------------------------#
+(Versão 2.0 Alfa) FINALMENTE COM VÁRIAS MELHORIAS E CORREÇÕES
+
+- O programa pulou de 1.4 para 2.0 pois está se comportando de uma 
+forma bem estável até o presente momento! E foi bem testado na distro
+mazonOS.
+
+- Agora toda a chamada do bananapkg é feito simplesmesnte por
+banana [opções]
+
+- Todo programa foi reformulado, o que era ferramentas avulsas
+passaram a ser funções e estão presentes dentro de core.sh.
+
+- Hierarquia do banana mudou, agora a desc, list e remove estão em
+/var/lib/banana/{desc,list,remove}.
+
+- Arquivo de configuração foi lançado em /etc, chamado banana.conf,
+agora o usuário pode mudar algumas configurações que estarão pesentes
+na mesma.
+
+- Reformulado a ajuda, tornando á menor...
+
+- Criado este changelog externo.
+
+- Diminuido chamada ajuda e * para somente testes com op lógicos.
+
+- FIXADO, bug da entrada sem parâmetros que retornava nada. Agora
+retorna ajuda.
+
+- Substituido aspas simples por aspas duplas em desc= presente em desc.
+Descobrimos que tinha um bug bem bobo ao usar algo antes como it's ou
+algora parecido, Obrigado diego por alertar =)
+
+- Adicionado parâmetro -s, search, para procurar pacotes no sistema.
+#-------------------------------------------------------------------#

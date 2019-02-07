@@ -28,6 +28,9 @@ MAIN ARGUMENTS
     -r, remove
           Remove Package
 
+    -s, search
+          Search Package
+
 OTHERS ARGUMENTS
 
     After the -r, remove parameter, use -y argument for
@@ -44,7 +47,7 @@ AUTHOR
 
 COMPLETE DOCUMENT
 
-    www.slackjeff.com.br/bananapkg
+    https://bananapkg.github.io/
 EOF
 }
 
@@ -63,16 +66,19 @@ MAIN ARGUMENTS
           para editar
 
     -c, create
-          Criar um pacote
+          Criar pacote
 
     -i, install
-          Instalar um pacote
+          Instalar pacote
 
     -u, upgrade
-          Atualizar um pacote
+          Atualizar pacote
 
     -r, remove
-          Remover um pacote
+          Remover pacote
+
+    -s, search
+          Procurar Pacote
 
 OUTROS ARGUMENTOS
 
@@ -90,7 +96,7 @@ AUTOR
 
 DOCUMENTAÇÃO COMPLETA
 
-    www.slackjeff.com.br/bananapkg
+    https://bananapkg.github.io/
 EOF
 }
 
@@ -669,4 +675,45 @@ dep=('')
 EOF
     echo -e "${pink}[DESC]${end} Created successfully inside of directory ${blue}info${end}"
     exit 0
+}
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#####################################################################
+#
+# PROCURAR PACOTE
+#
+#####################################################################
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# Função para procurar pacote no sistema
+_SEARCH_PKG()
+{
+    pushd "$dirdesc" &> /dev/null # Entrando no diretório aonde estão as desc ;)
+    re="\b${inputsearch}\b"
+    inc='0' # Var de incremento
+    for searchpkg in *; do
+        if [[ "$searchpkg" =~ ^${re}.*.desc ]]; then
+            inc=$(( $inc + 1 )) # Incrementando
+            source $searchpkg # Carregando informações do pacote para impressão.
+            # Se variavel for maior que 1 não exibe a entrada de novo
+            if [[ "$inc" -eq '1' ]]; then
+                echo -e "#------------------------[ CARD ]----------------------------------------------#"
+                echo -e "${cyan}[ PACKAGE ]${end}\t${pkgname}"
+                echo -e "${cyan}[ VERSION ]${end}\t${version}"
+                echo -e "${cyan}[  BUILD  ]${end}\t${build}"
+                echo -e "${cyan}[   URL   ]${end}\t${url}"
+                echo -e "${cyan}[   DEPS  ]${end}\t${dep[@]}"
+                echo -e "${cyan}[   DESC  ]${end}\t${desc}\n"
+            else
+                echo -e "${cyan}[ PACKAGE ]${end}\t${pkgname}"
+                echo -e "${cyan}[ VERSION ]${end}\t${version}"
+                echo -e "${cyan}[  BUILD  ]${end}\t${build}"
+                echo -e "${cyan}[   URL   ]${end}\t${url}"
+                echo -e "${cyan}[   DEPS  ]${end}\t${dep[@]}"
+                echo -e "${cyan}[   DESC  ]${end}\t${desc}\n"
+            fi
+        fi
+    done
+    [[ "$inc" -eq '0' ]] && { echo -e "No packages found with the name of: $inputsearch"; exit 1 ;}
 }
