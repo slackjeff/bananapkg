@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+#=====================HEADER=========================================|
+#AUTOR
+# Jefferson 'slackjeff' Rocha <root@slackjeff.com.br>
+#
+#LICENCE
+# MIT
+#
+#VERSION
+# 2.0
+#
+#changelog.txt
+#====================================================================|
+
+#===============BIBLIOTECAS
+# Configurações
+source '/etc/banana/banana.conf' || { echo "ERROR ON LOAD /etc/banana/banana.conf, ABORT"; exit 1 ;}
+# Funções que fazem o programa ;)
+source '/usr/libexec/banana/core.sh' || { echo "ERROR ON LOAD /var/libexec/banana/core.sh, ABORT"; exit 1 ;}
+
+#=================== ESPECIAL DIRECTORIES
+dirlist='/var/lib/banana/list'       # Lists of package
+dirdesc='/var/lib/banana/desc'       # Descriptions of package
+dirremove='/var/lib/banana/remove'   # Scripts remove of package
+
+#==================== ESPECIAL VARS
+export format_pkg='mz'            # Extension Package
+export descme='info/desc'         # Directorie fakeroot
+local_list='var/lib/banana/list'  # List location
+
+#=================== COLORS
+red='\033[31;1m'
+blue='\033[34;1m'
+cyan='\033[36;1m'
+pink='\033[35;1m'
+end='\033[m'
+
+#===============TESTES
+# Sem root não vai amiguinho.
+[[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
+
+# Limpando todas variáveis do ambiente para
+# não ter futuros problemas.
+var_list=(
+   'maintainer' 'pkgname' 'desc' 'version' 'build' 'url'
+)
+for hellclean in "${var_list[@]}"; do
+    unset "${hellclean}"
+done
+
+# Criando diretórios se não existirem.
+for createdir in '/var/lib/banana/list' '/var/lib/banana/desc' '/var/lib/banana/remove' '/usr/libexec/banana'; do
+    [[ ! -d "$createdir" ]] && mkdir -vp "$createdir"
+done
+
+#===============FUNCOES
+
+
+#==================INICIO
+case $1 in
+    -c|create)
+       shift # Rebaixando
+       # Se nome do pacote não for letras ou se tiver
+       # espaços entre outras coisas, não pode continuar.
+       re="\.\<${format_pkg}\>"
+       if ! [[ "$1" =~ ^.*${re} ]]; then
+           echo -e "${red}[Error!]${end} Package need finish .$format_pkg"
+           exit 1
+       elif [[ "$(echo "$1" | grep -o '-' | wc -l)" -gt '2' || "$(echo "$1" | grep -o '-' | wc -l)" -lt '2'  ]]; then
+           echo -e "${red}[Error!]${end} Unexpected ' - ' Count."
+           echo -e "USE ONLY TWO ' ${red}-${end} ' In the name of your package."
+           echo ""
+           echo -e "EXAMPLE the perfect format: ${blue}leafpad${end}-${blue}2.6.8${end}-${blue}3${end}.${blue}mz${end}"
+           echo ""
+           echo -e "If you need separate name of package prefer use ' ${red}_${end} '"
+           echo -e "EXAMPLE: firefox_quantum${blue}-${end}54.8.9${blue}-${end}1.mz"
+           echo ""
+           echo "If you need more HELP, use -h or --help"
+           exit 1
+       # Se nome do pacote ter espaços não deve continuar
+       elif [[ "$1" =~ .*[[:space:]]+.*-.* ]]; then
+           echo -e "${red}[Error!]${end} Unexpected character."
+           echo ""
+           echo -e "Perfect Format name is: ${blue}Name-Version-Build.mz${end}"
+           echo -e "${red}DONT USE${end} symbols, space, tab etc.. in name of package."
+           echo ""
+           echo "If you need more HELP, use -h or --help"
+           exit 1
+       else
+            # Pegando somente nome do pacote
+            # sem extensão
+            package="${1/%.mz/}"
+            # lista temporaria para usar nas funções
+            # _LIST_ARCHIVES_DIRECTORIES e _CLEAN_LIST
+            temp_list="/tmp/${package}.temp"
+       fi
+         # Verificação de tudo está aonde deveria estar, como diretório
+         # (info) e o arquivo de descrição (desc)
+         _VERIFY_ON
+         # Iniciando processo de listagem de diretório
+         # e limpeza no arquivo de listagem
+         _LIST_ARCHIVES_DIRECTORIES || exit 1
+         _CLEAN_LIST || exit 1
+         # Se var/lib/banana/list existir apague, para criar um novo.
+         if [[ -d "$local_list" ]]; then
+             rm -r "$local_list" || { echo -e "${red}[ABORTED]${end} $local_list not removed."; exit 1 ;}
+         fi
+         # Criando novo diretorio para armazenar listagem
+         [[ ! -d "$local_list" ]] && mkdir -p "$local_list"
+         ( # Subshell
+           cd "$local_list" || exit 1
+           cp "$temp_list" "${package}.list" || exit 1
+           echo -e "${pink}[MOVED]${end} $temp_list for ${local_list}${package}.list"
+         )
+         # Iniciando processo de criação do pacote
+         _CREATE_PKG || exit 1
+         # Apagando arquivo(s) temporário(s)
+         rm "$temp_list"
+    ;;
+
+    -g|generate)
+        _GENERATE_DESC || exit 1
+    ;;
+
+    -i|install) # Instalação de pacotes
+        shift # Rebaixe baby
+        [[ -z "$1" ]] && _HELP
+        while [[ -n "$1" ]]; do
+            _PRE_CONF "$@" || exit 1 # Função de configuração de entrada!
+            # Vamos fazer a pre configuração antes de instalar o pacote.
+            # Se tudo estiver certo o pacote será instalado!
+            _PRE_INSTALL_PKG || exit 1
+            _INSTALL_PKG || exit 1
+            shift
+       done
+    ;;
+
+    -u|upgrade) # Upgrade de pacotes
+        [[ -z "$1" ]] && _HELP
+        shift
+        while [[ -n "$1" ]]; do           
+            _PRE_CONF "$@" || exit 1 # Função de configuração de entrada!
+            # Verificando se o pacote existe no sistema.
+            _PKG_EXIST "$@" || exit 1
+            shift
+        done
+    ;;
+
+    -r|remove)
+        # Verificando se existe a opção -y, para auto confirmar.
+        # ou como está a variável AUTO_YES, configurada no arquivo de conf.
+        if [[ "$AUTO_YES" -eq '0' || -z "$AUTO_YES" ]]; then
+            if echo "$*" | grep -w "\-y" &>/dev/null ; then
+                auto_confirm='y'
+            fi
+        else
+            auto_confirm='y'
+        fi
+        shift # Rebaixa baby
+        # Se contiver um dos caracteres da lista, não poderá continuar.
+        [[ "$1" =~ .*(\*|@|#|,).* ]] && { echo 'Dont Use * or @ or #'; exit 1 ;}
+        while [[ -n "$1" ]]; do
+            [[ "$1" = '-y' ]] && { shift; continue ;}
+            pack="$1"
+            _PKG_CONF
+            shift
+        done
+        exit 0
+    ;;
+
+    -h|--help)
+        if [[ "$LANG" = "pt_BR.utf8" ]]; then
+            _HELP_PT
+            exit 0
+        else
+            _HELP_US
+            exit 0
+        fi
+    ;;
+
+    *) 
+     if [[ "$LANG" = "pt_BR.utf8" ]]; then
+         _HELP_PT
+         exit 0
+     else
+         _HELP_US
+         exit 0
+     fi
+esac
