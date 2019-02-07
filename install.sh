@@ -15,7 +15,7 @@ prg='banana'
 
 echo -e "Create Especial Directories...\n"
 # Criando diretórios se não existirem.
-for createdir in '/var/lib/banana/list' '/var/lib/banana/desc' '/var/lib/banana/remove' '/usr/libexec/banana'; do
+for createdir in '/var/lib/banana/list' '/var/lib/banana/desc' '/var/lib/banana/remove' '/usr/libexec/banana' '/etc/banana'; do
     [[ ! -d "$createdir" ]] && mkdir -vp "$createdir" || echo "$createdir exist, skip."
 done
 
@@ -26,7 +26,7 @@ for m in "$prg" "${prg}.conf" 'core.sh'; do
    [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
     case $m in
         banana) cp -v "$m" "/sbin/"    ;;
-        banana.conf) cp -v "$m" "/etc/" ;;
+        banana.conf) cp -v "$m" "/etc/banana/" ;;
         core.sh) cp -v "$m" "/usr/libexec/banana/" ;;
     esac
 done
