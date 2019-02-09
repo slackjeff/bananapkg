@@ -25,10 +25,12 @@ git clone https://github.com/mazonos/bananapkg<br/>
 **ON ROOT, Create a directories**<br/>
 mkdir -vp /var/lib/banana/{list,desc,remove}<br/>
 mkdir -v /etc/banana<br/>
+mkdir -v /usr/libexec/banana
 <br/>
 **Copy archives**<br/>
 cp -v banana /sbin/<br/>
 cp -v banana.conf /etc/banana<br/>
+cp -v {core,help}.sh /usr/libex
 <br/>
 *Enjoy ;)*
 
