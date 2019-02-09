@@ -22,12 +22,12 @@ done
 set -e # Deu erro para ;)
 # Dando permissões e copiando arquivos para seus lugares.
 echo -e "\nPermission and Copy archives\n"
-for m in "$prg" "${prg}.conf" 'core.sh'; do
+for m in "$prg" "${prg}.conf" 'core.sh' 'help.sh'; do
    [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
     case $m in
-        banana) cp -v "$m" "/sbin/"    ;;
-        banana.conf) cp -v "$m" "/etc/banana/" ;;
-        core.sh) cp -v "$m" "/usr/libexec/banana/" ;;
+        (banana) cp -v "$m" "/sbin/"    ;;
+        (banana.conf) cp -v "$m" "/etc/banana/" ;;
+        (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" ;;
     esac
 done
 

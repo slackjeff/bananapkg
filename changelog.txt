@@ -1,10 +1,86 @@
-#----------------------------07/02/2018-----------------------------#
-(Versão 2.1 Alfa)
+#----------------------------------09/02/2018-----------------------------------#
+(Versão 2.1.2 Alfa)
+Reformulado TODO o core.sh! Que trabalheira. Foram removidas algumas
+funções, renomeadas e outras movidas para arquivo externo. Foi também
+melhorado todo o código de cada módulo para deixar aceitar chamadas
+internas de uma para outra e trabalharem juntas.
+O motivo principal desta trabalheira foi que elas funcionavam quando
+queriam e por não estarem modularizadas.
+
+====> MÓDULOS NOVOS
+_MSG_DADDY
+_INPUT_NULL_PARAMETER
+
+====> MÓDULOS REMOVIDOS
+_PRE_INSTALL_PKG
+
+====> MÓDULOS MOVIDOS
+_HELP_US e _HELP_PT    ---->    help.sh
+
+====> MÓDULOS RENOMEADOS
+ _FORMAT_PKG        ---->    _NAME_FORMAT_PKG
+ _PKG_CONF          ---->    _PRE_REMOVE
+ _BURN              ---->    _REMOVE_NOW
+ _PKG_EXIST         ---->    _UPGRADE
+ _MANAGE_ARCHIVES   ---->    _MANAGE_SCRIPTS_AND_ARCHIVES
+
+- SECURITY, adicionado no módulo _VERIFY_ON conferencia se existe o comando
+rm -rf ou -fr nos 3 scripts (pre.sh, pos.sh e rm.sh).
+
+- SECURITY, na parte de remover foi botado um sed para remover linhas com
+rm -rf, para caso o createpkg deixar passar.
+
+- BUGFIX, se existia o formato da extensão em qualquer parte da string
+o programa continuava.
+
+- BUGFIX, se passado parâmetro de acesso as chaves como:
+(install, remove, upgrade) etc... E segundo parâmetro fosse nulo o
+programa continuava, agora não mais =)
+
+- BUGFIX Módulos que possuem o comando source são executados inteiramentes
+em uma subshell, isso para não sujar os ambientes e transições entre
+os módulos.
+
+- BUGFIX, opção search que estava com problemas quanto a impressão.
+não encontrando alguns pacotes, não mais.
+
+- BUGFIX inserido módulo _SUBSHELL_STATUS para verificação de exitcode para subshells
+
+- REMOVIDO conferencia de variáveis de limpeza 'maintainer' 'pkgname'
+etc... Loop só tava atrapalhando ;)
+
+- REMOVIDO Loop de conferencia se diretórios essenciais do programa
+existe.
+
+- SUBSTITUIDO cor do SL link simbolico para Ciano.
+
+- SUBSTITUIDO na regua de instalação, Descrição por INSTALL
+
+- SUBSTITUIDO na regua de instalação, Descrição por INSTALL As
+variáveis que estava uma sopa de indecisões agora estão no cabeçalho
+com um único nome e local somente (packname)
+
+- ADICIONADO novas frases no módulo _MSG_DADDY
+
+- ADICIONADO opção de verbose, por padrão é silencioso.
+
+- ADICIONADO mensagem de remover lista.
+
+- ADICIONADO mensagem se script rm.sh foi bem sucedido.
+
+- Todas variáveis de módulos agora são locais e declaras no cabeça-
+lho do módulo.
+#-------------------------------------------------------------------------------#
+
+
+#----------------------------------07/02/2018-----------------------------------#
+(Versão 2.1.1 Alfa)
 - Adicionado um script de instalação install.sh
 
-#-------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
 
-#----------------------------06/02/2018-----------------------------#
+
+#----------------------------------06/02/2018-----------------------------------#
 (Versão 2.0 Alfa) FINALMENTE COM VÁRIAS MELHORIAS E CORREÇÕES
 
 - O programa pulou de 1.4 para 2.0 pois está se comportando de uma 
@@ -38,4 +114,5 @@ Descobrimos que tinha um bug bem bobo ao usar algo antes como it's ou
 algora parecido, Obrigado diego por alertar =)
 
 - Adicionado parâmetro -s, search, para procurar pacotes no sistema.
-#-------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+

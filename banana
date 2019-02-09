@@ -7,83 +7,111 @@
 # MIT
 #
 #VERSÃO
-# 2.1
+# 2.1.2
 #
+#MUDANÇAS?
 #changelog.txt
 #====================================================================|
 
-#===============BIBLIOTECAS
-# Configurações
-source '/etc/banana/banana.conf' || { echo "ERROR ON LOAD /etc/banana/banana.conf, ABORT"; exit 1 ;}
-# Funções que fazem o programa ;)
-source '/usr/libexec/banana/core.sh' || { echo "ERROR ON LOAD /var/libexec/banana/core.sh, ABORT"; exit 1 ;}
-
-#=================== ESPECIAL DIRECTORIES
-dirlist='/var/lib/banana/list'       # Lists of package
-dirdesc='/var/lib/banana/desc'       # Descriptions of package
-dirremove='/var/lib/banana/remove'   # Scripts remove of package
-
-#==================== ESPECIAL VARS
-export format_pkg='mz'            # Extension Package
-export descme='info/desc'         # Directorie fakeroot
-local_list='var/lib/banana/list'  # List location
-
+########################################
 #=================== COLORS
+########################################
+
 red='\033[31;1m'
 blue='\033[34;1m'
 cyan='\033[36;1m'
 pink='\033[35;1m'
 end='\033[m'
 
+########################################
+#===============BIBLIOTECAS
+########################################
+
+# Configurações
+source '/etc/banana/banana.conf' || { echo "ERROR ON LOAD /etc/banana/banana.conf, ABORT"; exit 1 ;}
+
+# Módulos que fazem o programa ;)
+source '/usr/libexec/banana/core.sh' || { echo "ERROR ON LOAD /var/libexec/banana/core.sh, ABORT"; exit 1 ;}
+
+# Módulo de Ajuda;)
+source '/usr/libexec/banana/help.sh' || { echo "ERROR ON LOAD /var/libexec/banana/core.sh, ABORT"; exit 1 ;}
+
+
+#######################################
+#============ DIRETÓRIOS ESPECIAIS
+######################################
+
+dirlist='/var/lib/banana/list'       # Lists of package
+dirdesc='/var/lib/banana/desc'       # Descriptions of package
+dirremove='/var/lib/banana/remove'   # Scripts remove of package
+
+##########################################
+#================= VARIÁVEIS ESPECIAIS
+#########################################
+
+export format_pkg='mz'            # Extension Package
+export descme='info/desc'         # Directorie fakeroot
+local_list='var/lib/banana/list'  # List location
+
+
+########################################
 #===============TESTES
+########################################
+
 # Sem root não vai amiguinho.
 [[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
 
-# Limpando todas variáveis do ambiente para
-# não ter futuros problemas.
-var_list=(
-   'maintainer' 'pkgname' 'desc' 'version' 'build' 'url'
-)
-for hellclean in "${var_list[@]}"; do
-    unset "${hellclean}"
+# Qual a linguagem do cabra?
+[[ "$LANG" = "pt_BR.utf8" ]] && HELP="_HELP_PT" || HELP="_HELP_US"
+
+# Inicializando o programa em silêncio...
+ _VERBOSE '0'
+ 
+# Verificando quais argumentos passados pelo usuário
+# para pegar as variáveis necessárias
+for entry_parameter; do
+    if [[ "$entry_parameter" = '-y' ]]; then
+        AUTO_YES='1'
+    elif [[ "$entry_parameter" = '-v' ]] || [[ "$entry_parameter"  = '--verbose' ]]; then
+        VERBOSE='1'
+        _VERBOSE '1'
+    else
+        new_argument+=("$entry_parameter")
+    fi
 done
-
-# Criando diretórios se não existirem.
-for createdir in '/var/lib/banana/list' '/var/lib/banana/desc' '/var/lib/banana/remove' '/usr/libexec/banana'; do
-    [[ ! -d "$createdir" ]] && mkdir -vp "$createdir"
-done
-
-#===============FUNCOES
+set -- "${new_argument[@]}" # definindo novos argumentos sem opções =)
 
 
+
+########################################
 #==================INICIO
+########################################
+
+
 case $1 in
     -c|create)
        shift # Rebaixando
-       # Se nome do pacote não for letras ou se tiver
-       # espaços entre outras coisas, não pode continuar.
-       re="\.\<${format_pkg}\>"
-       if ! [[ "$1" =~ ^.*${re} ]]; then
-           echo -e "${red}[Error!]${end} Package need finish .$format_pkg"
-           exit 1
-       elif [[ "$(echo "$1" | grep -o '-' | wc -l)" -gt '2' || "$(echo "$1" | grep -o '-' | wc -l)" -lt '2'  ]]; then
-           echo -e "${red}[Error!]${end} Unexpected ' - ' Count."
-           echo -e "USE ONLY TWO ' ${red}-${end} ' In the name of your package."
-           echo ""
-           echo -e "EXAMPLE the perfect format: ${blue}leafpad${end}-${blue}2.6.8${end}-${blue}3${end}.${blue}mz${end}"
-           echo ""
-           echo -e "If you need separate name of package prefer use ' ${red}_${end} '"
-           echo -e "EXAMPLE: firefox_quantum${blue}-${end}54.8.9${blue}-${end}1.mz"
-           echo ""
-           echo "If you need more HELP, use -h or --help"
-           exit 1
+       _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
+       
        # Se nome do pacote ter espaços não deve continuar
-       elif [[ "$1" =~ .*[[:space:]]+.*-.* ]]; then
+       if [[ "$@" =~ .*[[:space:]]+.*-.* ]]; then
            echo -e "${red}[Error!]${end} Unexpected character."
-           echo ""
            echo -e "Perfect Format name is: ${blue}Name-Version-Build.mz${end}"
            echo -e "${red}DONT USE${end} symbols, space, tab etc.. in name of package."
-           echo ""
+           echo "If you need more HELP, use -h or --help"
+           exit 1
+       fi
+       
+       # Se nome do pacote não for letras ou se tiver
+       # espaços entre outras coisas, não pode continuar.
+       _NAME_FORMAT_PKG "$1" || exit 1
+
+       if [[ "$(echo "$1" | grep -o '-' | wc -l)" -gt '2' || "$(echo "$1" | grep -o '-' | wc -l)" -lt '2'  ]]; then
+           echo -e "${red}[Error!]${end} Unexpected ' - ' Count."
+           echo -e "USE ONLY TWO ' ${red}-${end} ' In the name of your package."
+           echo -e "EXAMPLE the perfect format: ${blue}leafpad${end}-${blue}2.6.8${end}-${blue}3${end}.${blue}mz${end}"
+           echo -e "If you need separate name of package prefer use ' ${red}_${end} '"
+           echo -e "EXAMPLE: firefox_quantum${blue}-${end}54.8.9${blue}-${end}1.mz"
            echo "If you need more HELP, use -h or --help"
            exit 1
        else
@@ -124,45 +152,32 @@ case $1 in
 
     -i|install) # Instalação de pacotes
         shift # Rebaixe baby
-        [[ -z "$1" ]] && _HELP
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
         while [[ -n "$1" ]]; do
-            _PRE_CONF "$@" || exit 1 # Função de configuração de entrada!
-            # Vamos fazer a pre configuração antes de instalar o pacote.
-            # Se tudo estiver certo o pacote será instalado!
-            _PRE_INSTALL_PKG || exit 1
-            _INSTALL_PKG || exit 1
+            _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
+            [[ ! -e "$1" ]] && { echo -e "${red}[ERROR]${end} Do not cheat me! This Package dont exist."; exit 1 ;}
+            _INSTALL_PKG "$1"
             shift
        done
     ;;
 
     -u|upgrade) # Upgrade de pacotes
-        [[ -z "$1" ]] && _HELP
         shift
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
         while [[ -n "$1" ]]; do           
-            _PRE_CONF "$@" || exit 1 # Função de configuração de entrada!
-            # Verificando se o pacote existe no sistema.
-            _PKG_EXIST "$@" || exit 1
+            _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
+            _UPGRADE "$1" || exit 1
             shift
         done
     ;;
 
     -r|remove)
-        # Verificando se existe a opção -y, para auto confirmar.
-        # ou como está a variável AUTO_YES, configurada no arquivo de conf.
-        if [[ "$AUTO_YES" -eq '0' || -z "$AUTO_YES" ]]; then
-            if echo "$*" | grep -w "\-y" &>/dev/null ; then
-                auto_confirm='y'
-            fi
-        else
-            auto_confirm='y'
-        fi
         shift # Rebaixa baby
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =) 
         # Se contiver um dos caracteres da lista, não poderá continuar.
         [[ "$1" =~ .*(\*|@|#|,).* ]] && { echo 'Dont Use * or @ or #'; exit 1 ;}
         while [[ -n "$1" ]]; do
-            [[ "$1" = '-y' ]] && { shift; continue ;}
-            pack="$1"
-            _PKG_CONF
+            _PRE_REMOVE "$1" || exit 1
             shift
         done
         exit 0
@@ -170,14 +185,14 @@ case $1 in
 
     -s|search)
         shift # elaia, rebaixamos.
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
         while [[ -n "$1" ]]; do
-            inputsearch="$1"
-            _SEARCH_PKG # Chamando função de check
+            _SEARCH_PKG "$1" # Chamando função de check
             shift
         done
     ;;
 
-    -h|--help) [[ "$LANG" = "pt_BR.utf8" ]] && { _HELP_PT; exit 0 ;} || { _HELP_US; exit 0 ;} ;;
+    -h|--help) "$HELP" ;;
 
-    *) [[ "$LANG" = "pt_BR.utf8" ]] && { _HELP_PT; exit 0 ;} || { _HELP_US; exit 0 ;} ;;
+    *) "$HELP" ;;
 esac
