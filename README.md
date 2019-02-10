@@ -20,7 +20,7 @@ https://bananapkg.github.io/
 
 ## Instalação Direta / Direct Install
 **Clone Repo**<br/>
-git clone https://github.com/mazonos/bananapkg<br/>
+git clone https://github.com/slackjeff/bananapkg<br/>
 <br/>
 **ON ROOT, Create a directories**<br/>
 mkdir -vp /var/lib/banana/{list,desc,remove}<br/>
