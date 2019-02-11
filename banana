@@ -7,7 +7,7 @@
 # MIT
 #
 #VERSÃO
-# 2.1.2
+# 2.1.3 Alfa
 #
 #MUDANÇAS?
 #changelog.txt
@@ -75,6 +75,8 @@ for entry_parameter; do
     elif [[ "$entry_parameter" = '-v' ]] || [[ "$entry_parameter"  = '--verbose' ]]; then
         VERBOSE='1'
         _VERBOSE '1'
+    elif [[ "$entry_parameter" = '-ol' ]] || [[ "$entry_parameter" = '--one-line' ]]; then
+        ONE_LINE='1'
     else
         new_argument+=("$entry_parameter")
     fi

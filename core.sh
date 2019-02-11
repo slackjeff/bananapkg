@@ -166,6 +166,7 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
     # Finalizando instalação.
     [[ -d "/info/" ]] && rm -r "/info/" # Apagando diretório /info/ na raiz.
     echo -e "${blue}[INSTALLED]${end}\tPackage $packname successfully installed."
+    [[ -d '/tmp/info/' ]] && rm -r "/tmp/info/" # Removejdo sujeira
     return 0
 }
 
@@ -184,7 +185,7 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
 _GENERATE_DESC()
 {
     [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
-    cat > "info/desc" << 'EOF'
+    cat > "info/desc" << EOF
 ######################################################################
 # This file is the heart of the package, it is necessary to do
 # conferences, so it is important you add the information correctly.
@@ -195,7 +196,7 @@ _GENERATE_DESC()
 ######################################################################
 
 # Package Maintainer Name
-maintainer=''
+maintainer="$MAINTAINER"
 
 # Package Name
 pkgname=''
@@ -389,6 +390,7 @@ _INSTALL_PKG()
     local packname="$1"
     local name_version_build tmp_pack
     local tmp_pack
+    local PRE_SH='pre.sh'
 
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
@@ -425,14 +427,16 @@ _INSTALL_PKG()
 
    # Vamos verificar se existe o script de pre instalação *pre.sh*
    # Se ele existir o programa deve executalo.
-   if tar tf "${packname}" ./info/pre.sh &>/dev/null; then
-        tmp_pack="$(mktemp -d)" # Var para criação de diretório temporário
-        echo -e "${blue}[Pre-Installation]${end} The script pre.sh was found. Execute now!"
-        tar xmf "${packname}" -C "$tmp_pack" 1>/dev/null || return 1
-        pushd "$tmp_pack" >/dev/null
-        bash "info/pre.sh" # Executando script de pré-instalação pre.sh
-        cp -rf * / # Enviando todos arquivos para a /
-        _MANAGE_SCRIPTS_AND_ARCHIVES "$packname" && { popd >/dev/null; rm -r "${tmp_pack}"; return 0 ;} || { popd >/dev/null; rm -r "${tmp_pack}"; return 1 ;}
+   if tar tf "${packname}" "./info/$PRE_SH" &>/dev/null; then
+        if tar -xvf "$packname" -C /tmp "./info/$PRE_SH" &>/dev/null; then
+            echo -e "${blue}[Pre-Installation]${end} The script pre.sh was found. Execute now!"
+        else
+            echo -e "${red}[Pre-Installation]${end} Cannot extract ${PRE_SH}, ABORT"
+            exit 1
+        fi  
+        bash "/tmp/info/$PRE_SH"
+        tar xvmf "${packname}" -C / 1>&4 2>&3 || exit 1
+        _MANAGE_SCRIPTS_AND_ARCHIVES "$packname" && return 0 || return 1
     else
         # Caiu aqui pode continuar normal.
         tar xvmf "${packname}" -C / 1>&4 2>&3 || exit 1
@@ -717,11 +721,10 @@ _SEARCH_PKG()
 
     pushd "$dirdesc" &> /dev/null # Entrando no diretório aonde estão as desc ;)
     for searchpkg in *; do
-        if [[ "$searchpkg" =~ ^${re}.*.desc$ ]]; then
+        if [[ "$searchpkg" =~ ${re} ]] && [[ -z "$ONE_LINE"  ]]; then
             inc=$(( $inc + 1 )) # Incrementando
             source $searchpkg # Carregando informações do pacote para impressão.
             # Se variavel for maior que 1 não exibe a entrada de novo
-            if [[ "$inc" -eq '1' ]]; then
                 echo -e "#------------------------[ FOUND ]----------------------------------------------#"
                 echo -e "${cyan}[ PACKAGE ]${end}\t${pkgname}"
                 echo -e "${cyan}[ VERSION ]${end}\t${version}"
@@ -729,7 +732,10 @@ _SEARCH_PKG()
                 echo -e "${cyan}[ URL     ]${end}\t${url}"
                 echo -e "${cyan}[ DEPS    ]${end}\t${dep[@]}"
                 echo -e "${cyan}[ DESC    ]${end}\t${desc}\n"
-            fi
+        elif [[ "$searchpkg" =~ ${re} ]] && [[ "$ONE_LINE" = '1' ]]; then
+            inc=$(( $inc + 1 )) # Incrementando
+            source $searchpkg # Carregando informações do pacote para impressão.
+            echo -e "${cyan}[FOUND]${end} ${pkgname}-${version}-${build}"       
         fi
     done
     [[ "$inc" -eq '0' ]] && { echo -e "No packages found with the name of: $packname"; exit 1 ;}

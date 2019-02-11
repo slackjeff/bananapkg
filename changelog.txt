@@ -1,3 +1,13 @@
+#----------------------------------10/02/2018-----------------------------------#
+(Versão 2.1.3 Alfa)
+- [ADICIONADO]: suporte total a expressão regular na pesquisa dos pacotes
+- [ADICIONADO]: opção de procura que imprimi pesquisa em uma linha
+(-ol, --one-line)
+- [ADICIONADO]: Variável MAINTAINER no banana.conf, para auto completar o
+arquivo desc se não nulo.
+- [BUGFIX]: Ajustado verbose em opção de instalação, quando existia o roteiro pre.sh
+verbose não funcionava.
+
 #----------------------------------09/02/2018-----------------------------------#
 (Versão 2.1.2 Alfa)
 Reformulado TODO o core.sh! Que trabalheira. Foram removidas algumas
@@ -70,14 +80,10 @@ com um único nome e local somente (packname)
 
 - Todas variáveis de módulos agora são locais e declaras no cabeça-
 lho do módulo.
-#-------------------------------------------------------------------------------#
-
 
 #----------------------------------07/02/2018-----------------------------------#
 (Versão 2.1.1 Alfa)
 - Adicionado um script de instalação install.sh
-
-#-------------------------------------------------------------------------------#
 
 
 #----------------------------------06/02/2018-----------------------------------#
@@ -114,5 +120,3 @@ Descobrimos que tinha um bug bem bobo ao usar algo antes como it's ou
 algora parecido, Obrigado diego por alertar =)
 
 - Adicionado parâmetro -s, search, para procurar pacotes no sistema.
-#-------------------------------------------------------------------------------#
-
