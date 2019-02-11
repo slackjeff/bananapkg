@@ -3,8 +3,10 @@
 #AUTOR
 # Jefferson 'slackjeff' Rocha <root@slackjeff.com.br>
 #
+#INSTALAÇÃO DO BANANA
+#
 #LICENÇA
-# MIT
+#  MIT
 #
 # Instalador para o banana
 #====================================================================|

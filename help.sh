@@ -31,6 +31,10 @@ MAIN ARGUMENTS
     -s, search
           Search Package
           
+    -ol, --one-line
+          Use in -s, search for print one line search.
+          program-version-build
+          
     -v, --verbose
           Look more
 
@@ -82,6 +86,10 @@ PRINCIPAIS ARGUMENTOS
 
     -s, search
           Procurar Pacote
+
+    -ol, --one-line
+          Use em -s, search para imprimir em uma linha o retorno de pesquisa.
+          program-version-build
 
     -v, --verbose
           Visualizar melhor a saída
