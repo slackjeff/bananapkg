@@ -355,7 +355,7 @@ _CLEAN_LIST()
 _CREATE_PKG()
 {
     echo -e "${blue}[Create]${end} Now, create package for You! Wait..."
-    if tar cvJf ../${package}.${format_pkg} . 1>&4 2>&3; then
+    if tar cvpJf ../${package}.${format_pkg} . 1>&4 2>&3; then
         echo -e "${blue}[Create]${end} Your Package on: ../${package}.${format_pkg}"
           # Voltando 1 diretório acima para fazer manipulação do pacote
           pushd .. &>/dev/null
@@ -394,7 +394,7 @@ _INSTALL_PKG()
 
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
-    if ! tar xmf "${packname}" -C "/tmp/" "./${descme}"; then
+    if ! tar xpmf "${packname}" -C "/tmp/" "./${descme}"; then
         echo -e "${red}[ERROR!]${end} I could not unzip the file desc."
         exit 1
     fi
@@ -428,18 +428,18 @@ _INSTALL_PKG()
    # Vamos verificar se existe o script de pre instalação *pre.sh*
    # Se ele existir o programa deve executalo.
    if tar tf "${packname}" "./info/$PRE_SH" &>/dev/null; then
-        if tar -xvf "$packname" -C /tmp "./info/$PRE_SH" &>/dev/null; then
+        if tar -xpvf "$packname" -C /tmp "./info/$PRE_SH" &>/dev/null; then
             echo -e "${blue}[Pre-Installation]${end} The script pre.sh was found. Execute now!"
         else
             echo -e "${red}[Pre-Installation]${end} Cannot extract ${PRE_SH}, ABORT"
             exit 1
         fi  
         bash "/tmp/info/$PRE_SH"
-        tar xvmf "${packname}" -C / 1>&4 2>&3 || exit 1
+        tar xvpmf "${packname}" -C / 1>&4 2>&3 || exit 1
         _MANAGE_SCRIPTS_AND_ARCHIVES "$packname" && return 0 || return 1
     else
         # Caiu aqui pode continuar normal.
-        tar xvmf "${packname}" -C / 1>&4 2>&3 || exit 1
+        tar xvpmf "${packname}" -C / 1>&4 2>&3 || exit 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
         _MANAGE_SCRIPTS_AND_ARCHIVES "${pkgname}-${version}-${build}" && return 0 || return 1
     fi
@@ -461,7 +461,7 @@ _UPGRADE()
 
     # Descompactando temporariamente diretorio *info/* para
     # pegar o arquivo *desc* do pacote.
-    if tar xmf "${packname}" -C "$unpack_temporary" "./${descme}"; then
+    if tar xpmf "${packname}" -C "$unpack_temporary" "./${descme}"; then
         if [[ -e "${unpack_temporary}/${descme}" ]]; then
             if ! source ${unpack_temporary}/${descme}; then
                 echo -e "${red}[Error!]${end} Could not find file ${blue}${unpack_temporary}/${desc_me}${end}"
