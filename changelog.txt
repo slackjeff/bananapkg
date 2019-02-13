@@ -1,5 +1,13 @@
-#----------------------------------10/02/2018-----------------------------------#
-(Versão 2.1.3 Alfa)
+#----------------------------------13/02/2019-----------------------------------#
+(Versão 2.1.4)
+- [REMOVIDO]: Módulo _CLEAN_LIST e embutido no módulo _LIST_ARCHIVES_DIRECTORIES
+- [BUGFIX]: Removido bug critico que removia diretório /var/run e outros diretórios
+importantes.
+- [BUGFIX]: Agora o script de remoção programa.rm é removido não na lista e sim
+no próprio script, se existir.
+
+#----------------------------------10/02/2019-----------------------------------#
+(Versão 2.1.3)
 - [ADICIONADO]: suporte total a expressão regular na pesquisa dos pacotes
 - [ADICIONADO]: opção de procura que imprimi pesquisa em uma linha
 (-ol, --one-line)
@@ -8,8 +16,8 @@ arquivo desc se não nulo.
 - [BUGFIX]: Ajustado verbose em opção de instalação, quando existia o roteiro pre.sh
 verbose não funcionava.
 
-#----------------------------------09/02/2018-----------------------------------#
-(Versão 2.1.2 Alfa)
+#----------------------------------09/02/2019-----------------------------------#
+(Versão 2.1.2)
 Reformulado TODO o core.sh! Que trabalheira. Foram removidas algumas
 funções, renomeadas e outras movidas para arquivo externo. Foi também
 melhorado todo o código de cada módulo para deixar aceitar chamadas
@@ -81,13 +89,13 @@ com um único nome e local somente (packname)
 - Todas variáveis de módulos agora são locais e declaras no cabeça-
 lho do módulo.
 
-#----------------------------------07/02/2018-----------------------------------#
-(Versão 2.1.1 Alfa)
+#----------------------------------07/02/2019-----------------------------------#
+(Versão 2.1.1)
 - Adicionado um script de instalação install.sh
 
 
-#----------------------------------06/02/2018-----------------------------------#
-(Versão 2.0 Alfa) FINALMENTE COM VÁRIAS MELHORIAS E CORREÇÕES
+#----------------------------------06/02/2019-----------------------------------#
+(Versão 2.0) FINALMENTE COM VÁRIAS MELHORIAS E CORREÇÕES
 
 - O programa pulou de 1.4 para 2.0 pois está se comportando de uma 
 forma bem estável até o presente momento! E foi bem testado na distro

@@ -117,10 +117,12 @@ _NAME_FORMAT_PKG()
 {
     local packname="$1"
 
-    re="\.\<${format_pkg}\>"
-    if ! [[ "$packname" =~ .*${re}$ ]]; then
+    re="\b${format_pkg}\b"
+    if ! [[ "$packname" =~ .*\.${re}$ ]]; then
         echo -e "${red}[ERROR]${end} Package need finish .${format_pkg}"
         return 1
+    else
+        return 0
     fi
 }
 
@@ -320,37 +322,80 @@ _SUBSHELL_STATUS
 
 _LIST_ARCHIVES_DIRECTORIES()
 {
-    echo -e "${blue}[Create]${end} ${package}.list in temporary local: $temp_list"
-    # Pegando todos arquivos que possui no diretório
-    # menos os listados abaixo, isso implica em futuros erros.
-    find .                        \
-       \( ! -name info \)         \
-      -print > "$temp_list"
-}
-
-# Função para fazer a limpa na (pacote).list
-# Para ter a certeza absoluta que não haverá problemas ;)
-# Se caso o arquivo ou diretório estiver solto ele será
-# removido.
-_CLEAN_LIST()
-{
-    echo -e "${cyan}[Clean]${end} List: $temp_list"
-    # Apagando linhas desnecessárias na lista
-    # E substituindo
+    local packname="${1}.list"
+    local LIST_CLEAN_DIRECTORIES
+    
+    echo -e "${cyan}[Clean]${end} List: ${dirlist}/${packname}"
+    
+    # Apagando coisas desnecessárias na lista e substituindo.
     sed -i "
         s/^\.\///g
         s/^\///g
+        s|\/$||g
         /^\./d
         /^ *$/d
+        /^bin$/d
+        /^info$/d
+        /^boot$/d
+        /^dev$/d
+        /^etc$/d
+        /^home$/d
+        /^lib$/d
+        /^lib64$/d
+        /^media$/d
+        /^mnt$/d
+        /^opt$/d
+        /^proc$/d
+        /^root$/d
+        /^run$/d
+        /^sbin$/d
+        /^srv$/d
+        /^sys$/d
+        /^tmp$/d
+        /^usr$/d
+        /^var$/d
+        /^info\/pos\.sh$/d
+        /^info\/pre\.sh$/d
+        s|info\/desc|var\/lib\/banana\/desc\/${packname/%.list}.desc|
+        /info\/rm.sh/d
         /^var\/lib\/banana\/list\/.*\.list/d
         /^var\/lib$/d
         /^var\/lib\/banana/d
         /^var\/lib\/banana\/list/d
         /^var\/lib\/banana\/remove/d
-        s|info\/desc|var\/lib\/banana\/desc\/${package}.desc|
-        s|info\/rm.sh|var\/lib\/banana\/remove\/${package}.rm|
-    " "$temp_list"
+    " "${dirlist}/${packname}"
+    
+    # Lista de diretórios para usar no loopzinho
+    LIST_CLEAN_DIRECTORIES=(
+        'var'
+        'lib'
+        'media'
+        'usr'
+        'usr/share'
+    )
+    # FIXME Essa parte não está tão boa e um algoritmo muito manual.
+    # Basicamente ela remove toda hierarquia "vital" da lista
+    # para evitar futuros furos e remoções na hora de remover o pacote.
+    while read view; do
+        if [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[0]}/(cache|lib|local|lock|log|mail|opt|run|spool|tmp)$ ]]; then
+            local view="${view//\//\\/}"
+            sed -i "/^$view$/d" "${dirlist}/${packname}"
+        elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[1]}/(lib64)$ ]]; then
+            local view="${view//\//\\/}"
+            sed -i "/^$view$/d" "${dirlist}/${packname}"
+        elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[2]}/(cdrom|floppy)$ ]]; then
+            local view="${view//\//\\/}"
+            sed -i "/^$view$/d" "${dirlist}/${packname}"
+        elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[3]}/(bin|etc|lib|lib\/(pkgconfig)|local|share|doc|include|libexec|sbin|src)$ ]]; then
+            local view="${view//\//\\/}"
+            sed -i "/^$view$/d" "${dirlist}/${packname}"
+        elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[4]}/(keymaps|fonts|pixmaps|applications|doc|man|man\/man[[:digit:]]+|man\/.{2})$ ]]; then      
+            local view="${view//\//\\/}"
+            sed -i "/^$view$/d" "${dirlist}/${packname}"  
+        fi
+    done < "${dirlist}/${packname}"
 }
+
 
 _CREATE_PKG()
 {
@@ -435,14 +480,18 @@ _INSTALL_PKG()
             exit 1
         fi  
         bash "/tmp/info/$PRE_SH"
-        tar xvpmf "${packname}" -C / 1>&4 2>&3 || exit 1
-        _MANAGE_SCRIPTS_AND_ARCHIVES "$packname" && return 0 || return 1
+        tar xvpmf "${packname}" -C / | tee -a ${dirlist}/"${name_version_build}.list"  1>&4 2>&3 || return 1
+        echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
+        _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     else
         # Caiu aqui pode continuar normal.
-        tar xvpmf "${packname}" -C / 1>&4 2>&3 || exit 1
+        tar xvpmf "${packname}" -C / | tee -a ${dirlist}/"${name_version_build}.list" 1>&4 2>&3 || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
-        _MANAGE_SCRIPTS_AND_ARCHIVES "${pkgname}-${version}-${build}" && return 0 || return 1
+        _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     fi
+    
+    # Ajustando lista.
+    _LIST_ARCHIVES_DIRECTORIES "${name_version_build}"
  ) # Fim da subshell suicide
  
 _SUBSHELL_STATUS
@@ -510,7 +559,7 @@ _UPGRADE()
                 echo -e "\n${blue}[UPDATE]${end} Let's start updating! Wait.\n"
                 popd 1>/dev/null # Retornando ao diretório aonde estava.
                 _PRE_REMOVE "${remove_old_version_pkg}" || exit 1
-                _INSTALL_PKG "${pkgname}-${version}-${build}.${format_pkg}" && return 0 || exit 1
+                _INSTALL_PKG "$1" && return 0 || exit 1
             # Tudo igual?
             elif [[ "$compare" = '1' ]] || [[ "$build_package_exist" -eq "$build" ]]; then
                 echo -e "${blue}[HIGHER!]\t${end} ${pink}${pkgname}-${version_package_exist}-${build_package_exist}${end} is in a higher version on your system"
@@ -632,8 +681,16 @@ _REMOVE_NOW()
         # Removendo rm -rf se existir para não ter problemas =)
         sed -E "/rm[[:space:]]+\-(rf|fr)/d" "${dirremove}/${packname}.rm" &>/dev/null
         bash "${dirremove}/${packname}.rm" && echo -e "${cyan}[SCRIPT]${end}\tThe script was well executed =)\n"
-    fi
+        # Removendo script pacote.rm em /var/lib/banana/remove/
+        if [[ -e "${dirremove}/${packname}.rm" ]]; then
+            rm "${dirremove}/${packname}.rm" && echo -e "${blue}[REMOVED]${end}\t${packname}.rm\n"
+        fi
+    fi    
 
+    # FIXME Na hora da remoção loop passa 3 vezes na lista
+    # removendo os arquivos->links simbolicos->diretorios vazios.
+    # muito lento, precisa achar uma forma mais rápida.
+    
     #AC = Arquivo
     #ED = Diretorio Vazio
     # Removendo arquivos normais

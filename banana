@@ -120,32 +120,12 @@ case $1 in
             # Pegando somente nome do pacote
             # sem extensão
             package="${1/%.mz/}"
-            # lista temporaria para usar nas funções
-            # _LIST_ARCHIVES_DIRECTORIES e _CLEAN_LIST
-            temp_list="/tmp/${package}.temp"
        fi
          # Verificação de tudo está aonde deveria estar, como diretório
          # (info) e o arquivo de descrição (desc)
          _VERIFY_ON
-         # Iniciando processo de listagem de diretório
-         # e limpeza no arquivo de listagem
-         _LIST_ARCHIVES_DIRECTORIES || exit 1
-         _CLEAN_LIST || exit 1
-         # Se var/lib/banana/list existir apague, para criar um novo.
-         if [[ -d "$local_list" ]]; then
-             rm -r "$local_list" || { echo -e "${red}[ABORTED]${end} $local_list not removed."; exit 1 ;}
-         fi
-         # Criando novo diretorio para armazenar listagem
-         [[ ! -d "$local_list" ]] && mkdir -p "$local_list"
-         ( # Subshell
-           cd "$local_list" || exit 1
-           cp "$temp_list" "${package}.list" || exit 1
-           echo -e "${pink}[MOVED]${end} $temp_list for ${local_list}${package}.list"
-         )
          # Iniciando processo de criação do pacote
          _CREATE_PKG || exit 1
-         # Apagando arquivo(s) temporário(s)
-         rm "$temp_list"
     ;;
 
     -g|generate)
@@ -158,7 +138,7 @@ case $1 in
         while [[ -n "$1" ]]; do
             _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
             [[ ! -e "$1" ]] && { echo -e "${red}[ERROR]${end} Do not cheat me! This Package dont exist."; exit 1 ;}
-            _INSTALL_PKG "$1"
+            _INSTALL_PKG "$1"  || exit 1
             shift
        done
     ;;
