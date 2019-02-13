@@ -2,7 +2,7 @@
 🇧🇷 Gerenciador de baixo nível escrito em Shell. <br/>
 :us: Low level package manager written in Shell.<br/>
 
-**Versão/Version:** 2.1.4 (2018/02/13)<br/>
+:heavy_check_mark: **Versão/Version:** 2.1.4 (2018/02/13)<br/>
 
 ----
 
