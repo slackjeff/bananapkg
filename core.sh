@@ -356,7 +356,7 @@ _LIST_ARCHIVES_DIRECTORIES()
         /^var$/d
         /^info\/pos\.sh$/d
         /^info\/pre\.sh$/d
-        s|info\/desc|var\/lib\/banana\/desc\/${packname/%.list}.desc|
+        /^info\/desc/d
         /info\/rm.sh/d
         /^var\/lib\/banana\/list\/.*\.list/d
         /^var\/lib$/d
@@ -737,15 +737,27 @@ _REMOVE_NOW()
             fi
     done < "${dirlist}/${packname}.list"
 
-    # Removendo lista
-    if rm "${dirlist}/${packname}.list"; then 
-        echo -e "\n${blue}[REMOVE LIST]${end} ${dirlist}/${packname}.list SUCCESSFULLY"
-    else
-        echo -e "\n${red}[ERROR]${end} It was not possible remove ${dirlist}/${packname}.list"
-        exit 1
-    fi    
+    echo -e "\nClean archives .desc and .list\n"
 
-    # Impressão na tela
+    # Removendo lista e Descrição
+    for removeitem in "desc" "list"; do
+        case $removeitem in
+            desc)   DIREC="$dirdesc";;
+            list)   DIREC="$dirlist";;
+        esac
+        if [[ -e "${DIREC}/${packname}.${removeitem}" ]]; then
+            if rm "${DIREC}/${packname}.${removeitem}"; then 
+                echo -e "${blue}[REMOVE]${end} ${dirlist}/${packname}.${removeitem} SUCCESSFULLY"
+            else
+                echo -e "\n${red}[ERROR]${end} It was not possible remove ${dirlist}/${packname}.list"
+                exit 1
+            fi
+        else
+            continue
+        fi
+    done
+
+    # Impressão na tela de quantidade
     if [[ "$a" -gt '0' ]] || [[ "$d" -gt '0' ]]; then
         total="$(( $a + $d +$l ))"
         echo -e "\n=======> ${red}TOTAL BURNED${end} $total Archives."
@@ -795,6 +807,12 @@ _SEARCH_PKG()
             echo -e "${cyan}[FOUND]${end} ${pkgname}-${version}-${build}"       
         fi
     done
-    [[ "$inc" -eq '0' ]] && { echo -e "No packages found with the name of: $packname"; exit 1 ;}
+    if [[ "$inc" -eq '0' ]]; then
+        echo -e "No packages found with the name of: $packname"
+        exit 1
+    else
+        exit 0
+    fi
  ) # Fim subshell do destino
+ _SUBSHELL_STATUS
 }
