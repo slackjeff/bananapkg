@@ -9,27 +9,41 @@
 #  MIT
 #
 # Instalador para o banana
+#
+#CHANGELOG
+# (20/02/2019) - Jefferson Rocha
+#  - Adicionado suporte ao manual
+#  - Inserido Cabeçalho no script
+#  - Se falhar qualquer coisa agora sai =)
 #====================================================================|
 
-[[ "$UID" -ne "0" ]] && { echo "Only root."; exit 1 ;}
-
+#================== VARIAVEIS
 prg='banana'
 
-echo -e "Create Especial Directories...\n"
+#================== TESTES
+[[ "$UID" -ne "0" ]] && { echo "Only root."; exit 1 ;}
+
+# Cabeçalho simples
+echo "###################################################"
+echo "   Banana Install, bugs? root@slackjeff.com.br     "
+echo -e "###################################################\n"
+
+#================== INICIO
 # Criando diretórios se não existirem.
+echo -e "Create Especial Directories...\n"
 for createdir in '/var/lib/banana/list' '/var/lib/banana/desc' '/var/lib/banana/remove' '/usr/libexec/banana' '/etc/banana'; do
     [[ ! -d "$createdir" ]] && mkdir -vp "$createdir" || echo "$createdir exist, skip."
 done
 
-set -e # Deu erro para ;)
 # Dando permissões e copiando arquivos para seus lugares.
 echo -e "\nPermission and Copy archives\n"
-for m in "$prg" "${prg}.conf" 'core.sh' 'help.sh'; do
+for m in "$prg" "${prg}.conf" 'banana.8' 'core.sh' 'help.sh'; do
    [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
     case $m in
-        (banana) cp -v "$m" "/sbin/"    ;;
-        (banana.conf) cp -v "$m" "/etc/banana/" ;;
-        (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" ;;
+        (banana) cp -v "$m" "/sbin/" || exit 1    ;;
+        (banana.8) cp -v "$m" '/usr/share/man/pt_BR/man8/' || exit 1 ;;
+        (banana.conf) cp -v "$m" "/etc/banana/" || exit 1 ;;
+        (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || exit 1 ;;
     esac
 done
 

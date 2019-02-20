@@ -10,6 +10,16 @@
 #changelog.txt
 #====================================================================|
 
+##########################################
+#================= VARIÁVEIS ESPECIAIS
+#########################################
+
+export PRG='banana'
+export VERSION='2.1.5.1'
+export format_pkg='mz'            # Extension Package
+export descme='info/desc'         # Directorie fakeroot
+local_list='var/lib/banana/list'  # List location
+
 ########################################
 #=================== COLORS
 ########################################
@@ -33,6 +43,8 @@ source '/usr/libexec/banana/core.sh' || { echo "ERROR ON LOAD /var/libexec/banan
 # Módulo de Ajuda;)
 source '/usr/libexec/banana/help.sh' || { echo "ERROR ON LOAD /var/libexec/banana/core.sh, ABORT"; exit 1 ;}
 
+# Módulo de linguagem
+source /usr/libexec/banana/lang.sh
 
 #######################################
 #============ DIRETÓRIOS ESPECIAIS
@@ -41,16 +53,6 @@ source '/usr/libexec/banana/help.sh' || { echo "ERROR ON LOAD /var/libexec/banan
 dirlist='/var/lib/banana/list'       # Lists of package
 dirdesc='/var/lib/banana/desc'       # Descriptions of package
 dirremove='/var/lib/banana/remove'   # Scripts remove of package
-
-##########################################
-#================= VARIÁVEIS ESPECIAIS
-#########################################
-
-export PRG='banana'
-export VERSION='2.1.5'
-export format_pkg='mz'            # Extension Package
-export descme='info/desc'         # Directorie fakeroot
-local_list='var/lib/banana/list'  # List location
 
 
 ########################################

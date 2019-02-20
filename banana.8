@@ -1,0 +1,54 @@
+.\" Manpage for banana.
+.\" Contato root@slackjeff.com.br para correções de erros
+.TH man 8 "17 Fev 2019" "2.1.5.1" "banana man page"
+.SH NOME
+banana \- Gerenciador de pacotes de baixo nível
+.SH SINOPSE
+banana [opções]
+.SH DESCRIÇÃO
+Banana é um gerenciador de pacotes de baixo nível escrito na linguagem Shell bash.
+Você pode criar, instalar, remover atualizar e procurar pacotes atráves desta ferramenta.
+.SH OPÇÕES
+    -V, version
+          Verifica a versão do banana em uma linha
+
+    -h,help
+          Exibe essa mensagem e sai
+
+    -g, generate
+          Gera um diretório info/ e dentro um arquivo desc para editar. Está opção é essencial na parte
+          de geraçao de um pacote, antes de começar a editar o pacote use está opção!
+
+    -c, create
+          Cria o pacote. Você deve especificar corretamente o nome-versão-build do pacote que
+          foi estabelecido no arquivo desc, presente dentro do diretório info/, nas suas
+          respectivas variáveis.
+
+    -i, install
+          Instala o pacote
+
+    -u, upgrade
+          Atualiza o pacote. Se o programa não esta instalado no sistema, ele vai te avisar e não
+          fazer nada.
+
+    -r, remove
+          Remove o pacote
+
+    -s, search
+          Procura o Pacote
+
+    -ol, --one-line
+          Use em -s, search para imprimir em uma linha o retorno de pesquisa. Está opção é ideal para
+          usar em pipeline em conjunto com outros programas.
+
+    -v, --verbose
+          Visualizar a saída do banana em uma forma mais detalhada
+
+.SH BUGS
+Não há bugs conhecidos.
+.SH LICENÇA
+MIT
+.SH DOCUMENTAÇÃO EXTERNA
+https://bananapkg.github.io/doc-ptbr.html
+.SH AUTOR
+Jefferson 'Slackjeff' Rocha (root@slackjeff.com.br)

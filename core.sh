@@ -40,7 +40,7 @@ _MSG_DADDY()
         "The daddy look you"
         "Package, u accept marry me? No!? Ok, remove now! MUAHAHAHAH"
         "Come with me if you want to install package."
-        "Rostros y bocas para usted.. :o =D :) :P ;e =~ :I"
+        "Rostros y bocas para usted.. :o =D :) :P ;e =~ :I _^.^_"
         "The only road is UNIX."
         "A única frases em PT-BR é essa, Sinta-se orgulhoso papai."
         "This package is delicious. Dad will devour a pack."
@@ -54,16 +54,26 @@ _MSG_DADDY()
         "If it were not easy, it would not have the least grace."
         "Package i choice you!"
         "The Point G of package is a info/desc"
+        "X-Men? No please, i am banana."
         "Go eat popcorn. While I go here I strive to install the package for you."
         "Drunk?? No, thks. I need install a package."
         "Go, Go, Go, Go? go, guo, gole google"
         "Viva la sociedad de la compilación :O"
         "I feel the package being installed"
         "#bananapkg in silicon valley already."
+        "I see bananas! how often? All the time"
         "I never lost control baby *.*"
         "You and I are bananas."
+        "Captain! The boat can not sink, pull the anchor and go packing"
+        "Cheeseburger.mz Love it"
+        "Luck day: You'll pack .mz, it every day"
+        "Proerd is the program"
+        "It was for me to call myself orange, glad that banana is better"
         "Feel the package at the root. Please wait, I am installing the package."
         "Daddy likes UNIX-LIKE. Please wait I am installing the package."
+        "Sweet banana dreams."
+        "Motorhead? Now is Motorbanana |,,|"
+        "Version: Take me if you can :O"
         "A meteor is falling! Please wait while I install your package."
     )
     # Pegando o número de frases da lista.
@@ -76,6 +86,10 @@ _MSG_DADDY()
 }
 
 
+print()
+{
+    [[ "$printyeah" = '1' ]] && echo -e "$@"
+}
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
@@ -98,6 +112,7 @@ _VERBOSE()
     
     if [[ "$VERBOSE" = '1' ]] || [[ "$conf" = '1' ]]; then
         exec 4>&1 3>&2
+        printyeah='1'
     else
         exec 4>/dev/null 3>&4
     fi
@@ -145,7 +160,6 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
         echo "ABORTING..."
         exit 1
     fi
-
 
     if [[ -e "pos.sh" ]]; then # pos.sh existe?
         echo -e "${blue}[Post-installation]${end}\tThe script pos.sh was found. Execute now!"
@@ -701,7 +715,7 @@ _REMOVE_NOW()
         if [[ -f "$archive" ]]; then
             if rm "$archive" &>/dev/null; then
                 a="$(($a + 1))"
-                echo -e "${red}Burned AC${end}\t${archive}"   
+                print "${red}Burned AC${end}\t${archive}"   
                 archive="$(echo "$archive" | sed 's|/|\\/|g')"
             fi
         fi
@@ -715,7 +729,7 @@ _REMOVE_NOW()
        if [[ -L "$archive" ]]; then
              if unlink "$archive" &>/dev/null; then
                 l="$(($l + 1))"
-                echo -e "${cyan}Burned SL${end}\t${archive}"   
+                print "${cyan}Burned SL${end}\t${archive}"   
                 archive="$(echo "$archive" | sed 's|/|\\/|g')"
             fi
        fi
@@ -731,7 +745,7 @@ _REMOVE_NOW()
                 if [[ -z "$(ls -A ${archive})" ]]; then 
                     rmdir -p "${archive}" &>/dev/null
                     d="$(( $d + 1 ))"
-                    echo -e "${blue}Burned ED${end}\t${archive}"   
+                    print "${blue}Burned ED${end}\t${archive}"   
                     archive="$(echo "$archive" | sed 's|/|\\/|g')"
                 fi
             fi
