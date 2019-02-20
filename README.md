@@ -4,7 +4,7 @@
 
 ----
 
-:heavy_check_mark: **Versão/Version:** 2.1.5 (2018/02/16)<br/>
+:heavy_check_mark: **Versão/Version:** 2.1.5.1 (2019/02/20)<br/>
 
 ----
 
@@ -35,8 +35,8 @@ mkdir -v /usr/libexec/banana<br/>
 **Copy archives**<br/>
 cp -v banana /sbin/<br/>
 cp -v banana.conf /etc/banana<br/>
-cp -v {core,help}.sh /usr/libexec/banana
-<br/>
+cp -v {core,help}.sh /usr/libexec/banana<br/>
+cp -v banana.8 /usr/share/man/pt_BR/man8/<br/>
 *Enjoy ;)*
 
 ## Instalação Automática / Automatic Install
