@@ -43,9 +43,6 @@ source '/usr/libexec/banana/core.sh' || { echo "ERROR ON LOAD /var/libexec/banan
 # Módulo de Ajuda;)
 source '/usr/libexec/banana/help.sh' || { echo "ERROR ON LOAD /var/libexec/banana/core.sh, ABORT"; exit 1 ;}
 
-# Módulo de linguagem
-source /usr/libexec/banana/lang.sh
-
 #######################################
 #============ DIRETÓRIOS ESPECIAIS
 ######################################
