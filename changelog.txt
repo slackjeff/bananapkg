@@ -1,3 +1,11 @@
+#----------------------------------06/03/2019--------------------------------------#
+(Versão 2.1.5.2) *Em pleno carnaval nois trabalhando*
+- [BUGFIX]: Resolvido pipe quebrado na hora de gerar o pacote, criado um módulo
+só para gerar a lista "Sem pipe, sem erro."
+- [ADICIONADO]: Módulo _CREATE_LIST para criação de listas
+- [ADICIONADO]: Novas frases no módulo _MSG_DADDY
+- [ADICIONADO]: Variável License no desc do pacote, (Sugestão rumbler)
+
 #----------------------------------20/02/2019--------------------------------------#
 (Versão 2.1.5.1)
 - [ADICIONADO]: Função print para simplificar a verbose em alguns pontos do programa

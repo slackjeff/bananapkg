@@ -15,7 +15,7 @@
 #########################################
 
 export PRG='banana'
-export VERSION='2.1.5.1'
+export VERSION='2.1.5.2'
 export format_pkg='mz'            # Extension Package
 export descme='info/desc'         # Directorie fakeroot
 local_list='var/lib/banana/list'  # List location

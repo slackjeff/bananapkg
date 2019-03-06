@@ -46,7 +46,9 @@ _MSG_DADDY()
         "This package is delicious. Dad will devour a pack."
         "Arrest the goblins. I need to work... Wait, i install your package."
         "Jeff love the packages."
+        "Au au au? It's Dog? No! Banana Dog"
         "Hi! My name is Bá! Bá?... BÁnana."
+        "Pkg is so fat, that if it were a Transformers it would be a goal ball."
         "La única salvación es la compilación y el empaquetado."
         "I am a packet intelligence =~)"
         "Hey UNIX, marry me."
@@ -55,12 +57,17 @@ _MSG_DADDY()
         "Package i choice you!"
         "The Point G of package is a info/desc"
         "X-Men? No please, i am banana."
+        "The Book On the Banana"
+        "Ohhhhhhhhhh Floretina!"
+        "Drinking three liters of water a day is soft, I want to see is to fill up your hd from .mz packages."
         "Go eat popcorn. While I go here I strive to install the package for you."
         "Drunk?? No, thks. I need install a package."
         "Go, Go, Go, Go? go, guo, gole google"
         "Viva la sociedad de la compilación :O"
         "I feel the package being installed"
         "#bananapkg in silicon valley already."
+        "La Revolution del Brazil"
+        "Rich Package"
         "I see bananas! how often? All the time"
         "I never lost control baby *.*"
         "You and I are bananas."
@@ -154,7 +161,7 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
 
     pushd "/info/" &>/dev/null
     if mv 'desc' "/var/lib/banana/desc/${packname}.desc"; then
-        echo -e "${blue}[MOVED DESC]${end}\tto /var/lib/banana/${packname}.desc"
+        echo -e "${blue}[MOVED DESC]${end}\t To /var/lib/banana/${packname}.desc"
     else
         echo -e "${red}[ERROR!]${end} could not move desc to /var/lib/banana/${packname}.desc"
         echo "ABORTING..."
@@ -188,11 +195,28 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
 
 
 
+
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # MÓDULOS DE CRIAÇÕES
 #
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+# Módulo para criação de lista o pacote
+_CREATE_LIST()
+{
+    # Variáveis locais
+    local packname="$1"
+    
+    if ! tar tf "$packname" > "${dirlist}/${name_version_build}.list"; then
+        echo -e "${red}[ERROR!]${end}\tNot Create ${dirlist}/${name_version_build}.list"
+        return 1
+    fi
+    echo -e "${blue}[CREATE LIST]${end}\t On ${dirlist}/${name_version_build}.list"
+    return 0    
+}
 
 
 
@@ -222,6 +246,9 @@ version=''
 
 # Build number
 build=''
+
+# License
+license=''
 
 # SMALL Description of Software, NO Trespassing |
 #=============RULER=====================================================|
@@ -478,6 +505,7 @@ _INSTALL_PKG()
     echo -e "${pink}Package:${end}\t$pkgname"
     echo -e "${pink}Version:${end}\t$version"
     echo -e "${pink}Build-Package:${end}\t$build"
+    echo -e "${pink}Lincense:${end}\t${license:-Null}"
     echo -e "${pink}Small Desc:${end}\t$desc"
     echo -e "#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#\n"
 
@@ -494,13 +522,15 @@ _INSTALL_PKG()
             exit 1
         fi  
         bash "/tmp/info/$PRE_SH"
-        tar xvpmf "${packname}" -C / | tee -a ${dirlist}/"${name_version_build}.list"  1>&4 2>&3 || return 1
+        tar xvpmf "${packname}" -C / 1>&4 2>&3 || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
+        _CREATE_LIST "$1" || exit 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     else
         # Caiu aqui pode continuar normal.
-        tar xvpmf "${packname}" -C / | tee -a ${dirlist}/"${name_version_build}.list" 1>&4 2>&3 || return 1
+        tar xvpmf "${packname}" -C / | tee -a ${dirlist}/"${name_version_build}.list"  1>&4 2>&3 || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
+        _CREATE_LIST "$1" || exit 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     fi
     
