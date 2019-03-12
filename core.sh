@@ -261,6 +261,14 @@ url=''
 # What packages do your package need to run?
 # This array is optional.
 dep=('')
+
+
+#####################################################
+# Banana Infos, dont edit!!!
+#####################################################
+
+BANANAVERSION="$VERSION"
+
 EOF
     echo -e "${pink}[DESC]${end} Created successfully inside of directory ${blue}info${end}"
     exit 0
@@ -282,6 +290,8 @@ EOF
 # e seus arquivos.
 _VERIFY_ON()
 {
+    local package="$1"
+
   ( # Subshell marota
     local dir_info='info'  # Diretorio info que contem informações como (desc)
     local info_desc='desc' # Descrição do pacote
@@ -440,6 +450,10 @@ _LIST_ARCHIVES_DIRECTORIES()
 
 _CREATE_PKG()
 {
+    # Pegando somente nome do pacote
+    # sem extensão
+    local package="${1/%.mz/}"
+
     echo -e "${blue}[Create]${end} Now, create package for You! Wait..."
     if tar cvpJf ../${package}.${format_pkg} . 1>&4 2>&3; then
         echo -e "${blue}[Create]${end} Your Package on: ../${package}.${format_pkg}"
@@ -505,7 +519,7 @@ _INSTALL_PKG()
     echo -e "${pink}Package:${end}\t$pkgname"
     echo -e "${pink}Version:${end}\t$version"
     echo -e "${pink}Build-Package:${end}\t$build"
-    echo -e "${pink}Lincense:${end}\t${license:-Null}"
+    echo -e "${pink}License:${end}\t${license:-Null}"
     echo -e "${pink}Small Desc:${end}\t$desc"
     echo -e "#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#\n"
 

@@ -15,20 +15,20 @@
 #########################################
 
 export PRG='banana'
-export VERSION='2.1.5.2'
-export format_pkg='mz'            # Extension Package
-export descme='info/desc'         # Directorie fakeroot
-local_list='var/lib/banana/list'  # List location
+export VERSION='2.1.5.3'
+export format_pkg='mz'            # Extensão do pacote
+export descme='info/desc'         # Descrição do pacote
+local_list='var/lib/banana/list'  # Localização da lista
 
 ########################################
-#=================== COLORS
+#=================== CORES
 ########################################
 
-red='\033[31;1m'
-blue='\033[34;1m'
-cyan='\033[36;1m'
-pink='\033[35;1m'
-end='\033[m'
+readonly red='\033[31;1m'
+readonly blue='\033[34;1m'
+readonly cyan='\033[36;1m'
+readonly pink='\033[35;1m'
+readonly end='\033[m'
 
 ########################################
 #===============BIBLIOTECAS
@@ -47,9 +47,9 @@ source '/usr/libexec/banana/help.sh' || { echo "ERROR ON LOAD /var/libexec/banan
 #============ DIRETÓRIOS ESPECIAIS
 ######################################
 
-dirlist='/var/lib/banana/list'       # Lists of package
-dirdesc='/var/lib/banana/desc'       # Descriptions of package
-dirremove='/var/lib/banana/remove'   # Scripts remove of package
+dirlist='/var/lib/banana/list'       # Lista do pacote 'pack.list'
+dirdesc='/var/lib/banana/desc'       # Descrição do pacote 'pack.desc'
+dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
 
 
 ########################################
@@ -114,15 +114,12 @@ case "$1" in
            echo "If you need more HELP, use -h or --help"
            exit 1
        else
-            # Pegando somente nome do pacote
-            # sem extensão
-            package="${1/%.mz/}"
+            # Verificação de tudo está aonde deveria estar, como diretório
+            # (info) e o arquivo de descrição (desc)
+            _VERIFY_ON "$1"
+            # Iniciando processo de criação do pacote
+            _CREATE_PKG "$1" || exit 1
        fi
-         # Verificação de tudo está aonde deveria estar, como diretório
-         # (info) e o arquivo de descrição (desc)
-         _VERIFY_ON
-         # Iniciando processo de criação do pacote
-         _CREATE_PKG || exit 1
     ;;
 
     -g|generate)

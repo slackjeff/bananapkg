@@ -1,3 +1,10 @@
+#----------------------------------11/03/2019--------------------------------------#
+(Versão 2.1.5.3)
+-[ORGANIZADO]: Variável 'packages' estava global na criação dos pacotes, mudado para
+local na função _CREATE_PKG, recebendo argumento. 
+-[ADICIONADO]: Adicionado variável BANANAVERSION na desc do pacote. (Sugestão diego
+obrigado!)
+
 #----------------------------------06/03/2019--------------------------------------#
 (Versão 2.1.5.2) *Em pleno carnaval nois trabalhando*
 - [BUGFIX]: Resolvido pipe quebrado na hora de gerar o pacote, criado um módulo
