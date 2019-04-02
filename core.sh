@@ -908,10 +908,10 @@ _UPDATE_BANANA()
     local m
     
     # Internet?
-    wget -q --spider http://stallman.org/ || { echo "Don't Have Internet. ABORTED."; exit 1 ;}
+    wget -q --spider http://stallman.org/ || { echo "Don't Have Internet. ABORTED."; return 1 ;}
     echo -e "Internet\t[OK]"
     
-    
+    # Ok, Puxe o repositorio agora!
     pushd /tmp &>/dev/null
     git clone "$link"
     pushd "${tmp_dir_banana}" &>/dev/null
@@ -920,22 +920,22 @@ _UPDATE_BANANA()
     for m in "$PRG" "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh'; do
         [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
         case $m in
-            (banana) cp -v "$m" "/sbin/" || exit 1    ;;
+            (banana) cp -v "$m" "/sbin/" || return 1 ;;
             (banana.8)
                 [[ ! -d '/usr/share/man/pt_BR/man8/' ]] && mkdir -v /usr/share/man/pt_BR/man8/
-                cp -v "$m" '/usr/share/man/pt_BR/man8/' || exit 1 
+                cp -v "$m" '/usr/share/man/pt_BR/man8/' || return 1
              ;;
             (banana.conf)
                 read -p "Do you want to overwrite your configuration file? [y/N]" answer
                 answer="${answer,,}" # Tudo em minusculo
                 answer="${answer:=n}"
                 if [[ "$answer" = 'y' ]]; then
-                    cp -v "$m" "/etc/banana/" || exit 1
+                    cp -v "$m" "/etc/banana/" || return 1
                 else
                     continue
                 fi
              ;;
-            (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || exit 1 ;;
+            (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || return 1 ;;
         esac
     done
     
