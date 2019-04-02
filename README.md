@@ -4,7 +4,7 @@
 
 ----
 
-:heavy_check_mark: **Versão/Version:** 2.1.5.3 (11/03/2019)<br/>
+:heavy_check_mark: **Versão/Version:** 2.2 (02/04/2019)<br/>
 
 ----
 
