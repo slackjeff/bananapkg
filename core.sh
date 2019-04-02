@@ -64,6 +64,7 @@ _MSG_DADDY()
         "Drunk?? No, thks. I need install a package."
         "Go, Go, Go, Go? go, guo, gole google"
         "Viva la sociedad de la compilación :O"
+        "Highway to Hell"
         "I feel the package being installed"
         "#bananapkg in silicon valley already."
         "La Revolution del Brazil"
@@ -75,12 +76,15 @@ _MSG_DADDY()
         "Cheeseburger.mz Love it"
         "Luck day: You'll pack .mz, it every day"
         "Proerd is the program"
+        "Welcome to the Jungle... Baby!"
         "It was for me to call myself orange, glad that banana is better"
         "Feel the package at the root. Please wait, I am installing the package."
         "Daddy likes UNIX-LIKE. Please wait I am installing the package."
         "Sweet banana dreams."
+        "Pacient! ~:)"
         "Motorhead? Now is Motorbanana |,,|"
         "Version: Take me if you can :O"
+        "Free Beer? OMG."
         "A meteor is falling! Please wait while I install your package."
     )
     # Pegando o número de frases da lista.
@@ -90,6 +94,31 @@ _MSG_DADDY()
     # Qual será a frase?
     msg_daddy="${dialog_daddy[$number]}"
     echo -e "${blue}${msg_daddy}${end}\n"
+}
+
+
+# Função de Spinner, para animação.
+_SPINNER()
+{
+    spin=(
+    'Banana wait'
+    'bAnana wait'
+    'baNana wait'
+    'banAna wait'
+    'banaNa wait'
+    'bananA wait'
+    'banana Wait'
+    'banana wAit'
+    'banana waIt'
+    'banana waiT'
+    )
+    
+    while :; do
+        for i in "${spin[@]}"; do
+            echo -ne "${cyan}\r$i${end}"
+            sleep 0.1
+        done
+    done
 }
 
 
@@ -483,7 +512,6 @@ _CREATE_PKG()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
 _INSTALL_PKG()
 {
   ( # Subshell Suicide
@@ -492,8 +520,9 @@ _INSTALL_PKG()
     local tmp_pack
     local PRE_SH='pre.sh'
 
-
-    echo "WAIT..."
+    # Chamando Animação e pegando PID do processo.
+    _SPINNER &
+    pid=$!
     
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
@@ -508,7 +537,10 @@ _INSTALL_PKG()
         echo "Archive not exist. ABORT!"
         return 1
     fi
-
+    
+    { kill $pid; wait $pid 2>/dev/null; echo ;}
+    
+    
     # Variavel puxando de source...
     # Está variavel é importante se caso
     # o usuario passe um caminho completo do pacote exemplo:
@@ -525,8 +557,7 @@ _INSTALL_PKG()
     echo -e "${pink}License:${end}\t${license:-Null}"
     echo -e "${pink}Small Desc:${end}\t$desc"
     echo -e "#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#\n"
-
-
+    
    _MSG_DADDY # Mensagem aleátoria do pai! para exibir para o usuário
 
    # Vamos verificar se existe o script de pre instalação *pre.sh*
@@ -886,11 +917,14 @@ _UPDATE_BANANA()
     pushd "${tmp_dir_banana}" &>/dev/null
     # Dando permissões e copiando arquivos para seus lugares.
     echo -e "\nPermission and Copy archives\n"
-    for m in "$prg" "${prg}.conf" 'banana.8' 'core.sh' 'help.sh'; do
+    for m in "$PRG" "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh'; do
         [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
         case $m in
             (banana) cp -v "$m" "/sbin/" || exit 1    ;;
-            (banana.8) cp -v "$m" '/usr/share/man/pt_BR/man8/' || exit 1 ;;
+            (banana.8)
+                [[ ! -d '/usr/share/man/pt_BR/man8/' ]] && mkdir -v /usr/share/man/pt_BR/man8/
+                cp -v "$m" '/usr/share/man/pt_BR/man8/' || exit 1 
+             ;;
             (banana.conf)
                 read -p "Do you want to overwrite your configuration file? [y/N]" answer
                 answer="${answer,,}" # Tudo em minusculo
@@ -904,11 +938,6 @@ _UPDATE_BANANA()
             (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || exit 1 ;;
         esac
     done
+    
+    [[ -d "${tmp_dir_banana}" ]] && rm -r "${tmp_dir_banana}"
 }
-
-
-
-
-
-
-

@@ -23,6 +23,8 @@ MAIN ARGUMENTS
           Install Package
     -u, upgrade
           Upgrade package
+    update
+          Update bananapkg via Internet
     -r, remove
           Remove Package
     -s, search
@@ -55,6 +57,8 @@ PRINCIPAIS ARGUMENTOS
           Instalar pacote
     -u, upgrade
           Atualizar pacote
+    update
+          Atualiar o Bananapkg via internet
     -r, remove
           Remover pacote
     -s, search

@@ -1,8 +1,11 @@
 #----------------------------------02/04/2019--------------------------------------#
 (Versão 2.2)
--[REFORMULADO]:   Função _REMOVE_NOW que estava muito lento! Agora o tempo de
+-[REFORMULADO]:   Módulo _REMOVE_NOW que estava muito lento! Agora o tempo de
 remoção dos pacotes está cerca de 93% mais rápido!
--[ADICIONADO]:    
+-[ADICIONADO]:    Módulo _UPDATE_BANANA para atualizar o bananapkg via github.
+-[ADICIONADO]:    Módulo _SPINNER que faz animações, usado inicialmente no módulo
+de instalação _INSTALL_PKG
+-[ADICIONADO]:    Novas frases ao _MSG_DADDY
 
 #----------------------------------11/03/2019--------------------------------------#
 (Versão 2.1.5.3)
