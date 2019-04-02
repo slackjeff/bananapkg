@@ -492,6 +492,9 @@ _INSTALL_PKG()
     local tmp_pack
     local PRE_SH='pre.sh'
 
+
+    echo "WAIT..."
+    
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
     if ! tar xpmf "${packname}" -C "/tmp/" "./${descme}"; then
@@ -745,23 +748,20 @@ _REMOVE_NOW()
         fi
     fi    
 
+    #############
     # FIXME Na hora da remoção loop passa 3 vezes na lista
     # removendo os arquivos->links simbolicos->diretorios vazios.
     # muito lento, precisa achar uma forma mais rápida.
+    #############
+    # Removendo:
+    # Arquivos normais
+    # Links simbólicos
+    # Diretórios vazios
+    ############
     
-    #AC = Arquivo
-    #ED = Diretorio Vazio
-    # Removendo arquivos normais
-    # Depois do loop estar completo ele vai para
-    # Remoção de Links Simbólicos e por último
-    # Remoção de diretórios vazios
-    while IFS= read archive; do
-        if [[ -f "$archive" ]]; then
-            if rm "$archive" &>/dev/null; then
-                a="$(($a + 1))"
-                print "${red}Burned AC${end}\t${archive}"   
-                archive="$(echo "$archive" | sed 's|/|\\/|g')"
-            fi
+    while IFS= read thefile; do
+        if [[ -f "$thefile" ]]; then
+            rm "$thefile" &>/dev/null && print "Delete\t${thefile}"
         fi
     done < "${dirlist}/${packname}.list"
 
@@ -769,13 +769,9 @@ _REMOVE_NOW()
     unset archive
 
    # Removendo links simbólicos
-    while IFS= read archive; do
-       if [[ -L "$archive" ]]; then
-             if unlink "$archive" &>/dev/null; then
-                l="$(($l + 1))"
-                print "${cyan}Burned SL${end}\t${archive}"   
-                archive="$(echo "$archive" | sed 's|/|\\/|g')"
-            fi
+    while IFS= read thelink; do
+       if [[ -L "$thelink" ]]; then
+             unlink "$thelink" &>/dev/null && print "Delete\t${thelink}"
        fi
     done < "${dirlist}/${packname}.list"
 
@@ -784,17 +780,12 @@ _REMOVE_NOW()
 
     # Removendo diretórios vazios, e forçando para
     # toda hierarquia do pacote seja removido.
-        while IFS= read archive; do
-            if [[ -d "$archive" ]]; then
-                if [[ -z "$(ls -A ${archive})" ]]; then 
-                    rmdir -p "${archive}" &>/dev/null
-                    d="$(( $d + 1 ))"
-                    print "${blue}Burned ED${end}\t${archive}"   
-                    archive="$(echo "$archive" | sed 's|/|\\/|g')"
-                fi
+        while IFS= read thedir; do
+            if [[ -d "$thedir" ]] && [[ -z "$(ls -A ${thedir})" ]]; then 
+                  rmdir -p "${thedir}" &>/dev/null && print "Delete\t${thedir}"
             fi
     done < "${dirlist}/${packname}.list"
-
+    
     echo -e "\nClean archives .desc and .list\n"
 
     # Removendo lista e Descrição
@@ -814,13 +805,6 @@ _REMOVE_NOW()
             continue
         fi
     done
-
-    # Impressão na tela de quantidade
-    if [[ "$a" -gt '0' ]] || [[ "$d" -gt '0' ]]; then
-        total="$(( $a + $d +$l ))"
-        echo -e "\n=======> ${red}TOTAL BURNED${end} $total Archives."
-        echo -e "=======> ${red}BURNED${end} $a Archives, $d Empty Directories and $l Symlink."
-    fi
 
     popd &>/dev/null
     return 0
@@ -874,3 +858,57 @@ _SEARCH_PKG()
  ) # Fim subshell do destino
  _SUBSHELL_STATUS
 }
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#####################################################################
+#
+# ATUALIZAR VERSÃO BANANAPKG
+#
+#####################################################################
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+_UPDATE_BANANA()
+{
+    local link='https://github.com/slackjeff/bananapkg'
+    local tmp_dir_banana="/tmp/${PRG}pkg"
+    local m
+    
+    # Internet?
+    wget -q --spider http://stallman.org/ || { echo "Don't Have Internet. ABORTED."; exit 1 ;}
+    echo -e "Internet\t[OK]"
+    
+    
+    pushd /tmp &>/dev/null
+    git clone "$link"
+    pushd "${tmp_dir_banana}" &>/dev/null
+    # Dando permissões e copiando arquivos para seus lugares.
+    echo -e "\nPermission and Copy archives\n"
+    for m in "$prg" "${prg}.conf" 'banana.8' 'core.sh' 'help.sh'; do
+        [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
+        case $m in
+            (banana) cp -v "$m" "/sbin/" || exit 1    ;;
+            (banana.8) cp -v "$m" '/usr/share/man/pt_BR/man8/' || exit 1 ;;
+            (banana.conf)
+                read -p "Do you want to overwrite your configuration file? [y/N]" answer
+                answer="${answer,,}" # Tudo em minusculo
+                answer="${answer:=n}"
+                if [[ "$answer" = 'y' ]]; then
+                    cp -v "$m" "/etc/banana/" || exit 1
+                else
+                    continue
+                fi
+             ;;
+            (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || exit 1 ;;
+        esac
+    done
+}
+
+
+
+
+
+
+

@@ -12,10 +12,10 @@
 
 ##########################################
 #================= VARIÁVEIS ESPECIAIS
-#########################################
+##########################################
 
 export PRG='banana'
-export VERSION='2.1.5.3'
+export VERSION='2.2'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
 local_list='var/lib/banana/list'  # Localização da lista
@@ -45,7 +45,7 @@ source '/usr/libexec/banana/help.sh' || { echo "ERROR ON LOAD /var/libexec/banan
 
 #######################################
 #============ DIRETÓRIOS ESPECIAIS
-######################################
+#######################################
 
 dirlist='/var/lib/banana/list'       # Lista do pacote 'pack.list'
 dirdesc='/var/lib/banana/desc'       # Descrição do pacote 'pack.desc'
@@ -60,7 +60,11 @@ dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
 [[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
 
 # Qual a linguagem do cabra?
-[[ "$LANG" = "pt_BR.utf8" ]] && HELP="_HELP_PT" || HELP="_HELP_US"
+if [[ "$BANANA_LANG" = "pt-br" ]]; then
+    HELP="_HELP_PT"
+else
+    HELP="_HELP_US"
+fi
 
 # Inicializando o programa em silêncio...
  _VERBOSE '0'
@@ -145,6 +149,10 @@ case "$1" in
             _UPGRADE "$1" || exit 1
             shift
         done
+    ;;
+
+    update) # Update do banana
+        _UPDATE_BANANA
     ;;
 
     -r|remove)

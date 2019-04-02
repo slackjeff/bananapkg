@@ -1,3 +1,9 @@
+#----------------------------------02/04/2019--------------------------------------#
+(Versão 2.2)
+-[REFORMULADO]:   Função _REMOVE_NOW que estava muito lento! Agora o tempo de
+remoção dos pacotes está cerca de 93% mais rápido!
+-[ADICIONADO]:    
+
 #----------------------------------11/03/2019--------------------------------------#
 (Versão 2.1.5.3)
 -[ORGANIZADO]: Variável 'packages' estava global na criação dos pacotes, mudado para
