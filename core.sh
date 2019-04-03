@@ -325,7 +325,7 @@ _GPG_SIGN()
     fi
     
     # Gerando Assinatura no pacote
-    gpg --detach-sign "${package}.${format_pkg}" || return 1
+    gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" || return 1
     echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
     return 0
 }
