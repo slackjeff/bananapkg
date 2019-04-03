@@ -1,3 +1,9 @@
+#----------------------------------03/04/2019--------------------------------------#
+(Versão 2.2.1)
+-[ADICIONADO]:    Agora ao gerar o pacote o arquivo .desc é criado junto um direto-
+rio acima.
+-[ADICIONADO]:    Suporte a assinatura gpg na criação do pacote.
+
 #----------------------------------02/04/2019--------------------------------------#
 (Versão 2.2)
 -[REFORMULADO]:   Módulo _REMOVE_NOW que estava muito lento! Agora o tempo de

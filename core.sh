@@ -223,14 +223,11 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
 }
 
 
-
-
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # MÓDULOS DE CRIAÇÕES
 #
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 
 # Módulo para criação de lista o pacote
@@ -304,7 +301,6 @@ EOF
 }
 
 
-
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #####################################################################
 #
@@ -313,6 +309,26 @@ EOF
 #####################################################################
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+# Módulo para gerar assinatura gpg.
+_GPG_SIGN()
+{
+    local package="$1"
+    local sig='sig'
+    
+    # Pacote existe?
+    if [[ ! -e "${package}.${format_pkg}" ]]; then
+        echo "${red}[ERRO]${end} Unable to sign package. ${package}.${format_pkg}"
+        echo "Reason: Package not found."
+        echo "For security reasons, do not pass the package on to third parties."
+        return 1
+    fi
+    
+    # Gerando Assinatura no pacote
+    gpg --detach-sign "${package}.${format_pkg}" || return 1
+    echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
+    return 0
+}
 
 
 # Função para verificação do diretório (info)
@@ -477,30 +493,34 @@ _LIST_ARCHIVES_DIRECTORIES()
 }
 
 
+# Módulo para gerar o pacote
 _CREATE_PKG()
 {
     # Pegando somente nome do pacote
     # sem extensão
     local package="${1/%.mz/}"
+    local ext_desc='desc'
 
     echo -e "${blue}[Create]${end} Now, create package for You! Wait..."
     if tar cvpJf ../${package}.${format_pkg} . 1>&4 2>&3; then
         echo -e "${blue}[Create]${end} Your Package on: ../${package}.${format_pkg}"
-          # Voltando 1 diretório acima para fazer manipulação do pacote
-          pushd .. &>/dev/null
-          if sha256sum ${package}.${format_pkg} > ${package}.${format_pkg}.sha256; then
-              echo -e "${blue}[Create]${end} Your sha256 on: ../${package}.${format_pkg}.sha256"
-          else
-              echo -e "${red}[Warning!]${end} No create ../${package}.${format_pkg}.sha256"
-          fi
-          popd &>/dev/null
+        cp "$descme" ../${package}.${format_pkg}.${ext_desc} &>/dev/null
+        echo -e "${blue}[Create]${end} Your .${ext_desc} on:   ../${package}.${format_pkg}.${ext_desc}"
+        # Voltando 1 diretório acima para fazer manipulação do pacote
+        pushd .. &>/dev/null
+        if sha256sum ${package}.${format_pkg} > ${package}.${format_pkg}.sha256; then
+            echo -e "${blue}[Create]${end} Your sha256 on: ../${package}.${format_pkg}.sha256"
+        else
+            echo -e "${red}[Warning!]${end} No create ../${package}.${format_pkg}.sha256"
+        fi
+        _GPG_SIGN "${package}" || exit 1 # Assinatura gpg
+        popd &>/dev/null
     else
         echo -e "${red}[Error!]${end} No created package ../${package}.${format_pkg}"
         echo "This error is fatal, so the program will not proceed."
         exit 1
     fi
 }
-
 
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -674,13 +694,11 @@ _UPGRADE()
 }
 
 
-
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # REMOVER PACOTE
 #
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 
 # Módulo para fazer as conferencias antes da chamada do burn
@@ -779,16 +797,12 @@ _REMOVE_NOW()
         fi
     fi    
 
-    #############
-    # FIXME Na hora da remoção loop passa 3 vezes na lista
-    # removendo os arquivos->links simbolicos->diretorios vazios.
-    # muito lento, precisa achar uma forma mais rápida.
-    #############
+    ###########################
     # Removendo:
     # Arquivos normais
     # Links simbólicos
     # Diretórios vazios
-    ############
+    ###########################
     
     while IFS= read thefile; do
         if [[ -f "$thefile" ]]; then
@@ -842,7 +856,6 @@ _REMOVE_NOW()
 }
 
 
-
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #####################################################################
 #
@@ -850,7 +863,6 @@ _REMOVE_NOW()
 #
 #####################################################################
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 
 # Função para procurar pacote no sistema
@@ -900,7 +912,6 @@ _SEARCH_PKG()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
 _UPDATE_BANANA()
 {
     local link='https://github.com/slackjeff/bananapkg'
@@ -909,12 +920,13 @@ _UPDATE_BANANA()
     
     # Internet?
     wget -q --spider http://stallman.org/ || { echo "Don't Have Internet. ABORTED."; return 1 ;}
-    echo -e "Internet\t[OK]"
+    echo -e "Internet\t${cyan}[OK]${end}"
     
     # Ok, Puxe o repositorio agora!
     pushd /tmp &>/dev/null
     git clone "$link"
     pushd "${tmp_dir_banana}" &>/dev/null
+    
     # Dando permissões e copiando arquivos para seus lugares.
     echo -e "\nPermission and Copy archives\n"
     for m in "$PRG" "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh'; do

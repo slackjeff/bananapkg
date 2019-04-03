@@ -51,7 +51,6 @@ dirlist='/var/lib/banana/list'       # Lista do pacote 'pack.list'
 dirdesc='/var/lib/banana/desc'       # Descrição do pacote 'pack.desc'
 dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
 
-
 ########################################
 #===============TESTES
 ########################################
