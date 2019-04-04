@@ -126,7 +126,13 @@ case "$1" in
     ;;
 
     -g|generate)
-        _GENERATE_DESC || exit 1
+	if [ $# -lt 3 ]; then
+	   a=$(echo $2 |sed 's/-/ /g'| awk '{print $1}')
+	   b=$(echo $2 |sed 's/-/ /g'| awk '{print $2}')
+	   _GENERATE_DESC "$a" "$b" || exit 1
+	else
+	   _GENERATE_DESC "$2" "$3" || exit 1
+        fi
     ;;
 
     -i|install) # Instalação de pacotes

@@ -265,16 +265,16 @@ _GENERATE_DESC()
 maintainer="$MAINTAINER"
 
 # Package Name
-pkgname=''
+pkgname="${1}"
 
 # Software Version
-version=''
+version="${2}"
 
 # Build number
-build=''
+build="1"
 
 # License
-license=''
+license="$LICENSE"
 
 # SMALL Description of Software, NO Trespassing |
 #=============RULER=====================================================|
@@ -325,7 +325,7 @@ _GPG_SIGN()
     fi
     
     # Gerando Assinatura no pacote
-    gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" || return 1
+    gpg --detach-sign "${package}.${format_pkg}" || return 1
     echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
     return 0
 }
