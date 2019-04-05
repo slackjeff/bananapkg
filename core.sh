@@ -934,6 +934,7 @@ function _UPDATE_BANANA()
     for m in "$PRG" "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh' 'builtin.sh'; do
         [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
         case $m in
+            (core.sh|help.sh|builtin.sh) cp -v "$m" "/usr/libexec/banana/" || return 1 ;;
             (banana) cp -v "$m" "/sbin/" || return 1 ;;
             (banana.8)
                 [[ ! -d '/usr/share/man/pt_BR/man8/' ]] && mkdir -v /usr/share/man/pt_BR/man8/
@@ -949,7 +950,6 @@ function _UPDATE_BANANA()
                     continue
                 fi
              ;;
-            (core.sh|help.sh|builtin.sh) cp -v "$m" "/usr/libexec/banana/" || return 1 ;;
         esac
     done
     
