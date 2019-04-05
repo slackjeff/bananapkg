@@ -931,7 +931,7 @@ function _UPDATE_BANANA()
     
     # Dando permissões e copiando arquivos para seus lugares.
     echo -e "\nPermission and Copy archives\n"
-    for m in "$PRG" "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh'; do
+    for m in "$PRG" "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh' 'builtin.sh'; do
         [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
         case $m in
             (banana) cp -v "$m" "/sbin/" || return 1 ;;
