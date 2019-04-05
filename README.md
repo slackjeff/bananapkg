@@ -29,7 +29,7 @@ https://bananapkg.github.io/code-style.html
 
 ----
 
-## Instalação Direta / Direct Install
+## Instalação Direta / Direct Install :computer:
 **Clone Repo**<br/>
 git clone https://github.com/slackjeff/bananapkg<br/>
 <br/>
@@ -46,7 +46,7 @@ cp -v {core,help}.sh /usr/libexec/banana<br/>
 cp -v banana.8 /usr/share/man/pt_BR/man8/<br/>
 *Enjoy ;)*
 
-## Instalação Automática / Automatic Install
+## Instalação Automática / Automatic Install :computer:
 **Permission and Execute Script**<br>
 chmod +x install.sh<br>
 bash install.sh
