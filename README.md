@@ -19,7 +19,7 @@ https://bananapkg.github.io/code-style.html
 
 ----
 
-## Requisitos/Requirements :star:
+:star: ## Requisitos/Requirements 
 **Bash** >= 4.4.18 <br/>
 **GNU Sed** >= 4.2.2<br/>
 **GNU Tar** >= 1.30<br/>
