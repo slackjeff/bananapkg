@@ -250,6 +250,10 @@ _CREATE_LIST()
 # info não existir ele cria!
 _GENERATE_DESC()
 {
+    local DESC_PACKNAME="$1"
+    local DESC_VERSION="$2"
+    local DESC_BUILD="$3"
+    
     [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
     cat > "info/desc" << EOF
 ######################################################################
@@ -265,15 +269,15 @@ _GENERATE_DESC()
 maintainer="$MAINTAINER"
 
 # Package Name
-pkgname=''
+pkgname='$DESC_PACKNAME'
 
 # Software Version
-version=''
+version='$DESC_VERSION'
 
 # Build number
-build=''
+build='$DESC_BUILD'
 
-# License
+# License of software.
 license=''
 
 # SMALL Description of Software, NO Trespassing |
@@ -290,7 +294,7 @@ dep=('')
 
 
 #####################################################
-# Banana Infos, dont edit!!!
+# !!! Banana Infos, dont edit!!!
 #####################################################
 
 BANANAVERSION="$VERSION"

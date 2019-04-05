@@ -7,7 +7,12 @@
 # MIT
 #
 #MUDANÇAS?
-#changelog.txt
+# changelog.txt
+#
+#SITE
+# https://bananapkg.github.io
+#
+#VELOCIDADE, SEGURANÇA, FINO.
 #====================================================================|
 
 ##########################################
@@ -15,7 +20,7 @@
 ##########################################
 
 export PRG='banana'
-export VERSION='2.2'
+export VERSION='2.2.2'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
 local_list='var/lib/banana/list'  # Localização da lista
@@ -34,14 +39,16 @@ readonly end='\033[m'
 #===============BIBLIOTECAS
 ########################################
 
-# Configurações
-source '/etc/banana/banana.conf' || { echo "ERROR ON LOAD /etc/banana/banana.conf, ABORT"; exit 1 ;}
-
-# Módulos que fazem o programa ;)
-source '/usr/libexec/banana/core.sh' || { echo "ERROR ON LOAD /var/libexec/banana/core.sh, ABORT"; exit 1 ;}
-
-# Módulo de Ajuda;)
-source '/usr/libexec/banana/help.sh' || { echo "ERROR ON LOAD /var/libexec/banana/core.sh, ABORT"; exit 1 ;}
+# Carregando bibliotecas necessárias
+# para o funcionamento do banana
+heart_archives=(
+    '/etc/banana/banana.conf'
+    '/usr/libexec/banana/core.sh'
+    '/usr/libexec/banana/help.sh'
+)
+for heart_load in "${heart_archives[@]}"; do
+    source "$heart_load" || { echo "ERROR ON LOAD \"$heart_load\", ABORT"; exit 1 ;}
+done
 
 #######################################
 #============ DIRETÓRIOS ESPECIAIS
@@ -84,8 +91,6 @@ for entry_parameter; do
 done
 set -- "${new_argument[@]}" # definindo novos argumentos sem opções =)
 
-
-
 ########################################
 #==================INICIO
 ########################################
@@ -107,8 +112,9 @@ case "$1" in
        # Se nome do pacote não for letras ou se tiver
        # espaços entre outras coisas, não pode continuar.
        _NAME_FORMAT_PKG "$1" || exit 1
-
-       if [[ "$(echo "$1" | grep -o '-' | wc -l)" -gt '2' || "$(echo "$1" | grep -o '-' | wc -l)" -lt '2'  ]]; then
+       
+       check_var="$(grep -o '-' <<< "$1" | wc -l)"
+       if [[ "$check_var" -lt '2' || "$check_var" -gt '2'  ]]; then
            echo -e "${red}[Error!]${end} Unexpected ' - ' Count."
            echo -e "USE ONLY TWO ' ${red}-${end} ' In the name of your package."
            echo -e "EXAMPLE the perfect format: ${blue}leafpad${end}-${blue}2.6.8${end}-${blue}3${end}.${blue}mz${end}"
@@ -123,10 +129,35 @@ case "$1" in
             # Iniciando processo de criação do pacote
             _CREATE_PKG "$1" || exit 1
        fi
+       unset check_var
     ;;
 
     -g|generate)
-        _GENERATE_DESC || exit 1
+        shift
+        # Verificando se tem traços a mais
+        # E dando um sermão ;D
+        check_var="$(grep -o '-' <<< "$1" | wc -l)"
+        if [[ -n "$1" ]] && [[ "$check_var" -lt '2' || "$check_var" -gt '2' ]]; then
+            echo -e "${red}[ERROR]${end} OPS! Could not generate file desc..."
+            echo -e "The Perfect Format name is: banana -g ${blue}name-version-build${end}"
+            echo "EXAMPLES:"
+            echo -e "[1] banana -g ${blue}firefox_quantum${end}-${blue}57.8.9${end}-${blue}1${end}"
+            echo -e "[2] banana -g ${blue}nano${end}-${blue}4.0${end}-${blue}2${end}"
+            echo -e "[3] banana -g ${blue}utox${end}-${blue}10.1.4.0bc${end}-${blue}2${end}"
+            echo "For more Details, man banana"
+            exit 1
+        elif [[ "$1" =~ .*-$ ]]; then # Termino com - ?
+            echo -e "${red}[ERROR]${end} Finish with numbers."
+            exit 1
+        fi
+        # Pegando os campos com delimitador ' - ' =)
+        inc='0' # Var incremento
+        for take in 'field_one' 'field_two' 'field_three'; do
+            inc=$(($inc + 1))
+            eval $take="$(echo "$1" | cut -d '-' -f ${inc})" # Expanda e pegue o seu devido valor
+        done
+        _GENERATE_DESC "$field_one" "$field_two" "$field_three" || exit 1
+        unset check_var
     ;;
 
     -i|install) # Instalação de pacotes
