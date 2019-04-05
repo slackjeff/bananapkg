@@ -6,7 +6,7 @@
 
 
 # Módulo para imprimir mensagens aleatórias na tela!
-_MSG_DADDY()
+function _MSG_DADDY()
 {
      local total_dialog_daddy number msg_daddy
 
@@ -98,7 +98,7 @@ _MSG_DADDY()
 
 
 # Função de Spinner, para animação.
-_SPINNER()
+function _SPINNER()
 {
     spin=(
     'Banana wait'
@@ -121,11 +121,12 @@ _SPINNER()
     done
 }
 
-
-print()
+# Função para Printar.
+function print()
 {
     [[ "$printyeah" = '1' ]] && echo -e "$@"
 }
+
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
@@ -136,13 +137,13 @@ print()
 
 # Módulo para verificação de subshells =)
 # importante para saber o exit code dos mesmos
-_SUBSHELL_STATUS()
+function _SUBSHELL_STATUS()
 {
     [[ "$?" -ne '0' ]] && exit 1 || return 0
 }
 
 # Módulo para verbosidade
-_VERBOSE()
+function _VERBOSE()
 {
     local conf="$1"
     
@@ -157,14 +158,14 @@ _VERBOSE()
 
 # Módulo de verifcação usado especialmente pelo banana em suas
 # verificações de entrada
-_INPUT_NULL_PARAMETER()
+function _INPUT_NULL_PARAMETER()
 {
     [[ -z "$1" ]] && { "$HELP"; exit 1 ;}
 }
 
 
 # Módulo de conferencia da extensão da entrada
-_NAME_FORMAT_PKG()
+function _NAME_FORMAT_PKG()
 {
     local packname="$1"
 
@@ -179,7 +180,7 @@ _NAME_FORMAT_PKG()
 
 # Módulo para gerenciar alguns arquivos do pacote
 # como *desc*, e script de pós instalação *pos.sh*
-_MANAGE_SCRIPTS_AND_ARCHIVES()
+function _MANAGE_SCRIPTS_AND_ARCHIVES()
 {
     local packname="${1/%.mz/}"
 
@@ -231,7 +232,7 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
 
 
 # Módulo para criação de lista o pacote
-_CREATE_LIST()
+function _CREATE_LIST()
 {
     # Variáveis locais
     local packname="$1"
@@ -248,36 +249,34 @@ _CREATE_LIST()
 
 # Módulo para Gerar o arquivo desc de base, também se o diretório
 # info não existir ele cria!
-_GENERATE_DESC()
+function _GENERATE_DESC()
 {
     local DESC_PACKNAME="$1"
     local DESC_VERSION="$2"
     local DESC_BUILD="$3"
     
     [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
-    cat > "info/desc" << EOF
+    _CAT > "info/desc" << EOF
 ######################################################################
 # This file is the heart of the package, it is necessary to do
 # conferences, so it is important you add the information correctly.
 # All variables are required! The array of dependencies *dep* does
 # not, but it's interesting you add for future reference.
-#
-# !!!! USE SIMPLE QUOTES '' ONLY. !!!!
 ######################################################################
 
-# Package Maintainer Name
+# PACKAGE MAINTAINER NAME
 maintainer="$MAINTAINER"
 
-# Package Name
+# PACKAGE NAME
 pkgname='$DESC_PACKNAME'
 
-# Software Version
+# SOFTWARE VERSION
 version='$DESC_VERSION'
 
-# Build number
+# BUILD NUMBER
 build='$DESC_BUILD'
 
-# License of software.
+# LICENSE OF SOFTWARE
 license=''
 
 # SMALL Description of Software, NO Trespassing |
@@ -289,12 +288,11 @@ desc=""
 url=''
 
 # What packages do your package need to run?
-# This array is optional.
 dep=('')
 
 
 #####################################################
-# !!! Banana Infos, dont edit!!!
+# !!! Banana Infos, DONT EDIT!!!
 #####################################################
 
 BANANAVERSION="$VERSION"
@@ -315,7 +313,7 @@ EOF
 
 
 # Módulo para gerar assinatura gpg.
-_GPG_SIGN()
+function _GPG_SIGN()
 {
     local package="$1"
     local sig='sig'
@@ -337,7 +335,7 @@ _GPG_SIGN()
 
 # Função para verificação do diretório (info)
 # e seus arquivos.
-_VERIFY_ON()
+function _VERIFY_ON()
 {
     local package="$1"
 
@@ -420,7 +418,7 @@ _VERIFY_ON()
 _SUBSHELL_STATUS
 }
 
-_LIST_ARCHIVES_DIRECTORIES()
+function _LIST_ARCHIVES_DIRECTORIES()
 {
     local packname="${1}.list"
     local LIST_CLEAN_DIRECTORIES
@@ -498,7 +496,7 @@ _LIST_ARCHIVES_DIRECTORIES()
 
 
 # Módulo para gerar o pacote
-_CREATE_PKG()
+function _CREATE_PKG()
 {
     # Pegando somente nome do pacote
     # sem extensão
@@ -536,7 +534,7 @@ _CREATE_PKG()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-_INSTALL_PKG()
+function _INSTALL_PKG()
 {
   ( # Subshell Suicide
     local packname="$1"
@@ -616,7 +614,7 @@ _SUBSHELL_STATUS
 
 
 # Módulo que faz atualização do pacote.
-_UPGRADE()
+function _UPGRADE()
 {
   ( # Subshell Meu precioso
     local packname="$1"
@@ -706,7 +704,7 @@ _UPGRADE()
 
 
 # Módulo para fazer as conferencias antes da chamada do burn
-_PRE_REMOVE()
+function _PRE_REMOVE()
 {
   ( # Fazendo tudo em subshell para não sujar outros ambientes com o source.
     local packname="$1"
@@ -777,7 +775,7 @@ _PRE_REMOVE()
 
 
 # Módulo para remoção
-_REMOVE_NOW()
+function _REMOVE_NOW()
 {
     local packname="${1/%.mz/}"
     local a='0' # Variavel incremento arquivos
@@ -870,7 +868,7 @@ _REMOVE_NOW()
 
 
 # Função para procurar pacote no sistema
-_SEARCH_PKG()
+function _SEARCH_PKG()
 {
   ( #Subshell do destino
     local packname="$1"
@@ -916,7 +914,7 @@ _SEARCH_PKG()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-_UPDATE_BANANA()
+function _UPDATE_BANANA()
 {
     local link='https://github.com/slackjeff/bananapkg'
     local tmp_dir_banana="/tmp/${PRG}pkg"
@@ -951,7 +949,7 @@ _UPDATE_BANANA()
                     continue
                 fi
              ;;
-            (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || return 1 ;;
+            (core.sh|help.sh|builtin.sh) cp -v "$m" "/usr/libexec/banana/" || return 1 ;;
         esac
     done
     

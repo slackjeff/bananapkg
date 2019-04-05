@@ -1,3 +1,22 @@
+#----------------------------------05/04/2019--------------------------------------#
+(Versão 2.2.3)
+-[ALTERADO]:      Adicionado function na frente de funções, somente para padronizar
+já que estamos usando bash.
+-[ADICIONADO]:    Biblioteca builtin.sh, está serve para guardar emulações de
+comandos mais usados.
+-[MODIFICADO]:    Emulado um comando 'cat' em bash puro! Assim é menos uma ferramenta
+externa, adiciondo em builtin.sh
+
+#----------------------------------05/04/2019--------------------------------------#
+(Versão 2.2.2)
+-[MODIFICADO]:    Inserido o carregamento das bibliotecas em um loop for e os
+arquivos em uma array.
+-[ADICIONADO]:    Agora na hora de gerar o arquivo .desc com banana -g pode ser
+passado como argumento (nome-versão-build) do pacote banana -g nano-4.0-1
+(Agradecimento ao Vilmar 'vcatafesta' por está ideia)
+-[MELHORADO]:     Teste da opção create e generate. Agora está alguns milesendos mais
+rápido por não abrir +1 subshel..
+
 #----------------------------------03/04/2019--------------------------------------#
 (Versão 2.2.1)
 -[ADICIONADO]:    Agora ao gerar o pacote o arquivo .desc é criado junto um direto-
