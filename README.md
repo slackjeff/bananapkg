@@ -14,6 +14,11 @@ https://bananapkg.github.io/
 
 ----
 
+## DESENVOLVEDORES leia o Code-Style
+https://bananapkg.github.io/code-style.html
+
+----
+
 ## Requisitos/Requirements
 **Bash** >= 4.4.18 <br/>
 **GNU Sed** >= 4.2.2<br/>
