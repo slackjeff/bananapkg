@@ -14,7 +14,7 @@ https://bananapkg.github.io/
 
 ----
 
-## DESENVOLVEDORES leia o Code-Style
+## DESENVOLVEDORES leia o Code-Style :ledger:
 https://bananapkg.github.io/code-style.html
 
 ----
