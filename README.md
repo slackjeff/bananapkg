@@ -20,6 +20,7 @@ https://bananapkg.github.io/
 **GNU Tar** >= 1.30<br/>
 **AWK** >= 4.2.1<br/>
 **xz** >= 5.2.2<br/>
+**GPG** >= 2.2.9<br/>
 
 ----
 
