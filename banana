@@ -44,7 +44,6 @@ readonly end='\033[m'
 heart_archives=(
     '/etc/banana/banana.conf'
     '/usr/libexec/banana/core.sh'
-    '/usr/libexec/banana/builtin.sh'
     '/usr/libexec/banana/help.sh'
 )
 for heart_load in "${heart_archives[@]}"; do
