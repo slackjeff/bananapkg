@@ -250,6 +250,10 @@ _CREATE_LIST()
 # info não existir ele cria!
 _GENERATE_DESC()
 {
+    local DESC_PACKNAME="$1"
+    local DESC_VERSION="$2"
+    local DESC_BUILD="$3"
+    
     [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
     cat > "info/desc" << EOF
 ######################################################################
@@ -265,15 +269,15 @@ _GENERATE_DESC()
 maintainer="$MAINTAINER"
 
 # Package Name
-pkgname="${1}"
+pkgname='$DESC_PACKNAME'
 
 # Software Version
-version="${2}"
+version='$DESC_VERSION'
 
 # Build number
-build="1"
+build='$DESC_BUILD'
 
-# License
+# License of software.
 license="$LICENSE"
 
 # SMALL Description of Software, NO Trespassing |
@@ -290,7 +294,7 @@ dep=('')
 
 
 #####################################################
-# Banana Infos, dont edit!!!
+# !!! Banana Infos, dont edit!!!
 #####################################################
 
 BANANAVERSION="$VERSION"
@@ -325,7 +329,7 @@ _GPG_SIGN()
     fi
     
     # Gerando Assinatura no pacote
-    gpg --detach-sign "${package}.${format_pkg}" || return 1
+    gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" || return 1
     echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
     return 0
 }
