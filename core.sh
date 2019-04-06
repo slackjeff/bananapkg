@@ -210,7 +210,8 @@ function _NAME_FORMAT_PKG()
 function _MANAGE_SCRIPTS_AND_ARCHIVES()
 {
     local packname="${1/%.mz/}"
-
+    local dir_desc="${local_list/list/desc}"  
+    
     if ! [[ -e "/info/desc" ]]; then
         echo -e "${red}[ERROR!]${end} /info/desc does not exist. ABORT!"
         exit 1
@@ -218,9 +219,9 @@ function _MANAGE_SCRIPTS_AND_ARCHIVES()
 
     pushd "/info/" &>/dev/null
     if mv 'desc' "/var/lib/banana/desc/${packname}.desc"; then
-        echo -e "${blue}[MOVED DESC]${end}\t To /var/lib/banana/${packname}.desc"
+        echo -e "${blue}[MOVED DESC]${end}\t To /${dir_desc}/${packname}.desc"
     else
-        echo -e "${red}[ERROR!]${end} could not move desc to /var/lib/banana/${packname}.desc"
+        echo -e "${red}[ERROR!]${end} could not move desc to /${dir_desc}/${packname}.desc"
         echo "ABORTING..."
         exit 1
     fi
@@ -245,7 +246,7 @@ function _MANAGE_SCRIPTS_AND_ARCHIVES()
 
     # Finalizando instalação.
     [[ -d "/info/" ]] && rm -r "/info/" # Apagando diretório /info/ na raiz.
-    echo -e "${blue}[INSTALLED]${end}\tPackage $packname successfully installed."
+    echo -e "${blue}[INSTALLED]${end}\t Package $packname successfully installed."
     [[ -d '/tmp/info/' ]] && rm -r "/tmp/info/" # Removejdo sujeira
     return 0
 }
@@ -870,9 +871,9 @@ function _REMOVE_NOW()
         esac
         if [[ -e "${DIREC}/${packname}.${removeitem}" ]]; then
             if rm "${DIREC}/${packname}.${removeitem}"; then 
-                echo -e "${blue}[REMOVE]${end} ${dirlist}/${packname}.${removeitem} SUCCESSFULLY"
+                echo -e "${blue}[REMOVE]${end} ${DIREC}/${packname}.${removeitem} SUCCESSFULLY"
             else
-                echo -e "\n${red}[ERROR]${end} It was not possible remove ${dirlist}/${packname}.list"
+                echo -e "\n${red}[ERROR]${end} It was not possible remove ${DIREC}/${packname}.list"
                 exit 1
             fi
         else
