@@ -1,4 +1,4 @@
-# bananapkg :banana: :package: [![LICENSE](https://img.shields.io/badge/Licen%C3%A7a-MIT-brightgreen.svg)](https://github.com/slackjeff/bananapkg/blob/master/LICENSE) ![VERSION](https://img.shields.io/badge/Vers%C3%A3o-2.2.4.2__yellowshella--beta-yellow.svg) [![Bash4.4.18-shield]](http://tldp.org/LDP/abs/html/bashver4.html#AEN21220)
+# bananapkg :banana: :package: [![LICENSE](https://img.shields.io/badge/Licen%C3%A7a-MIT-brightgreen.svg)](https://github.com/slackjeff/bananapkg/blob/master/LICENSE) ![VERSION](https://img.shields.io/badge/Vers%C3%A3o-2.2.4.2__yellowshella--beta-yellow.svg) [![Bash4-shield]](http://tldp.org/LDP/abs/html/bashver4.html#AEN21220)
 
 > 🇧🇷 Gerenciador de baixo nível escrito em Shell Bash.
  
