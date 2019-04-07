@@ -29,10 +29,10 @@ MAIN ARGUMENTS
           Remove Package
     -s, search
           Search Package        
-    -ol, --one-line
+    -ol, one-line
           Use in -s, search for print one line search.
           program-version-build       
-    -v, --verbose
+    -v, verbose
           Look more
 EOF
 }
@@ -63,10 +63,10 @@ PRINCIPAIS ARGUMENTOS
           Remover pacote
     -s, search
           Procurar Pacote
-    -ol, --one-line
+    -ol, one-line
           Use em -s, search para imprimir em uma linha o retorno de pesquisa.
           program-version-build
-    -v, --verbose
+    -v, verbose
           Visualizar melhor a saída
 
 EOF

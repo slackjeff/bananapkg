@@ -23,7 +23,7 @@
 ##########################################
 
 export PRG='banana'
-export VERSION='2.2.4_yellowshella'
+export VERSION='2.2.4.1-yellowshella-beta '
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
 local_list='var/lib/banana/list'  # Localização da lista
@@ -83,10 +83,10 @@ fi
 for entry_parameter; do
     if [[ "$entry_parameter" = '-y' ]]; then
         AUTO_YES='1'
-    elif [[ "$entry_parameter" = '-v' ]] || [[ "$entry_parameter"  = '--verbose' ]]; then
+    elif [[ "$entry_parameter" = '-v' ]] || [[ "$entry_parameter"  = 'verbose' ]]; then
         VERBOSE='1'
         _VERBOSE '1'
-    elif [[ "$entry_parameter" = '-ol' ]] || [[ "$entry_parameter" = '--one-line' ]]; then
+    elif [[ "$entry_parameter" = '-ol' ]] || [[ "$entry_parameter" = 'one-line' ]]; then
         ONE_LINE='1'
     else
         new_argument+=("$entry_parameter")
@@ -116,7 +116,12 @@ case "$1" in
        # espaços entre outras coisas, não pode continuar.
        _NAME_FORMAT_PKG "$1" || exit 1
        
-       check_var="$(grep -o '-' <<< "$1" | wc -l)"
+       #check_var="$(grep -o '-' <<< "$1" | wc -l)"
+       
+       # Verificando quantos '-' existem e fazendo contagem
+       # com _WC
+       check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
+       check_var="$(_WC ${check_var})"
        if [[ "$check_var" -lt '2' || "$check_var" -gt '2'  ]]; then
            echo -e "${red}[Error!]${end} Unexpected ' - ' Count."
            echo -e "USE ONLY TWO ' ${red}-${end} ' In the name of your package."
@@ -137,9 +142,12 @@ case "$1" in
 
     -g|generate)
         shift
-        # Verificando se tem traços a mais
+        # Verificando se tem traços '-' a mais
         # E dando um sermão ;D
-        check_var="$(grep -o '-' <<< "$1" | wc -l)"
+        #check_var="$(grep -o '-' <<< "$1" | wc -l)"
+        
+        check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
+        check_var="$(_WC ${check_var})"
         if [[ -n "$1" ]] && [[ "$check_var" -lt '2' || "$check_var" -gt '2' ]]; then
             echo -e "${red}[ERROR]${end} OPS! Could not generate file desc..."
             echo -e "The Perfect Format name is: banana -g ${blue}name-version-build${end}"

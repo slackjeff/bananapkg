@@ -148,6 +148,43 @@ function _CAT()
     done
 }
 
+# Módulo para emular o grep
+function _GREP()
+{
+    # Se encontrar a linha ele retorna a expressão encontrada! com status 0
+    # se não é status 1.
+    # Para utilizar este módulo precisa ser passado o argumento seguido do arquivo.
+    # ou variável.
+    local expression="$1"
+    local receive="$2"
+    
+    # Testando e buscando expressão.
+    if [[ -z "$expression" ]]; then
+        { echo 'MODULE _GREP ERROR. Not found variable $expression'; exit 1 ;}
+    elif [[ -z "$receive" ]]; then
+        { echo 'MODULE _GREP ERROR. Not found variable $receive'; exit 1 ;}
+    fi
+    while IFS= read line; do
+        [[ "$line" =~ $expression ]] && { echo "$line"; return 0;}
+    done < "$receive"
+    return 1
+}
+
+# Módulo para emular o comando wc
+# Está funcionando por enquanto somente para
+# linhas.
+function _WC()
+{
+    local check="$@" # Recebendo args
+    local inc='0'    # Var incremento
+    
+    for x in $check; do
+        let inc++
+    done
+    echo "$inc"
+    return 0
+}
+
 # Função para Printar.
 function print()
 {
@@ -434,7 +471,7 @@ function _VERIFY_ON()
    # Verificando se rm -rf está presente em um dos scripts.
    for check_script in 'pre.sh' 'pos.sh' 'rm.sh'; do
        if [[ -e "${dir_info}/${check_script}" ]]; then
-           if grep -Ew "rm[[:space:]]+\-(rf|fr)" "${dir_info}/${check_script}" 1>&4 2>&3; then
+           if _GREP 'rm[[:space:]]+\-(rf|fr)' "${dir_info}/${check_script}" 1>&4 2>&3; then
                echo -e "${red}[CRAZY!]${end} $check_script contain command rm -rf. ABORTED NOW."
                exit 1
            fi
