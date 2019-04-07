@@ -44,3 +44,5 @@ cp -v banana.8 /usr/share/man/pt_BR/man8/<br/>
 **Permission and Execute Script**<br>
 chmod +x install.sh<br>
 bash install.sh
+
+[Banner]: https://raw.githubusercontent.com/slackjeff/bananapkg/master/imgs/banners/bananabanner.png
