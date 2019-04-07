@@ -23,7 +23,7 @@
 ##########################################
 
 export PRG='banana'
-export VERSION='2.2.4.1-yellowshella-beta '
+export VERSION='2.2.4.2-yellowshella-beta'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
 local_list='var/lib/banana/list'  # Localização da lista
