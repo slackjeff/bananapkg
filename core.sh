@@ -199,6 +199,19 @@ function print()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
+# Módulo para verificar se pacote é um pacote Comprimido com XZ.
+_VERIFY_PACK_IS_XZ()
+{
+    local verify_me="$1"
+    
+    if ! [[ "$(file $verify_me)" =~ .*XZ ]]; then
+        echo -e "${red}[ERROR]${end} This package was not created with Banana."
+        echo 'Check the package with the command: ${blue}file namePackage-version-build.mz${end}'
+        echo 'And contact the package builder. ABORTED.'
+        return 1
+    fi    
+}
+
 # Módulo para verificação de subshells =)
 # importante para saber o exit code dos mesmos
 function _SUBSHELL_STATUS()
@@ -615,13 +628,14 @@ function _INSTALL_PKG()
     # e carregando o arquivo desc do programa ;)
     if ! tar xpmf "${packname}" -C "/tmp/" "./${descme}"; then
         echo -e "${red}[ERROR!]${end} I could not unzip the file desc."
-        exit 1
+        { kill $pid; wait $pid 2>/dev/null; echo ;}
+        return 1
     fi
-    
     source "/tmp/${descme}" || { echo -e "${red}[ERROR!]${end} Not load ${descme}, ABORT."; return 1 ;}
     if [[ ! -e "/tmp/${descme}" ]]; then
         echo -e "${red}[ERROR!]${end} Could not load /tmp/${descme}."
         echo "Archive not exist. ABORT!"
+        { kill $pid; wait $pid 2>/dev/null; echo ;}
         return 1
     fi
     
@@ -654,18 +668,18 @@ function _INSTALL_PKG()
             echo -e "${blue}[Pre-Installation]${end} The script pre.sh was found. Execute now!"
         else
             echo -e "${red}[Pre-Installation]${end} Cannot extract ${PRE_SH}, ABORT"
-            exit 1
+            return 1
         fi  
         bash "/tmp/info/$PRE_SH"
         tar xvpmf "${packname}" -C / 1>&4 2>&3 || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
-        _CREATE_LIST "$1" || exit 1 # Criando lista
+        _CREATE_LIST "$1" || return 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     else
         # Caiu aqui pode continuar normal.
         tar xvpmf "${packname}" -C / | tee -a ${dirlist}/"${name_version_build}.list"  1>&4 2>&3 || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
-        _CREATE_LIST "$1" || exit 1 # Criando lista
+        _CREATE_LIST "$1" || return 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     fi
     
@@ -982,11 +996,13 @@ function _SEARCH_PKG()
 function _UPDATE_BANANA()
 {
     local link='https://github.com/slackjeff/bananapkg'
+    local check_url='www.stallman.org'
     local tmp_dir_banana="/tmp/${PRG}pkg"
-    local m
+    local DOWNLOAD m
     
-    # Internet?
-    wget -q --spider http://stallman.org/ || { echo "Don't Have Internet. ABORTED."; return 1 ;}
+    # Curl está no sistema?
+    type -P curl &>/dev/null && CHECK_CONNECTION='ping -c 1' || CHECK_CONNECTION='wget -q --spider'
+    $CHECK_CONNECTION "$check_url" &>/dev/null || { echo "Don't Have Internet. ABORTED."; return 1 ;}
     echo -e "Internet\t${cyan}[OK]${end}"
     
     # Ok, Puxe o repositorio agora!

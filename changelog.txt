@@ -1,24 +1,42 @@
+#----------------------------------07/04/2019--------------------------------------#
+(Versão 2.2.4.2-yellowshella-beta)
+-[SUBSTITUIDO]:   Deixado o wget como segunda opção, este é mais lerdo. Agora é
+utilizado o ping como primário para testar a conexão com internet.
+
+-[BUGFIX]:        Quando tentava instalar um pacote corrompido o SPIN continuava e
+ficava em loop eterno. (https://github.com/slackjeff/bananapkg/issues/8)
+(Obrigado RUMBLER pelo relato!)
+
+-[ADICIONADO]:    Verificação se pacote foi criado com o banana ou seja comprimido
+com XZ.
+
 #----------------------------------06/04/2019--------------------------------------#
 (Versão 2.2.4.1-yellowshella-beta)
 #####Está versão entrou em beta pois pode haver alguns recursos instaveis.
 -[ALTERADO]:      Sintaxe --one-line e --verbose para (one-line) (verbose) apenas.
+
 -[REMOVIDO]:      Linha para contagem de caracteres com grep e wc -l '-' e substi-
 tuido por hack com expansão de variável.
+
 -[ADICIONADO]:    Novo módulo _WC, que emula o wc -l
+
 -[ADICIONADO]:    Novo módulo _GREP, para fazer pequenas pesquisas em arquivos/vars.
 
 #----------------------------------06/04/2019--------------------------------------#
 (Versão 2.2.4-yellowshella)
 -[BUGFIX]:        Arrumado parte de impressão que aparecia o desc para lista e na
 parte da instalação também. '/var/lib/banana/list/audacity-2.3.1-3.desc SUCCESSFULLY'
+
 -[REMOVIDO]:      A biblioteca builtin.sh Agora faz parte do core.sh
 
 #----------------------------------05/04/2019--------------------------------------#
 (Versão 2.2.3)
 -[ALTERADO]:      Adicionado function na frente de funções, somente para padronizar
 já que estamos usando bash.
+
 -[ADICIONADO]:    Biblioteca builtin.sh, está serve para guardar emulações de
 comandos mais usados.
+
 -[MODIFICADO]:    Emulado um comando 'cat' em bash puro! Assim é menos uma ferramenta
 externa, adiciondo em builtin.sh
 
