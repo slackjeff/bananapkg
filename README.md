@@ -3,7 +3,7 @@
 :us: Low level package manager written in Shell.<br/>
 
 [![LICENSE](https://img.shields.io/badge/Licen%C3%A7a-MIT-brightgreen.svg)](https://github.com/slackjeff/bananapkg/blob/master/LICENSE)
-![VERSION](https://img.shields.io/badge/Vers%C3%A3o-2.2.4__yellowshella--beta%20%20(06%2F04%2F2019)-red.svg)
+![VERSION](https://img.shields.io/badge/Vers%C3%A3o-2.2.4.2__yellowshella--beta-yellow.svg)
 
 
 ## Para uma melhor Documentação consulte
