@@ -2,7 +2,7 @@
 🇧🇷 Gerenciador de baixo nível escrito em Shell. <br/>
 :us: Low level package manager written in Shell.<br/>
 
-[[LICENSE](https://img.shields.io/apm/l/vim-mode.svg?style=plastic)] 
+[![LICENSE](https://img.shields.io/apm/l/vim-mode.svg?style=plastic)] 
 (https://github.com/slackjeff/bananapkg/blob/master/LICENSE)
 
 ----
