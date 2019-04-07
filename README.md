@@ -5,6 +5,7 @@
 [![LICENSE](https://img.shields.io/badge/Licen%C3%A7a-MIT-brightgreen.svg)](https://github.com/slackjeff/bananapkg/blob/master/LICENSE)
 ![VERSION](https://img.shields.io/badge/Vers%C3%A3o-2.2.4.2__yellowshella--beta-yellow.svg)
 
+![Banner]
 
 ## Para uma melhor Documentação consulte
 https://bananapkg.github.io/
