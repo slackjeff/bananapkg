@@ -6,10 +6,7 @@
 ![VERSION](https://img.shields.io/badge/Vers%C3%A3o-2.2.4__yellowshella--beta%20%20(06%2F04%2F2019)-red.svg)
 
 
-----
-
-🇧🇷 **Para uma melhor Documentação consulte** <br/>
-:us: **For better Documentation see** <br/><br/>
+## Para uma melhor Documentação consulte
 https://bananapkg.github.io/
 
 ----
