@@ -4,13 +4,13 @@
  
 ![Banner]
 
-## Para uma melhor Documentação consulte
+### Para uma melhor Documentação consulte
 https://bananapkg.github.io/
 
-## DESENVOLVEDORES leia o Code-Style :ledger:
+### DESENVOLVEDORES leia o Code-Style :ledger:
 https://bananapkg.github.io/code-style.html
 
-## Requisitos/Requirements :star:
+### Requisitos/Requirements :star:
 **Bash** >= 4.4.18 <br/>
 **GNU Sed** >= 4.2.2<br/>
 **GNU Tar** >= 1.30<br/>
@@ -20,7 +20,7 @@ https://bananapkg.github.io/code-style.html
 
 ----
 
-## Instalação Direta :computer:
+### Instalação Direta :computer:
 **Clone Repo**<br/>
 git clone https://github.com/slackjeff/bananapkg<br/>
 <br/>
