@@ -4,7 +4,7 @@
 
 ----
 
-:heavy_check_mark: **Versão/Version:** 2.2.4_yellowshella  (06/04/2019)<br/>
+:heavy_check_mark: **Versão/Version:** 2.2.4_yellowshella-beta  (06/04/2019)<br/>
 
 ----
 
