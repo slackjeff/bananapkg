@@ -44,4 +44,4 @@ bash install.sh
 
 [Banner]: https://raw.githubusercontent.com/slackjeff/bananapkg/master/imgs/banners/bananabanner.png
 [Bash4.4.18-shield]: https://img.shields.io/badge/Bash-4.4.18%2B-brightgreen.svg "Bash 4.4.18 Ou superior"
-[Doe-shield]: https://slackjeff.com.br/doacao/
+[Doe-shield]: https://img.shields.io/badge/Doe-Pagseguro-red.svg
