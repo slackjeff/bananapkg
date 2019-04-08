@@ -22,6 +22,7 @@
 #================= VARIÁVEIS ESPECIAIS
 ##########################################
 
+echo "oi"
 export PRG='banana'
 export VERSION='2.2.4.3-yellowshella-beta'
 export format_pkg='mz'            # Extensão do pacote
