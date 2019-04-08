@@ -4,6 +4,9 @@
 -[ADICIONADO]:     Variáveis LC_ALL=C e LANG=C para desabilitar suporte a UNICODE.
 assim melhorando a perfomance do banana.
 
+-[BUGFIX]:         Após atualizar o banana pelo github, era gerado um erro. Corri-
+gido utilizando o exit depois da função ser executada.
+
 #----------------------------------08/04/2019--------------------------------------#
 (Versão 2.2.4.3-yellowshella-beta)
 
