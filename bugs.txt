@@ -2,10 +2,4 @@
 |              BUGS CONHECIDOS             |
 +------------------------------------------+
 
-[1]- [ATUALIZAÇÃO]
-Ao usar o banana update que serve para atualizar todo o banana
-no final é gerado um erro.
-Isto ocorre pois ao mover e sobreescrever o programa em /sbin/banana o
-bash não reconhece as novas linhas do programa.
-Este erro é apenas um Warning, não tem motivos para se preocupar!
-Mas é importante remover este erro.
+NENHUM ATÉ O PRESENTE MOMENTO.
