@@ -4,8 +4,9 @@
 #
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
 # Módulo para imprimir mensagens aleatórias na tela!
-function _MSG_DADDY()
+_MSG_DADDY()
 {
      local total_dialog_daddy number msg_daddy
 
@@ -97,7 +98,7 @@ function _MSG_DADDY()
 
 
 # Função de Spinner, para animação.
-function _SPINNER()
+_SPINNER()
 {
     spin=(
     'Banana wait'
@@ -127,7 +128,7 @@ function _SPINNER()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Módulo para emular o comando cat
-function _CAT()
+_CAT()
 {
     # Tag para sinalizar que precisa parar.
     local end_of_file='EOF'
@@ -148,7 +149,7 @@ function _CAT()
 }
 
 # Módulo para emular o grep
-function _GREP()
+_GREP()
 {
     # Se encontrar a linha ele retorna a expressão encontrada! com status 0
     # se não é status 1.
@@ -172,7 +173,7 @@ function _GREP()
 # Módulo para emular o comando wc
 # Está funcionando por enquanto somente para
 # linhas.
-function _WC()
+_WC()
 {
     local check="$@" # Recebendo args
     local inc='0'    # Var incremento
@@ -185,7 +186,7 @@ function _WC()
 }
 
 # Função para Printar.
-function print()
+print()
 {
     [[ "$printyeah" = '1' ]] && echo -e "$@"
 }
@@ -213,13 +214,13 @@ _VERIFY_PACK_IS_XZ()
 
 # Módulo para verificação de subshells =)
 # importante para saber o exit code dos mesmos
-function _SUBSHELL_STATUS()
+_SUBSHELL_STATUS()
 {
     [[ "$?" -ne '0' ]] && exit 1 || return 0
 }
 
 # Módulo para verbosidade
-function _VERBOSE()
+_VERBOSE()
 {
     local conf="$1"
     
@@ -234,14 +235,14 @@ function _VERBOSE()
 
 # Módulo de verifcação usado especialmente pelo banana em suas
 # verificações de entrada
-function _INPUT_NULL_PARAMETER()
+_INPUT_NULL_PARAMETER()
 {
     [[ -z "$1" ]] && { "$HELP"; exit 1 ;}
 }
 
 
 # Módulo de conferencia da extensão da entrada
-function _NAME_FORMAT_PKG()
+_NAME_FORMAT_PKG()
 {
     local packname="$1"
 
@@ -256,7 +257,7 @@ function _NAME_FORMAT_PKG()
 
 # Módulo para gerenciar alguns arquivos do pacote
 # como *desc*, e script de pós instalação *pos.sh*
-function _MANAGE_SCRIPTS_AND_ARCHIVES()
+_MANAGE_SCRIPTS_AND_ARCHIVES()
 {
     local packname="${1/%.mz/}"
     local dir_desc="${local_list/list/desc}"  
@@ -309,7 +310,7 @@ function _MANAGE_SCRIPTS_AND_ARCHIVES()
 
 
 # Módulo para criação de lista o pacote
-function _CREATE_LIST()
+_CREATE_LIST()
 {
     # Variáveis locais
     local packname="$1"
@@ -326,7 +327,7 @@ function _CREATE_LIST()
 
 # Módulo para Gerar o arquivo desc de base, também se o diretório
 # info não existir ele cria!
-function _GENERATE_DESC()
+_GENERATE_DESC()
 {
     local DESC_PACKNAME="$1"
     local DESC_VERSION="$2"
@@ -390,7 +391,7 @@ EOF
 
 
 # Módulo para gerar assinatura gpg.
-function _GPG_SIGN()
+_GPG_SIGN()
 {
     local package="$1"
     local sig='sig'
@@ -412,7 +413,7 @@ function _GPG_SIGN()
 
 # Função para verificação do diretório (info)
 # e seus arquivos.
-function _VERIFY_ON()
+_VERIFY_ON()
 {
     local package="$1"
 
@@ -495,7 +496,7 @@ function _VERIFY_ON()
 _SUBSHELL_STATUS
 }
 
-function _LIST_ARCHIVES_DIRECTORIES()
+_LIST_ARCHIVES_DIRECTORIES()
 {
     local packname="${1}.list"
     local LIST_CLEAN_DIRECTORIES
@@ -573,7 +574,7 @@ function _LIST_ARCHIVES_DIRECTORIES()
 
 
 # Módulo para gerar o pacote
-function _CREATE_PKG()
+_CREATE_PKG()
 {
     # Pegando somente nome do pacote
     # sem extensão
@@ -611,7 +612,7 @@ function _CREATE_PKG()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-function _INSTALL_PKG()
+_INSTALL_PKG()
 {
   ( # Subshell Suicide
     local packname="$1"
@@ -692,7 +693,7 @@ _SUBSHELL_STATUS
 
 
 # Módulo que faz atualização do pacote.
-function _UPGRADE()
+_UPGRADE()
 {
   ( # Subshell Meu precioso
     local packname="$1"
@@ -782,7 +783,7 @@ function _UPGRADE()
 
 
 # Módulo para fazer as conferencias antes da chamada do burn
-function _PRE_REMOVE()
+_PRE_REMOVE()
 {
   ( # Fazendo tudo em subshell para não sujar outros ambientes com o source.
     local packname="$1"
@@ -853,7 +854,7 @@ function _PRE_REMOVE()
 
 
 # Módulo para remoção
-function _REMOVE_NOW()
+_REMOVE_NOW()
 {
     local packname="${1/%.mz/}"
     local a='0' # Variavel incremento arquivos
@@ -946,7 +947,7 @@ function _REMOVE_NOW()
 
 
 # Função para procurar pacote no sistema
-function _SEARCH_PKG()
+_SEARCH_PKG()
 {
   ( #Subshell do destino
     local packname="$1"
@@ -993,7 +994,7 @@ function _SEARCH_PKG()
 
 
 # Módulo de impressão de lista do pacote instalado
-function _PRINT_LIST(){
+_PRINT_LIST(){
     local package_="$1"
     local re="\b$package_\b"
     local searchlist
@@ -1020,7 +1021,7 @@ function _PRINT_LIST(){
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-function _UPDATE_BANANA()
+_UPDATE_BANANA()
 {
     local link='https://github.com/slackjeff/bananapkg'
     local check_url='www.stallman.org'
@@ -1039,7 +1040,7 @@ function _UPDATE_BANANA()
     
     # Dando permissões e copiando arquivos para seus lugares.
     echo -e "\nPermission and Copy archives\n"
-    for m in "$PRG" "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh' 'builtin.sh'; do
+    for m in "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh' 'builtin.sh' "$PRG"; do
         [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
         case $m in
             (banana) cp -v "$m" "/sbin/" || return 1 ;;

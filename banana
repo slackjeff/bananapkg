@@ -22,8 +22,13 @@
 #================= VARIÁVEIS ESPECIAIS
 ##########################################
 
+# Desabilitando suporte a unicode
+# Para melhor performance.
+export LC_ALL=C
+export LANG=C
+
 export PRG='banana'
-export VERSION='2.2.4.3-yellowshella-beta'
+export VERSION='2.2.4.4_littlewitchbrown'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
 local_list='var/lib/banana/list'  # Localização da lista

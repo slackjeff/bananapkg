@@ -1,4 +1,10 @@
-#----------------------------------||/04/2019--------------------------------------#
+#----------------------------------08/04/2019--------------------------------------#
+(Versão 2.2.4.4-yellowshella-beta)
+
+-[ADICIONADO]:     Variáveis LC_ALL=C e LANG=C para desabilitar suporte a UNICODE.
+assim melhorando a perfomance do banana.
+
+#----------------------------------08/04/2019--------------------------------------#
 (Versão 2.2.4.3-yellowshella-beta)
 
 -[ADICIONADO]:     Parâmetro -pl, print. Imprimi de /var/lib/banana/lista  lista do
