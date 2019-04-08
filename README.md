@@ -1,4 +1,4 @@
-# bananapkg :banana: :package: 🇧🇷 ![VERSION](https://img.shields.io/badge/Vers%C3%A3o-2.2.4.2__yellowshella--beta-yellow.svg) [![Bash4.4.18-shield]](http://tldp.org/LDP/abs/html/bashver4.html#AEN21220) [![LICENSE](https://img.shields.io/badge/Licen%C3%A7a-MIT-brightgreen.svg)](https://github.com/slackjeff/bananapkg/blob/master/LICENSE) [![Doe-shield]](https://slackjeff.com.br/doacao/)
+# bananapkg :banana: :package: 🇧🇷 ![VERSION](https://img.shields.io/badge/Vers%C3%A3o-2.2.4.3__yellowshella--beta-orange.svg) [![Bash4.4.18-shield]](http://tldp.org/LDP/abs/html/bashver4.html#AEN21220) [![LICENSE](https://img.shields.io/badge/Licen%C3%A7a-MIT-brightgreen.svg)](https://github.com/slackjeff/bananapkg/blob/master/LICENSE) [![Doe-shield]](https://slackjeff.com.br/doacao/)
 
 > Gerenciador de Pacotes de baixo nível, escrito em Shell Bash.
  
