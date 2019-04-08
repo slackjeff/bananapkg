@@ -18,8 +18,6 @@
 #VELOCIDADE, SEGURANÇA, FINO.
 #====================================================================|
 
-echo "ola"
-
 ##########################################
 #================= VARIÁVEIS ESPECIAIS
 ##########################################
@@ -123,8 +121,6 @@ case "$1" in
        # espaços entre outras coisas, não pode continuar.
        _NAME_FORMAT_PKG "$1" || exit 1
        
-       #check_var="$(grep -o '-' <<< "$1" | wc -l)"
-       
        # Verificando quantos '-' existem e fazendo contagem
        # com _WC
        check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
@@ -151,7 +147,6 @@ case "$1" in
         shift
         # Verificando se tem traços '-' a mais
         # E dando um sermão ;D
-        #check_var="$(grep -o '-' <<< "$1" | wc -l)"
         
         check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
         check_var="$(_WC ${check_var})"
