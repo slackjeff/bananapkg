@@ -1,5 +1,14 @@
+#----------------------------------||/04/2019--------------------------------------#
+(Versão 2.2.4.3-yellowshella-beta)
+
+-[ADICIONADO]:     Parâmetro -pl, print. Imprimi de /var/lib/banana/lista  lista do
+pacote instalado localmente.
+
+-[ADICIONADO]:     Novo parâmetro no banana.man, help.sh e site.
+
 #----------------------------------07/04/2019--------------------------------------#
 (Versão 2.2.4.2-yellowshella-beta)
+
 -[SUBSTITUIDO]:   Deixado o wget como segunda opção, este é mais lerdo. Agora é
 utilizado o ping como primário para testar a conexão com internet.
 
@@ -13,6 +22,7 @@ com XZ.
 #----------------------------------06/04/2019--------------------------------------#
 (Versão 2.2.4.1-yellowshella-beta)
 #####Está versão entrou em beta pois pode haver alguns recursos instaveis.
+
 -[ALTERADO]:      Sintaxe --one-line e --verbose para (one-line) (verbose) apenas.
 
 -[REMOVIDO]:      Linha para contagem de caracteres com grep e wc -l '-' e substi-
@@ -24,6 +34,7 @@ tuido por hack com expansão de variável.
 
 #----------------------------------06/04/2019--------------------------------------#
 (Versão 2.2.4-yellowshella)
+
 -[BUGFIX]:        Arrumado parte de impressão que aparecia o desc para lista e na
 parte da instalação também. '/var/lib/banana/list/audacity-2.3.1-3.desc SUCCESSFULLY'
 
@@ -31,6 +42,7 @@ parte da instalação também. '/var/lib/banana/list/audacity-2.3.1-3.desc SUCCE
 
 #----------------------------------05/04/2019--------------------------------------#
 (Versão 2.2.3)
+
 -[ALTERADO]:      Adicionado function na frente de funções, somente para padronizar
 já que estamos usando bash.
 
@@ -42,6 +54,7 @@ externa, adiciondo em builtin.sh
 
 #----------------------------------05/04/2019--------------------------------------#
 (Versão 2.2.2)
+
 -[MODIFICADO]:    Inserido o carregamento das bibliotecas em um loop for e os
 arquivos em uma array.
 -[ADICIONADO]:    Agora na hora de gerar o arquivo .desc com banana -g pode ser
@@ -52,57 +65,79 @@ rápido por não abrir +1 subshel..
 
 #----------------------------------03/04/2019--------------------------------------#
 (Versão 2.2.1)
+
 -[ADICIONADO]:    Agora ao gerar o pacote o arquivo .desc é criado junto um direto-
 rio acima.
 -[ADICIONADO]:    Suporte a assinatura gpg na criação do pacote.
 
 #----------------------------------02/04/2019--------------------------------------#
 (Versão 2.2)
+
 -[REFORMULADO]:   Módulo _REMOVE_NOW que estava muito lento! Agora o tempo de
 remoção dos pacotes está cerca de 93% mais rápido!
+
 -[ADICIONADO]:    Módulo _UPDATE_BANANA para atualizar o bananapkg via github.
+
 -[ADICIONADO]:    Módulo _SPINNER que faz animações, usado inicialmente no módulo
 de instalação _INSTALL_PKG
+
 -[ADICIONADO]:    Novas frases ao _MSG_DADDY
 
 #----------------------------------11/03/2019--------------------------------------#
 (Versão 2.1.5.3)
+
 -[ORGANIZADO]: Variável 'packages' estava global na criação dos pacotes, mudado para
 local na função _CREATE_PKG, recebendo argumento. 
+
 -[ADICIONADO]: Adicionado variável BANANAVERSION na desc do pacote. (Sugestão diego
 obrigado!)
 
 #----------------------------------06/03/2019--------------------------------------#
 (Versão 2.1.5.2) *Em pleno carnaval nois trabalhando*
+
 - [BUGFIX]: Resolvido pipe quebrado na hora de gerar o pacote, criado um módulo
 só para gerar a lista "Sem pipe, sem erro."
+
 - [ADICIONADO]: Módulo _CREATE_LIST para criação de listas
+
 - [ADICIONADO]: Novas frases no módulo _MSG_DADDY
+
 - [ADICIONADO]: Variável License no desc do pacote, (Sugestão rumbler)
 
 #----------------------------------20/02/2019--------------------------------------#
 (Versão 2.1.5.1)
+
 - [ADICIONADO]: Função print para simplificar a verbose em alguns pontos do programa
 Obrigado rumbler pela sugestão.
+
 - [ADICIONADO]: Manpage em PT-BR
+
 - [REFORMULADO]: Agora toda saída é em quiet por padrão. Para ter algo mais detalhado
 precisa usar a verbose.
+
 - [ADICIONADO]: Novas frases no módulo _MSG_DADDY
 
 #----------------------------------16/02/2019--------------------------------------#
 (Versão 2.1.5)
+
 - [BUGFIX]: Não estava deletando os arquivos .desc e .list, o programa sempre
 existia no sistema, mesmo não existindo.
+
 - [BUGFIX]: Agora se não achar nenhum pacote na função search retorna status de
 saida 1, caso contrário 0
+
 - [ADICIONADO]: Parâmetro de versão -V, version
+
 - [ORGANIZADO]: Saída do help
 
 #----------------------------------13/02/2019--------------------------------------#
 (Versão 2.1.4)
+
 - [REMOVIDO]: Módulo _CLEAN_LIST e embutido no módulo _LIST_ARCHIVES_DIRECTORIES
+
 - [BUGFIX]: Removido bug critico que removia diretório /var/run e outros diretórios
 importantes.
+
 - [BUGFIX]: Agora o script de remoção programa.rm é removido não na lista e sim
 no próprio script, se existir.
 

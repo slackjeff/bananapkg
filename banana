@@ -23,7 +23,7 @@
 ##########################################
 
 export PRG='banana'
-export VERSION='2.2.4.2-yellowshella-beta'
+export VERSION='2.2.4.3-yellowshella-beta'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
 local_list='var/lib/banana/list'  # Localização da lista
@@ -216,6 +216,12 @@ case "$1" in
             _SEARCH_PKG "$1" # Chamando função de check
             shift
         done
+    ;;
+
+    -pl|print)
+        shift # rebaixo
+        _INPUT_NULL_PARAMETER "$1"
+        _PRINT_LIST "$1" || exit 1
     ;;
 
     -V|version) echo "$PRG Version $VERSION" ;;

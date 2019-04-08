@@ -987,6 +987,34 @@ function _SEARCH_PKG()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #####################################################################
 #
+# IMPRIMIR LISTA DO PACOTE INSTALADO
+#
+#####################################################################
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+# Módulo de impressão de lista do pacote instalado
+function _PRINT_LIST(){
+    local package_="$1"
+    local re="\b$package_\b"
+    local searchlist
+
+    pushd "/${local_list}" &>/dev/null
+    for searchlist in *; do
+        if [[ "$searchlist" =~ ^${re} ]]; then
+            echo -e "==========================$searchlist=========================="
+            _CAT "$searchlist"
+            return 0
+        fi
+    done
+    echo -e "${package_} ${red}[NOT FOUND]${end}"
+    return 1
+}
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#####################################################################
+#
 # ATUALIZAR VERSÃO BANANAPKG
 #
 #####################################################################
