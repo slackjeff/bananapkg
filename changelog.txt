@@ -1,5 +1,5 @@
 #----------------------------------08/04/2019--------------------------------------#
-(Versão 2.2.4.4-yellowshella-beta)
+(Versão 2.2.4.4_littlewitchbrown)
 
 -[ADICIONADO]:     Variáveis LC_ALL=C e LANG=C para desabilitar suporte a UNICODE.
 assim melhorando a perfomance do banana.
