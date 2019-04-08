@@ -4,7 +4,7 @@
 #
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
+echo
 # Módulo para imprimir mensagens aleatórias na tela!
 function _MSG_DADDY()
 {
