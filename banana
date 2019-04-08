@@ -196,7 +196,7 @@ case "$1" in
     ;;
 
     update) # Update do banana
-        _UPDATE_BANANA || exit 1
+        _UPDATE_BANANA && exit 0 || exit 1
     ;;
 
     -r|remove)
