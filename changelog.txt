@@ -1,3 +1,16 @@
+#----------------------------------10/04/2019--------------------------------------#
+(Versão 2.2.4.5_littlewitchbrown)
+
+-[BUGFIX]:         Ao instalar o apache o diretório /srv/www(httpd) era removido.
+Arrumado inserido no filtro estes diretórios.
+(https://github.com/slackjeff/bananapkg/issues/10) (Obrigado Vilmar pelo relato.)
+
+-[ADICIONADO]:     Novas cores na paleta (white,yellow)
+
+-[ADICIONADO]:     Nova frase no banana spin.
+
+-[ADICIONADO]:     Novas frases no módulo _MSG_DADDY
+
 #----------------------------------08/04/2019--------------------------------------#
 (Versão 2.2.4.4_littlewitchbrown)
 

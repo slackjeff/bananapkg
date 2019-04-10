@@ -28,7 +28,7 @@ export LC_ALL=C
 export LANG=C
 
 export PRG='banana'
-export VERSION='2.2.4.4_littlewitchbrown'
+export VERSION='2.2.4.5_littlewitchbrown'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
 local_list='var/lib/banana/list'  # Localização da lista
@@ -38,9 +38,11 @@ local_list='var/lib/banana/list'  # Localização da lista
 ########################################
 
 readonly red='\033[31;1m'
+readonly yellow='\033[33;1m'
 readonly blue='\033[34;1m'
-readonly cyan='\033[36;1m'
 readonly pink='\033[35;1m'
+readonly cyan='\033[36;1m'
+readonly white='\033[37;1m'
 readonly end='\033[m'
 
 ########################################

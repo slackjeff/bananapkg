@@ -69,6 +69,7 @@ _MSG_DADDY()
         "#bananapkg in silicon valley already."
         "La Revolution del Brazil"
         "Rich Package"
+		"1+1=Banana"
         "I see bananas! how often? All the time"
         "I never lost control baby *.*"
         "You and I are bananas."
@@ -86,6 +87,8 @@ _MSG_DADDY()
         "Version: Take me if you can :O"
         "Free Beer? OMG."
         "A meteor is falling! Please wait while I install your package."
+		"My temple is banana."
+		"Está é a segunda frase em português, se você é gringo não entenderá. MUAHAHAHA"
     )
     # Pegando o número de frases da lista.
     total_dialog_daddy=${#dialog_daddy[@]}
@@ -100,23 +103,48 @@ _MSG_DADDY()
 # Função de Spinner, para animação.
 _SPINNER()
 {
+	local inc=0 # Var incremento
+	local color="$cyan" # Cor inicial
+
+	# O que vai ser mostrado?
     spin=(
-    'Banana wait'
-    'bAnana wait'
-    'baNana wait'
-    'banAna wait'
-    'banaNa wait'
-    'bananA wait'
-    'banana Wait'
-    'banana wAit'
-    'banana waIt'
-    'banana waiT'
+    	'Banana wait.'
+    	'bAnana wait.'
+    	'baNana wait.'
+    	'banAna wait.'
+    	'banaNa wait.'
+    	'bananA wait.'
+    	'banana Wait.'
+    	'banana wAit.'
+    	'banana waIt.'
+    	'banana waiT.'
+    	'banana wait..'
+    	'banana wait...'
+    	'banana wait....'
+    	'banana wait.....'
+		'banana wait.....G'
+		'banana wait.....gO'
+		'banana wait.....go'
+		'banana wait.....go '
+		'banana wait.....go C'
+		'banana wait.....go cO'
+		'banana wait.....go coF'
+		'banana wait.....go cofF'
+		'banana wait.....go coffE'
     )
     
     while :; do
+		# Cores aleatorias
+		[[ "$inc" -gt '22' ]] && color="${red}"
+		[[ "$inc" -gt '44' ]] && color="${blue}"
+		[[ "$inc" -gt '66' ]] && color="${pink}"
+		[[ "$inc" -gt '88' ]] && color="${yellow}"
+		[[ "$inc" -gt '110' ]] && color="${white}"
+		# Imprimindo
         for i in "${spin[@]}"; do
-            echo -ne "${cyan}\r$i${end}"
-            sleep 0.1
+            echo -ne "${color}\r$i${end}"
+			sleep 0.1s
+			inc=$(($inc + 1))
         done
     done
 }
@@ -355,7 +383,7 @@ version='$DESC_VERSION'
 build='$DESC_BUILD'
 
 # LICENSE OF SOFTWARE
-license=''
+license='$LICENSE'
 
 # SMALL Description of Software, NO Trespassing |
 #=============RULER=====================================================|
@@ -548,6 +576,7 @@ _LIST_ARCHIVES_DIRECTORIES()
         'media'
         'usr'
         'usr/share'
+		'srv'
     )
     # FIXME Essa parte não está tão boa e um algoritmo muito manual.
     # Basicamente ela remove toda hierarquia "vital" da lista
@@ -567,7 +596,10 @@ _LIST_ARCHIVES_DIRECTORIES()
             sed -i "/^$view$/d" "${dirlist}/${packname}"
         elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[4]}/(keymaps|fonts|pixmaps|applications|doc|man|man\/man[[:digit:]]+|man\/.{2})$ ]]; then      
             local view="${view//\//\\/}"
-            sed -i "/^$view$/d" "${dirlist}/${packname}"  
+            sed -i "/^$view$/d" "${dirlist}/${packname}"
+		elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[5]}/(www|httpd)$ ]]; then
+			local view="${view//\//\\/}"
+			sed -i "/^${view}$/d" "${dirlist}/${packname}"
         fi
     done < "${dirlist}/${packname}"
 }
