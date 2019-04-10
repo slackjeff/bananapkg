@@ -5,7 +5,7 @@
 ![Banner]
 
 ### Para uma melhor Documentação consulte
-https://bananapkg.github.io/
+* https://bananapkg.github.io/
 
 ### DESENVOLVEDORES leia o Code-Style :ledger:
 https://bananapkg.github.io/code-style.html
