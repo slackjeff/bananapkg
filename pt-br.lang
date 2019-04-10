@@ -1,0 +1,157 @@
+#####################################
+# DICIONÁRIO EM PORTUGUÊS DO BRASIL
+#####################################
+#
+# Todos as frases estão divididas por funções.
+# A diferença é que as funções 'aqui' estão em lowercase.
+
+generic=(
+    [0]='ERRO'
+    [1]='MOVED DESC'
+    [2]='To'
+    [3]='Post-installation'
+    [4]='MOVED REMOVE'
+    [5]='INSTALLED'
+    [6]='CREATE LIST'
+    [7]='CREATE'
+    [8]='NOT FOUND'
+    [9]='CHECK VARIABLES'
+    [10]='CRAZY'
+    [11]='CLEAN'
+    [12]='WARNING'
+)
+
+_grep=(
+    [0]='ERRO NO MÓDULO _GREP. Não foi encontrado variável $expression'
+    [1]='ERRO NO MÓDULO _GREP. Não foi encontrado variável $receive'
+)
+
+_verify_pack_is_xz=(
+    [0]='Este pacote não foi criado com o banana.'
+    [1]='Check o pacote com o comando: file namePackage-version-build.mz'
+    [2]='E contate o mantenedor do pacote. ABORTADO.'
+)
+
+_name_format_pkg=(
+    [0]='O pacote precisa terminar'   #0
+)
+
+_manage_scripts_and_archive=(
+    [0]='NÃO EXISTE, ABORTANDO!'
+    [1]='Não foi possível mover para'
+    [2]='O Script pos.sh Foi encontrado. Executando agora!'
+    [3]='Não foi movido'
+    [4]='ABORTANDO...'
+    [5]='Pacote'
+    [6]='Instalação conclúida.'
+)
+
+_create_list=(
+    [0]='Não foi criado'
+    [1]='On'
+)
+
+_generate_desc=(
+    [0]='Created successfully inside of directory'
+)
+
+_gpg_sign=(
+    [0]='Unable to sign package.'
+    [1]='Reason: Package not found.'
+    [2]='For security reasons, do not pass the package on to third parties.'
+    [3]='Your'
+    [4]='On'
+)
+
+
+_verify_on=(
+    [0]='directory'
+    [1]='Its necessary your package have the DIRECTORY'
+    [2]='its a directory store important archives.'
+    [3]='For more information use'
+    [4]='Its necessary your package have the ARCHIVE'
+    [5]='inside of directory'
+    [6]='have informations of your package.'
+    [7]='archive'
+    [8]='Check'
+    [9]='VARIABLE'
+    [10]='null'
+    [11]='Enter the name of the package maintainer into variable maintainer.'
+    [12]='Enter the name of the package into variable pkgname.'
+    [13]='Enter a version of software into variable version.'
+    [14]='Enter the build number of package.'
+    [15]='Detail a small description into variable desc.'
+    [16]='Enter a url of project/software into variable url.'
+    [17]='it different'
+    [18]='of the name you entered as an argument. Check and return'
+    [19]='of the version you entered as an argument. Check and return'
+    [20]='contain command rm -rf. ABORTED NOW.'
+)
+
+_list_archives_directories=(
+    [0]='List'
+) 
+
+_create_pkg=(
+    [0]='Now, create package for You! Wait...'
+    [1]='Your Package on:'
+    [2]='Your'
+    [3]='on'
+    [4]='No create'
+    [5]='GPG sign activated'
+    [6]='GPG sign disabled'
+    [7]='No created package'
+    [8]='This error is fatal, so the program will not proceed.'
+)
+
+_install_pkg=(
+    [0]='I could not unzip the file desc.'
+    [1]='Not load'
+    [2]='ABORT'
+    [3]=' Could not load'
+    [4]='Archive not exist. ABORT!'
+    [5]='The script pre.sh was found. Execute now!'
+    [6]='Cannot extract'
+    [7]='On Your root, OK.'
+)
+
+_upgrade=(
+    [0]='Could not find file'
+    [1]='This Archive is important for program verification. Aborting.'
+    [2]='already Upgraded in the system.'
+    [3]='No need update'
+    [4]='Package Installed version:'
+    [5]='Package you are installing:'
+    [6]='Lets start updating! Wait.'
+    [7]='is in a higher version on your system'
+    [8]='You trying to'
+    [9]='with the parameter *upgrade*'
+    [10]='Package Installed version'
+    [11]='Package you want to install'
+    [12]='in system for upgrade.'
+)
+
+_pre_remove=(
+    [0]='Você gostaria de continuar?'
+    [1]='Remover'
+)
+
+_remove_now=(
+    [0]='Variable name_version_build NULL. ABORT'
+    [1]='The script rm.sh was found. Execute now!'
+    [2]='The script was well executed'
+    [3]='Clean archives .desc and .list'
+    [4]='SUCCESSFULLY'
+    [5]='It was not possible remove'
+)
+
+_search_pkg=(
+    [0]='ENCONTRADO'
+    [1]='Nenhum pacote encontrado com o nome de:'
+)
+
+_update_banana=(
+    [0]='Você não tem internet, ABORTANDO'
+    [1]='Permission and Copy archives'
+    [2]='Do you want to overwrite your configuration file?'
+)
