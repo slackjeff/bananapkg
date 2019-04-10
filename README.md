@@ -11,15 +11,15 @@
 * https://bananapkg.github.io/code-style.html
 
 ### Requisitos/Requirements :star:
-**Bash** >= 4.4.18 <br/>
-**GNU Sed** >= 4.2.2<br/>
-**GNU Tar** >= 1.30<br/>
-**AWK** >= 4.2.1<br/>
-**xz** >= 5.2.2<br/>
-**GPG** >= 2.2.9<br/>
+* **Bash** >= 4.4.18 <br/>
+* **GNU Sed** >= 4.2.2<br/>
+* **GNU Tar** >= 1.30<br/>
+* **AWK** >= 4.2.1<br/>
+* **xz** >= 5.2.2<br/>
+* **GPG** >= 2.2.9<br/>
 
 ### Distribuições que usam o Banana com principal gerenciador :heart:
-* [MazonOS](http://mazonos.com/pt/)
+* [MazonOS](http://mazonos.com/pt/{target="_blank"})
 
 ----
 
