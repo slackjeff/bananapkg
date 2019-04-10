@@ -28,10 +28,15 @@ export LC_ALL=C
 export LANG=C
 
 export PRG='banana'
-export VERSION='2.2.4.5_littlewitchbrown'
+export VERSION='2.2.4.6_littlewitchbrown'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
-local_list='var/lib/banana/list'  # Localização da lista
+export local_list='var/lib/banana/list'  # Localização da lista
+
+# Caso o usuário deixou nulo vamos
+# inicializar as variáveis de configurações em modo default.
+AUTO_YES="${AUTO_YES:=0}" # Desligado
+GPG_SIGN="${GPG_SIGN:=1}" # Ligado
 
 ########################################
 #=================== CORES
@@ -76,7 +81,7 @@ dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
 [[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
 
 # Qual a linguagem do cabra?
-if [[ "$BANANA_LANG" = "pt-br" ]]; then
+if [[ "$LANG" = "pt-br" ]]; then
     HELP="_HELP_PT"
 else
     HELP="_HELP_US"

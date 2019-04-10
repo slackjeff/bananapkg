@@ -433,7 +433,8 @@ _GPG_SIGN()
     fi
     
     # Gerando Assinatura no pacote
-    gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" || return 1
+    gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" &>/dev/null || \
+    gpg --detach-sign "${package}.${format_pkg}" || return 1
     echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
     return 0
 }
@@ -625,8 +626,13 @@ _CREATE_PKG()
         else
             echo -e "${red}[Warning!]${end} No create ../${package}.${format_pkg}.sha256"
         fi
-        _GPG_SIGN "${package}" || exit 1 # Assinatura gpg
-        popd &>/dev/null
+        # Assinatura GPG está ativada?
+        if [[ "$GPG_SIGN" = '1' ]]; then
+            _GPG_SIGN "${package}" || return 1 # Assinatura gpg
+            popd &>/dev/null
+        else
+            return 0
+        fi
     else
         echo -e "${red}[Error!]${end} No created package ../${package}.${format_pkg}"
         echo "This error is fatal, so the program will not proceed."

@@ -1,4 +1,9 @@
 #----------------------------------10/04/2019--------------------------------------#
+(Versão 2.2.4.6_bealtifulbrown)
+
+-[ADICIONADO]:     Chave para ligar/desligar assinatura gpg em banana.conf GPG_SIGN
+
+#----------------------------------10/04/2019--------------------------------------#
 (Versão 2.2.4.5_littlewitchbrown)
 
 -[BUGFIX]:         Ao instalar o apache o diretório /srv/www(httpd) era removido.
