@@ -18,6 +18,9 @@ https://bananapkg.github.io/code-style.html
 **xz** >= 5.2.2<br/>
 **GPG** >= 2.2.9<br/>
 
+### Distribuições que usam o Banana com principal gerenciador :heart:
+[MazonOS](http://mazonos.com/pt/)
+
 ----
 
 ### Instalação Direta :computer:
