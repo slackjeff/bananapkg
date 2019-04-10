@@ -8,7 +8,7 @@
 * https://bananapkg.github.io/
 
 ### DESENVOLVEDORES leia o Code-Style :ledger:
-https://bananapkg.github.io/code-style.html
+* https://bananapkg.github.io/code-style.html
 
 ### Requisitos/Requirements :star:
 **Bash** >= 4.4.18 <br/>
@@ -19,7 +19,7 @@ https://bananapkg.github.io/code-style.html
 **GPG** >= 2.2.9<br/>
 
 ### Distribuições que usam o Banana com principal gerenciador :heart:
-[MazonOS](http://mazonos.com/pt/)
+* [MazonOS](http://mazonos.com/pt/)
 
 ----
 
