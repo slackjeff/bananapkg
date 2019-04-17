@@ -41,7 +41,14 @@ for m in "$prg" "${prg}.conf" 'banana.8' 'core.sh' 'help.sh'; do
    [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
     case $m in
         (banana) cp -v "$m" "/sbin/" || exit 1    ;;
-        (banana.8) cp -v "$m" '/usr/share/man/pt_BR/man8/' || exit 1 ;;
+        (banana.8)
+		if [[ -d "/usr/share/man/pt_BR/man8/" ]]; then
+		    cp -v "$m" '/usr/share/man/pt_BR/man8/' || exit 1
+                else
+                    mkdir -vp "/usr/share/man/pt_BR/man8/"
+		    cp -v "$m" '/usr/share/man/pt_BR/man8/' || exit 1
+                fi
+        ;;
         (banana.conf) cp -v "$m" "/etc/banana/" || exit 1 ;;
         (core.sh|help.sh|builtin.sh) cp -v "$m" "/usr/libexec/banana/" || exit 1 ;;
     esac
