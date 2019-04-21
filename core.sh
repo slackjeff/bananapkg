@@ -13,6 +13,7 @@ _MSG_DADDY()
     # Lista de mensagens para exibir em cada nova instalação
     # de pacotes. Estas mensagens são exibidas aleatoriamente.
     dialog_daddy=(
+        "Vilmar, o gatinho!"
         "Wait while Daddy works!"
         "I smoke, if I went to eat I would eat."
         "And here we go. Wait..."
@@ -69,6 +70,7 @@ _MSG_DADDY()
         "#bananapkg in silicon valley already."
         "La Revolution del Brazil"
         "Rich Package"
+		"1+1=Banana"
         "I see bananas! how often? All the time"
         "I never lost control baby *.*"
         "You and I are bananas."
@@ -86,6 +88,8 @@ _MSG_DADDY()
         "Version: Take me if you can :O"
         "Free Beer? OMG."
         "A meteor is falling! Please wait while I install your package."
+		"My temple is banana."
+		"Está é a segunda frase em português, se você é gringo não entenderá. MUAHAHAHA"
     )
     # Pegando o número de frases da lista.
     total_dialog_daddy=${#dialog_daddy[@]}
@@ -100,32 +104,122 @@ _MSG_DADDY()
 # Função de Spinner, para animação.
 _SPINNER()
 {
+	local inc=0 # Var incremento
+	local color="$cyan" # Cor inicial
+
+	# O que vai ser mostrado?
     spin=(
-    'Banana wait'
-    'bAnana wait'
-    'baNana wait'
-    'banAna wait'
-    'banaNa wait'
-    'bananA wait'
-    'banana Wait'
-    'banana wAit'
-    'banana waIt'
-    'banana waiT'
+    	'Banana wait.'
+    	'bAnana wait.'
+    	'baNana wait.'
+    	'banAna wait.'
+    	'banaNa wait.'
+    	'bananA wait.'
+    	'banana Wait.'
+    	'banana wAit.'
+    	'banana waIt.'
+    	'banana waiT.'
+    	'banana wait..'
+    	'banana wait...'
+    	'banana wait....'
+    	'banana wait.....'
+		'banana wait.....G'
+		'banana wait.....gO'
+		'banana wait.....go'
+		'banana wait.....go '
+		'banana wait.....go C'
+		'banana wait.....go cO'
+		'banana wait.....go coF'
+		'banana wait.....go cofF'
+		'banana wait.....go coffE'
     )
-    
+
     while :; do
+		# Cores aleatorias
+		[[ "$inc" -gt '22' ]] && color="${red}"
+		[[ "$inc" -gt '44' ]] && color="${blue}"
+		[[ "$inc" -gt '66' ]] && color="${pink}"
+		[[ "$inc" -gt '88' ]] && color="${yellow}"
+		[[ "$inc" -gt '110' ]] && color="${white}"
+		# Imprimindo
         for i in "${spin[@]}"; do
-            echo -ne "${cyan}\r$i${end}"
-            sleep 0.1
+            echo -ne "${color}\r$i${end}"
+			sleep 0.1s
+			inc=$(($inc + 1))
         done
     done
 }
 
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#
+# MÓDULOS EMULADOS PARA SE TORNAR BUILTINS
+#
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+# Módulo para emular o comando cat
+_CAT()
+{
+    # Tag para sinalizar que precisa parar.
+    local end_of_file='EOF'
+
+    INPUT=( "${@:-"%"}" )
+    for i in "${INPUT[@]}"; do
+        if [[ "$i" != "%" ]]; then
+            exec 3< "$i" || exit 1
+        else
+            exec 3<&0
+        fi
+        while read -ru 3; do
+            # END OF FILE. Para identificar que precisa parar.
+            [[ "$REPLY" = "$end_of_file" ]] && break
+            echo -E "$REPLY"
+        done
+    done
+}
+
+# Módulo para emular o grep
+_GREP()
+{
+    # Se encontrar a linha ele retorna a expressão encontrada! com status 0
+    # se não é status 1.
+    # Para utilizar este módulo precisa ser passado o argumento seguido do arquivo.
+    # ou variável.
+    local expression="$1"
+    local receive="$2"
+
+    # Testando e buscando expressão.
+    if [[ -z "$expression" ]]; then
+        { echo 'MODULE _GREP ERROR. Not found variable $expression'; exit 1 ;}
+    elif [[ -z "$receive" ]]; then
+        { echo 'MODULE _GREP ERROR. Not found variable $receive'; exit 1 ;}
+    fi
+    while IFS= read line; do
+        [[ "$line" =~ $expression ]] && { echo "$line"; return 0;}
+    done < "$receive"
+    return 1
+}
+
+# Módulo para emular o comando wc
+# Está funcionando por enquanto somente para
+# linhas.
+_WC()
+{
+    local check="$@" # Recebendo args
+    local inc='0'    # Var incremento
+
+    for x in $check; do
+        let inc++
+    done
+    echo "$inc"
+    return 0
+}
+
+# Função para Printar.
 print()
 {
     [[ "$printyeah" = '1' ]] && echo -e "$@"
 }
+
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
@@ -133,6 +227,19 @@ print()
 #
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+# Módulo para verificar se pacote é um pacote Comprimido com XZ.
+_VERIFY_PACK_IS_XZ()
+{
+    local verify_me="$1"
+
+    if ! [[ "$(file $verify_me)" =~ .*XZ ]]; then
+        echo -e "${red}[ERROR]${end} This package was not created with Banana."
+        echo 'Check the package with the command: ${blue}file namePackage-version-build.mz${end}'
+        echo 'And contact the package builder. ABORTED.'
+        return 1
+    fi
+}
 
 # Módulo para verificação de subshells =)
 # importante para saber o exit code dos mesmos
@@ -145,7 +252,7 @@ _SUBSHELL_STATUS()
 _VERBOSE()
 {
     local conf="$1"
-    
+
     if [[ "$VERBOSE" = '1' ]] || [[ "$conf" = '1' ]]; then
         exec 4>&1 3>&2
         printyeah='1'
@@ -182,6 +289,7 @@ _NAME_FORMAT_PKG()
 _MANAGE_SCRIPTS_AND_ARCHIVES()
 {
     local packname="${1/%.mz/}"
+    local dir_desc="${local_list/list/desc}"  
 
     if ! [[ -e "/info/desc" ]]; then
         echo -e "${red}[ERROR!]${end} /info/desc does not exist. ABORT!"
@@ -190,9 +298,9 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
 
     pushd "/info/" &>/dev/null
     if mv 'desc' "/var/lib/banana/desc/${packname}.desc"; then
-        echo -e "${blue}[MOVED DESC]${end}\t To /var/lib/banana/${packname}.desc"
+        echo -e "${blue}[MOVED DESC]${end}\t To /${dir_desc}/${packname}.desc"
     else
-        echo -e "${red}[ERROR!]${end} could not move desc to /var/lib/banana/${packname}.desc"
+        echo -e "${red}[ERROR!]${end} could not move desc to /${dir_desc}/${packname}.desc"
         echo "ABORTING..."
         exit 1
     fi
@@ -217,7 +325,7 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
 
     # Finalizando instalação.
     [[ -d "/info/" ]] && rm -r "/info/" # Apagando diretório /info/ na raiz.
-    echo -e "${blue}[INSTALLED]${end}\tPackage $packname successfully installed."
+    echo -e "${blue}[INSTALLED]${end}\t Package $packname successfully installed."
     [[ -d '/tmp/info/' ]] && rm -r "/tmp/info/" # Removejdo sujeira
     return 0
 }
@@ -235,13 +343,13 @@ _CREATE_LIST()
 {
     # Variáveis locais
     local packname="$1"
-    
+
     if ! tar tf "$packname" > "${dirlist}/${name_version_build}.list"; then
         echo -e "${red}[ERROR!]${end}\tNot Create ${dirlist}/${name_version_build}.list"
         return 1
     fi
     echo -e "${blue}[CREATE LIST]${end}\t On ${dirlist}/${name_version_build}.list"
-    return 0    
+    return 0
 }
 
 
@@ -253,48 +361,45 @@ _GENERATE_DESC()
     local DESC_PACKNAME="$1"
     local DESC_VERSION="$2"
     local DESC_BUILD="$3"
-    
+
     [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
-    cat > "info/desc" << EOF
+    _CAT > "info/desc" << EOF
 ######################################################################
 # This file is the heart of the package, it is necessary to do
 # conferences, so it is important you add the information correctly.
 # All variables are required! The array of dependencies *dep* does
 # not, but it's interesting you add for future reference.
-#
-# !!!! USE SIMPLE QUOTES '' ONLY. !!!!
 ######################################################################
 
-# Package Maintainer Name
+# PACKAGE MAINTAINER NAME
 maintainer="$MAINTAINER"
 
-# Package Name
+# PACKAGE NAME
 pkgname='$DESC_PACKNAME'
 
-# Software Version
+# SOFTWARE VERSION
 version='$DESC_VERSION'
 
-# Build number
+# BUILD NUMBER
 build='$DESC_BUILD'
 
-# License of software.
-license="$LICENSE"
+# LICENSE OF SOFTWARE
+license='$LICENSE'
 
 # SMALL Description of Software, NO Trespassing |
 #=============RULER=====================================================|
-desc=""
+desc="$DESC_PACKNAME-$DESC_VERSION"
 #=======================================================================|
 
 # URL SOFTWARE
-url=''
+url='$SITE'
 
 # What packages do your package need to run?
-# This array is optional.
 dep=('')
 
 
 #####################################################
-# !!! Banana Infos, dont edit!!!
+# !!! Banana Infos, DONT EDIT!!!
 #####################################################
 
 BANANAVERSION="$VERSION"
@@ -303,6 +408,12 @@ EOF
     echo -e "${pink}[DESC]${end} Created successfully inside of directory ${blue}info${end}"
     exit 0
 }
+
+function which2()
+{
+    type -pa "$@" | head -n 1
+}
+
 
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -319,7 +430,7 @@ _GPG_SIGN()
 {
     local package="$1"
     local sig='sig'
-    
+
     # Pacote existe?
     if [[ ! -e "${package}.${format_pkg}" ]]; then
         echo "${red}[ERRO]${end} Unable to sign package. ${package}.${format_pkg}"
@@ -327,10 +438,16 @@ _GPG_SIGN()
         echo "For security reasons, do not pass the package on to third parties."
         return 1
     fi
-    
+
     # Gerando Assinatura no pacote
-    gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" || return 1
-    echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
+	[ "$REWRITE_SIG" = "1" ] && rm -f ../${package}.${format_pkg}.${sig}
+	[ "$REWRITE_SIG" = "1" ] && rm -f ${package}.${format_pkg}.${sig}
+
+    which gpg &> /dev/null
+    if [ $? = 0 ]; then
+        gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" || return 1
+        echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
+    fi
     return 0
 }
 
@@ -344,7 +461,7 @@ _VERIFY_ON()
   ( # Subshell marota
     local dir_info='info'  # Diretorio info que contem informações como (desc)
     local info_desc='desc' # Descrição do pacote
-    
+
     if [[ ! -d "$dir_info" ]]; then # Diretório info existe?
         echo -e "${red}[ERROR!]${end} ${pink}${dir_info}${end} directory\n"
         echo -e "It's necessary your package have the DIRECTORY ${pink}info${end}."
@@ -408,7 +525,7 @@ _VERIFY_ON()
    # Verificando se rm -rf está presente em um dos scripts.
    for check_script in 'pre.sh' 'pos.sh' 'rm.sh'; do
        if [[ -e "${dir_info}/${check_script}" ]]; then
-           if grep -Ew "rm[[:space:]]+\-(rf|fr)" "${dir_info}/${check_script}" 1>&4 2>&3; then
+           if _GREP 'rm[[:space:]]+\-(rf|fr)' "${dir_info}/${check_script}" 1>&4 2>&3; then
                echo -e "${red}[CRAZY!]${end} $check_script contain command rm -rf. ABORTED NOW."
                exit 1
            fi
@@ -416,7 +533,7 @@ _VERIFY_ON()
    done
 
  )
- 
+
 _SUBSHELL_STATUS
 }
 
@@ -424,9 +541,9 @@ _LIST_ARCHIVES_DIRECTORIES()
 {
     local packname="${1}.list"
     local LIST_CLEAN_DIRECTORIES
-    
+
     echo -e "${cyan}[Clean]${end} List: ${dirlist}/${packname}"
-    
+
     # Apagando coisas desnecessárias na lista e substituindo.
     sed -i "
         s/^\.\///g
@@ -464,7 +581,7 @@ _LIST_ARCHIVES_DIRECTORIES()
         /^var\/lib\/banana\/list/d
         /^var\/lib\/banana\/remove/d
     " "${dirlist}/${packname}"
-    
+
     # Lista de diretórios para usar no loopzinho
     LIST_CLEAN_DIRECTORIES=(
         'var'
@@ -472,6 +589,7 @@ _LIST_ARCHIVES_DIRECTORIES()
         'media'
         'usr'
         'usr/share'
+		'srv'
     )
     # FIXME Essa parte não está tão boa e um algoritmo muito manual.
     # Basicamente ela remove toda hierarquia "vital" da lista
@@ -491,7 +609,10 @@ _LIST_ARCHIVES_DIRECTORIES()
             sed -i "/^$view$/d" "${dirlist}/${packname}"
         elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[4]}/(keymaps|fonts|pixmaps|applications|doc|man|man\/man[[:digit:]]+|man\/.{2})$ ]]; then      
             local view="${view//\//\\/}"
-            sed -i "/^$view$/d" "${dirlist}/${packname}"  
+            sed -i "/^$view$/d" "${dirlist}/${packname}"
+		elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[5]}/(www|httpd)$ ]]; then
+			local view="${view//\//\\/}"
+			sed -i "/^${view}$/d" "${dirlist}/${packname}"
         fi
     done < "${dirlist}/${packname}"
 }
@@ -547,24 +668,24 @@ _INSTALL_PKG()
     # Chamando Animação e pegando PID do processo.
     _SPINNER &
     pid=$!
-    
+
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
     if ! tar xpmf "${packname}" -C "/tmp/" "./${descme}"; then
         echo -e "${red}[ERROR!]${end} I could not unzip the file desc."
-        exit 1
+        { kill $pid; wait $pid 2>/dev/null; echo ;}
+        return 1
     fi
-    
     source "/tmp/${descme}" || { echo -e "${red}[ERROR!]${end} Not load ${descme}, ABORT."; return 1 ;}
     if [[ ! -e "/tmp/${descme}" ]]; then
         echo -e "${red}[ERROR!]${end} Could not load /tmp/${descme}."
         echo "Archive not exist. ABORT!"
+        { kill $pid; wait $pid 2>/dev/null; echo ;}
         return 1
     fi
-    
+
     { kill $pid; wait $pid 2>/dev/null; echo ;}
-    
-    
+
     # Variavel puxando de source...
     # Está variavel é importante se caso
     # o usuario passe um caminho completo do pacote exemplo:
@@ -581,7 +702,7 @@ _INSTALL_PKG()
     echo -e "${pink}License:${end}\t${license:-Null}"
     echo -e "${pink}Small Desc:${end}\t$desc"
     echo -e "#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#\n"
-    
+
    _MSG_DADDY # Mensagem aleátoria do pai! para exibir para o usuário
 
    # Vamos verificar se existe o script de pre instalação *pre.sh*
@@ -591,25 +712,24 @@ _INSTALL_PKG()
             echo -e "${blue}[Pre-Installation]${end} The script pre.sh was found. Execute now!"
         else
             echo -e "${red}[Pre-Installation]${end} Cannot extract ${PRE_SH}, ABORT"
-            exit 1
-        fi  
+            return 1
+        fi
         bash "/tmp/info/$PRE_SH"
         tar xvpmf "${packname}" -C / 1>&4 2>&3 || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
-        _CREATE_LIST "$1" || exit 1 # Criando lista
+        _CREATE_LIST "$1" || return 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     else
         # Caiu aqui pode continuar normal.
         tar xvpmf "${packname}" -C / | tee -a ${dirlist}/"${name_version_build}.list"  1>&4 2>&3 || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
-        _CREATE_LIST "$1" || exit 1 # Criando lista
+        _CREATE_LIST "$1" || return 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     fi
-    
+
     # Ajustando lista.
     _LIST_ARCHIVES_DIRECTORIES "${name_version_build}"
  ) # Fim da subshell suicide
- 
 _SUBSHELL_STATUS
 }
 
@@ -762,7 +882,6 @@ _PRE_REMOVE()
                  search_pack="${search_pack/%.desc/}" # Cortando para impressão.
                  echo -e "${red}[FOUND]${end} $search_pack"
                  continue
-             
              fi
         else
             inc="$(( $inc + 1 ))"
@@ -845,9 +964,9 @@ _REMOVE_NOW()
         esac
         if [[ -e "${DIREC}/${packname}.${removeitem}" ]]; then
             if rm "${DIREC}/${packname}.${removeitem}"; then 
-                echo -e "${blue}[REMOVE]${end} ${dirlist}/${packname}.${removeitem} SUCCESSFULLY"
+                echo -e "${blue}[REMOVE]${end} ${DIREC}/${packname}.${removeitem} SUCCESSFULLY"
             else
-                echo -e "\n${red}[ERROR]${end} It was not possible remove ${dirlist}/${packname}.list"
+                echo -e "\n${red}[ERROR]${end} It was not possible remove ${DIREC}/${packname}.list"
                 exit 1
             fi
         else
@@ -910,6 +1029,34 @@ _SEARCH_PKG()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #####################################################################
 #
+# IMPRIMIR LISTA DO PACOTE INSTALADO
+#
+#####################################################################
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+# Módulo de impressão de lista do pacote instalado
+_PRINT_LIST(){
+    local package_="$1"
+    local re="\b$package_\b"
+    local searchlist
+
+    pushd "/${local_list}" &>/dev/null
+    for searchlist in *; do
+        if [[ "$searchlist" =~ ^${re} ]]; then
+            echo -e "==========================$searchlist=========================="
+            _CAT "$searchlist"
+            return 0
+        fi
+    done
+    echo -e "${package_} ${red}[NOT FOUND]${end}"
+    return 1
+}
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#####################################################################
+#
 # ATUALIZAR VERSÃO BANANAPKG
 #
 #####################################################################
@@ -919,11 +1066,13 @@ _SEARCH_PKG()
 _UPDATE_BANANA()
 {
     local link='https://github.com/slackjeff/bananapkg'
+    local check_url='www.stallman.org'
     local tmp_dir_banana="/tmp/${PRG}pkg"
-    local m
+    local DOWNLOAD m
     
-    # Internet?
-    wget -q --spider http://stallman.org/ || { echo "Don't Have Internet. ABORTED."; return 1 ;}
+    # Curl está no sistema?
+    type -P curl &>/dev/null && CHECK_CONNECTION='ping -c 1' || CHECK_CONNECTION='wget -q --spider'
+    $CHECK_CONNECTION "$check_url" &>/dev/null || { echo "Don't Have Internet. ABORTED."; return 1 ;}
     echo -e "Internet\t${cyan}[OK]${end}"
     
     # Ok, Puxe o repositorio agora!
@@ -933,7 +1082,7 @@ _UPDATE_BANANA()
     
     # Dando permissões e copiando arquivos para seus lugares.
     echo -e "\nPermission and Copy archives\n"
-    for m in "$PRG" "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh'; do
+    for m in "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh' 'builtin.sh' "$PRG"; do
         [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
         case $m in
             (banana) cp -v "$m" "/sbin/" || return 1 ;;
@@ -951,7 +1100,7 @@ _UPDATE_BANANA()
                     continue
                 fi
              ;;
-            (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || return 1 ;;
+             (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || return 1 ;;
         esac
     done
     
