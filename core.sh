@@ -13,6 +13,7 @@ _MSG_DADDY()
     # Lista de mensagens para exibir em cada nova instalação
     # de pacotes. Estas mensagens são exibidas aleatoriamente.
     dialog_daddy=(
+        "Vilmar, o gatinho!"
         "Wait while Daddy works!"
         "I smoke, if I went to eat I would eat."
         "And here we go. Wait..."
@@ -132,7 +133,7 @@ _SPINNER()
 		'banana wait.....go cofF'
 		'banana wait.....go coffE'
     )
-    
+
     while :; do
 		# Cores aleatorias
 		[[ "$inc" -gt '22' ]] && color="${red}"
@@ -160,7 +161,7 @@ _CAT()
 {
     # Tag para sinalizar que precisa parar.
     local end_of_file='EOF'
-    
+
     INPUT=( "${@:-"%"}" )
     for i in "${INPUT[@]}"; do
         if [[ "$i" != "%" ]]; then
@@ -185,7 +186,7 @@ _GREP()
     # ou variável.
     local expression="$1"
     local receive="$2"
-    
+
     # Testando e buscando expressão.
     if [[ -z "$expression" ]]; then
         { echo 'MODULE _GREP ERROR. Not found variable $expression'; exit 1 ;}
@@ -205,7 +206,7 @@ _WC()
 {
     local check="$@" # Recebendo args
     local inc='0'    # Var incremento
-    
+
     for x in $check; do
         let inc++
     done
@@ -231,13 +232,13 @@ print()
 _VERIFY_PACK_IS_XZ()
 {
     local verify_me="$1"
-    
+
     if ! [[ "$(file $verify_me)" =~ .*XZ ]]; then
         echo -e "${red}[ERROR]${end} This package was not created with Banana."
         echo 'Check the package with the command: ${blue}file namePackage-version-build.mz${end}'
         echo 'And contact the package builder. ABORTED.'
         return 1
-    fi    
+    fi
 }
 
 # Módulo para verificação de subshells =)
@@ -251,7 +252,7 @@ _SUBSHELL_STATUS()
 _VERBOSE()
 {
     local conf="$1"
-    
+
     if [[ "$VERBOSE" = '1' ]] || [[ "$conf" = '1' ]]; then
         exec 4>&1 3>&2
         printyeah='1'
@@ -289,7 +290,7 @@ _MANAGE_SCRIPTS_AND_ARCHIVES()
 {
     local packname="${1/%.mz/}"
     local dir_desc="${local_list/list/desc}"  
-    
+
     if ! [[ -e "/info/desc" ]]; then
         echo -e "${red}[ERROR!]${end} /info/desc does not exist. ABORT!"
         exit 1
@@ -342,13 +343,13 @@ _CREATE_LIST()
 {
     # Variáveis locais
     local packname="$1"
-    
+
     if ! tar tf "$packname" > "${dirlist}/${name_version_build}.list"; then
         echo -e "${red}[ERROR!]${end}\tNot Create ${dirlist}/${name_version_build}.list"
         return 1
     fi
     echo -e "${blue}[CREATE LIST]${end}\t On ${dirlist}/${name_version_build}.list"
-    return 0    
+    return 0
 }
 
 
@@ -360,7 +361,7 @@ _GENERATE_DESC()
     local DESC_PACKNAME="$1"
     local DESC_VERSION="$2"
     local DESC_BUILD="$3"
-    
+
     [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
     _CAT > "info/desc" << EOF
 ######################################################################
@@ -387,11 +388,11 @@ license='$LICENSE'
 
 # SMALL Description of Software, NO Trespassing |
 #=============RULER=====================================================|
-desc=""
+desc="$DESC_PACKNAME-$DESC_VERSION"
 #=======================================================================|
 
 # URL SOFTWARE
-url=''
+url='$SITE'
 
 # What packages do your package need to run?
 dep=('')
@@ -408,6 +409,12 @@ EOF
     exit 0
 }
 
+function which2()
+{
+    type -pa "$@" | head -n 1
+}
+
+
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #####################################################################
@@ -423,7 +430,7 @@ _GPG_SIGN()
 {
     local package="$1"
     local sig='sig'
-    
+
     # Pacote existe?
     if [[ ! -e "${package}.${format_pkg}" ]]; then
         echo "${red}[ERRO]${end} Unable to sign package. ${package}.${format_pkg}"
@@ -431,11 +438,16 @@ _GPG_SIGN()
         echo "For security reasons, do not pass the package on to third parties."
         return 1
     fi
-    
+
     # Gerando Assinatura no pacote
-    gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" &>/dev/null || \
-    gpg --detach-sign "${package}.${format_pkg}" || return 1
-    echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
+	[ "$REWRITE_SIG" = "1" ] && rm -f ../${package}.${format_pkg}.${sig}
+	[ "$REWRITE_SIG" = "1" ] && rm -f ${package}.${format_pkg}.${sig}
+
+    which gpg &> /dev/null
+    if [ $? = 0 ]; then
+        gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" || return 1
+        echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
+    fi
     return 0
 }
 
@@ -449,7 +461,7 @@ _VERIFY_ON()
   ( # Subshell marota
     local dir_info='info'  # Diretorio info que contem informações como (desc)
     local info_desc='desc' # Descrição do pacote
-    
+
     if [[ ! -d "$dir_info" ]]; then # Diretório info existe?
         echo -e "${red}[ERROR!]${end} ${pink}${dir_info}${end} directory\n"
         echo -e "It's necessary your package have the DIRECTORY ${pink}info${end}."
@@ -521,7 +533,7 @@ _VERIFY_ON()
    done
 
  )
- 
+
 _SUBSHELL_STATUS
 }
 
@@ -529,9 +541,9 @@ _LIST_ARCHIVES_DIRECTORIES()
 {
     local packname="${1}.list"
     local LIST_CLEAN_DIRECTORIES
-    
+
     echo -e "${cyan}[Clean]${end} List: ${dirlist}/${packname}"
-    
+
     # Apagando coisas desnecessárias na lista e substituindo.
     sed -i "
         s/^\.\///g
@@ -569,7 +581,7 @@ _LIST_ARCHIVES_DIRECTORIES()
         /^var\/lib\/banana\/list/d
         /^var\/lib\/banana\/remove/d
     " "${dirlist}/${packname}"
-    
+
     # Lista de diretórios para usar no loopzinho
     LIST_CLEAN_DIRECTORIES=(
         'var'
@@ -626,13 +638,8 @@ _CREATE_PKG()
         else
             echo -e "${red}[Warning!]${end} No create ../${package}.${format_pkg}.sha256"
         fi
-        # Assinatura GPG está ativada?
-        if [[ "$GPG_SIGN" = '1' ]]; then
-            _GPG_SIGN "${package}" || return 1 # Assinatura gpg
-            popd &>/dev/null
-        else
-            return 0
-        fi
+        _GPG_SIGN "${package}" || exit 1 # Assinatura gpg
+        popd &>/dev/null
     else
         echo -e "${red}[Error!]${end} No created package ../${package}.${format_pkg}"
         echo "This error is fatal, so the program will not proceed."
@@ -661,7 +668,7 @@ _INSTALL_PKG()
     # Chamando Animação e pegando PID do processo.
     _SPINNER &
     pid=$!
-    
+
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
     if ! tar xpmf "${packname}" -C "/tmp/" "./${descme}"; then
@@ -676,10 +683,9 @@ _INSTALL_PKG()
         { kill $pid; wait $pid 2>/dev/null; echo ;}
         return 1
     fi
-    
+
     { kill $pid; wait $pid 2>/dev/null; echo ;}
-    
-    
+
     # Variavel puxando de source...
     # Está variavel é importante se caso
     # o usuario passe um caminho completo do pacote exemplo:
@@ -696,7 +702,7 @@ _INSTALL_PKG()
     echo -e "${pink}License:${end}\t${license:-Null}"
     echo -e "${pink}Small Desc:${end}\t$desc"
     echo -e "#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#\n"
-    
+
    _MSG_DADDY # Mensagem aleátoria do pai! para exibir para o usuário
 
    # Vamos verificar se existe o script de pre instalação *pre.sh*
@@ -707,7 +713,7 @@ _INSTALL_PKG()
         else
             echo -e "${red}[Pre-Installation]${end} Cannot extract ${PRE_SH}, ABORT"
             return 1
-        fi  
+        fi
         bash "/tmp/info/$PRE_SH"
         tar xvpmf "${packname}" -C / 1>&4 2>&3 || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
@@ -720,11 +726,10 @@ _INSTALL_PKG()
         _CREATE_LIST "$1" || return 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     fi
-    
+
     # Ajustando lista.
     _LIST_ARCHIVES_DIRECTORIES "${name_version_build}"
  ) # Fim da subshell suicide
- 
 _SUBSHELL_STATUS
 }
 
@@ -877,7 +882,6 @@ _PRE_REMOVE()
                  search_pack="${search_pack/%.desc/}" # Cortando para impressão.
                  echo -e "${red}[FOUND]${end} $search_pack"
                  continue
-             
              fi
         else
             inc="$(( $inc + 1 ))"

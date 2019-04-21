@@ -28,15 +28,10 @@ export LC_ALL=C
 export LANG=C
 
 export PRG='banana'
-export VERSION='2.2.4.6_littlewitchbrown'
+export VERSION='2.2.4.5_littlewitchbrown'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
-export local_list='var/lib/banana/list'  # Localização da lista
-
-# Caso o usuário deixou nulo vamos
-# inicializar as variáveis de configurações em modo default.
-AUTO_YES="${AUTO_YES:=0}" # Desligado
-GPG_SIGN="${GPG_SIGN:=1}" # Ligado
+local_list='var/lib/banana/list'  # Localização da lista
 
 ########################################
 #=================== CORES
@@ -72,6 +67,8 @@ done
 dirlist='/var/lib/banana/list'       # Lista do pacote 'pack.list'
 dirdesc='/var/lib/banana/desc'       # Descrição do pacote 'pack.desc'
 dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
+dirmzinstalled='/var/cache/mz/installed'
+dirmzremoved='/var/cache/mz/removed'
 
 ########################################
 #===============TESTES
@@ -81,15 +78,21 @@ dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
 [[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
 
 # Qual a linguagem do cabra?
-if [[ "$LANG" = "pt-br" ]]; then
+if [[ "$BANANA_LANG" = "pt-br" ]]; then
     HELP="_HELP_PT"
 else
     HELP="_HELP_US"
 fi
 
+test -d ${dirlist}        || mkdir -p ${dirlist}
+test -d ${dirdesc}        || mkdir -p ${dirdesc}
+test -d ${dirremove}      || mkdir -p ${dirremove}
+test -d ${dirmzinstalled} || mkdir -p ${dirmzinstalled}
+test -d ${dirmzremoved}   || mkdir -p ${dirmzremoved}
+
 # Inicializando o programa em silêncio...
- _VERBOSE '0'
- 
+_VERBOSE '0'
+
 # Verificando quais argumentos passados pelo usuário
 # para pegar as variáveis necessárias
 for entry_parameter; do
@@ -114,7 +117,7 @@ case "$1" in
     -c|create)
        shift # Rebaixando
        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
-       
+
        # Se nome do pacote ter espaços não deve continuar
        if [[ "$@" =~ .*[[:space:]]+.*-.* ]]; then
            echo -e "${red}[Error!]${end} Unexpected character."
@@ -123,11 +126,11 @@ case "$1" in
            echo "If you need more HELP, use -h or --help"
            exit 1
        fi
-       
+
        # Se nome do pacote não for letras ou se tiver
        # espaços entre outras coisas, não pode continuar.
        _NAME_FORMAT_PKG "$1" || exit 1
-       
+
        # Verificando quantos '-' existem e fazendo contagem
        # com _WC
        check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
@@ -154,7 +157,7 @@ case "$1" in
         shift
         # Verificando se tem traços '-' a mais
         # E dando um sermão ;D
-        
+
         check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
         check_var="$(_WC ${check_var})"
         if [[ -n "$1" ]] && [[ "$check_var" -lt '2' || "$check_var" -gt '2' ]]; then
@@ -184,10 +187,13 @@ case "$1" in
         shift # Rebaixe baby
         _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
         while [[ -n "$1" ]]; do
-            _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
-            [[ ! -e "$1" ]] && { echo -e "${red}[ERROR]${end} Do not cheat me! This Package dont exist."; exit 1 ;}
+           _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
+           [[ ! -e "$1" ]] && { echo -e "${red}[ERROR]${end} Do not cheat me! This Package dont exist."; exit 1 ;}
             _VERIFY_PACK_IS_XZ "$1" || exit 1 # Pacote É comprimido com XZ?
             _INSTALL_PKG "$1"  || exit 1
+            retval=${?}
+            [[ $retval = 0 ]] && touch $dirmzinstalled/${1}
+            [[ $retval = 0 ]] && rm -f $dirmzremoved/${1}
             shift
        done
     ;;
@@ -195,7 +201,7 @@ case "$1" in
     -u|upgrade) # Upgrade de pacotes
         shift
         _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
-        while [[ -n "$1" ]]; do           
+        while [[ -n "$1" ]]; do
             _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
             _UPGRADE "$1" || exit 1
             shift
@@ -208,11 +214,16 @@ case "$1" in
 
     -r|remove)
         shift # Rebaixa baby
-        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =) 
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
         # Se contiver um dos caracteres da lista, não poderá continuar.
         [[ "$1" =~ .*(\*|@|#|,).* ]] && { echo 'Dont Use * or @ or #'; exit 1 ;}
         while [[ -n "$1" ]]; do
             _PRE_REMOVE "$1" || exit 1
+            retval=${?}
+#           [[ $retval = 0 ]] && _pkg=($(echo $dirmzinstalled/${1}*.mz))
+            [[ $retval = 0 ]] && _pkg=($(echo $dirmzinstalled/${1}*| sed 's|/| |g'|awk '{print $5}'))
+            [[ $retval = 0 ]] && rm -f $dirmzinstalled/${_pkg}
+            [[ $retval = 0 ]] && touch $dirmzremoved/${_pkg}
             shift
         done
         exit 0
