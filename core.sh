@@ -423,7 +423,7 @@ _GPG_SIGN()
 {
     local package="$1"
     local sig='sig'
-    
+
     # Pacote existe?
     if [[ ! -e "${package}.${format_pkg}" ]]; then
         echo "${red}[ERRO]${end} Unable to sign package. ${package}.${format_pkg}"
@@ -431,11 +431,17 @@ _GPG_SIGN()
         echo "For security reasons, do not pass the package on to third parties."
         return 1
     fi
-    
-    # Gerando Assinatura no pacote
-    gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" &>/dev/null || \
-    gpg --detach-sign "${package}.${format_pkg}" || return 1
-    echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
+
+    [ "$REWRITE_SIG" = "1" ] && rm -f ../${package}.${format_pkg}.${sig}
+    [ "$REWRITE_SIG" = "1" ] && rm -f ${package}.${format_pkg}.${sig}
+
+    which gpg &> /dev/null
+    if [ $? = 0 ]; then
+        # Gerando Assinatura no pacote
+        gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" &>/dev/null || \
+        gpg --detach-sign "${package}.${format_pkg}" || return 1
+        echo -e "${blue}[Create]${end} Your ${sig} on:   ../${package}.${format_pkg}.${sig}"
+    fi
     return 0
 }
 
