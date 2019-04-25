@@ -271,7 +271,7 @@ pkgname=''
 version=''
 
 # Build number
-build=''
+build='$BUILD'
 
 # License
 license=''
