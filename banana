@@ -29,8 +29,8 @@ export LANG=C
 
 export PRG='banana'
 export VERSION='2.2.4.6_littlewitchbrown'
-export format_pkg='mz'            # Extensão do pacote
-export descme='info/desc'         # Descrição do pacote
+export format_pkg='mz'                   # Extensão do pacote
+export descme='info/desc'                # Descrição do pacote
 export local_list='var/lib/banana/list'  # Localização da lista
 
 # Caso o usuário deixou nulo vamos
@@ -65,6 +65,10 @@ for heart_load in "${heart_archives[@]}"; do
     source "$heart_load" || { echo "ERROR ON LOAD \"$heart_load\", ABORT"; exit 1 ;}
 done
 
+PKG_EXT="${PKG_EXT:='chi'}"
+LFS_VARCACHE="${LFS_VARCACHE:='apt'}"
+export format_pkg="$PKG_EXT"          # Extensão do pacote
+
 #######################################
 #============ DIRETÓRIOS ESPECIAIS
 #######################################
@@ -72,8 +76,8 @@ done
 dirlist='/var/lib/banana/list'       # Lista do pacote 'pack.list'
 dirdesc='/var/lib/banana/desc'       # Descrição do pacote 'pack.desc'
 dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
-dirmzinstalled='/var/cache/mz/installed'
-dirmzremoved='/var/cache/mz/removed'
+dirinstalled='/var/cache/$LFS_VARCACHE/installed'
+dirremoved='/var/cache/$LFS_VARCACHE/removed'
 
 ########################################
 #===============TESTES
@@ -89,11 +93,11 @@ else
     HELP="_HELP_US"
 fi
 
-test -d ${dirlist}        || mkdir -p ${dirlist}
-test -d ${dirdesc}        || mkdir -p ${dirdesc}
-test -d ${dirremove}      || mkdir -p ${dirremove}
-test -d ${dirmzinstalled} || mkdir -p ${dirmzinstalled}
-test -d ${dirmzremoved}   || mkdir -p ${dirmzremoved}
+test -d ${dirlist}      || mkdir -p ${dirlist}
+test -d ${dirdesc}      || mkdir -p ${dirdesc}
+test -d ${dirremove}    || mkdir -p ${dirremove}
+test -d ${dirinstalled} || mkdir -p ${dirinstalled}
+test -d ${dirremoved}   || mkdir -p ${dirremoved}
 
 # Inicializando o programa em silêncio...
  _VERBOSE '0'
@@ -131,11 +135,11 @@ case "$1" in
            echo "If you need more HELP, use -h or --help"
            exit 1
        fi
-       
+
        # Se nome do pacote não for letras ou se tiver
        # espaços entre outras coisas, não pode continuar.
        _NAME_FORMAT_PKG "$1" || exit 1
-       
+
        # Verificando quantos '-' existem e fazendo contagem
        # com _WC
        check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
@@ -162,7 +166,7 @@ case "$1" in
         shift
         # Verificando se tem traços '-' a mais
         # E dando um sermão ;D
-        
+
         check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
         check_var="$(_WC ${check_var})"
         if [[ -n "$1" ]] && [[ "$check_var" -lt '2' || "$check_var" -gt '2' ]]; then
@@ -197,8 +201,8 @@ case "$1" in
             _VERIFY_PACK_IS_XZ "$1" || exit 1 # Pacote É comprimido com XZ?
             _INSTALL_PKG "$1"  || exit 1
              retval=${?}
-            [[ $retval = 0 ]] && touch $dirmzinstalled/${1}
-            [[ $retval = 0 ]] && rm -f $dirmzremoved/${1}
+            [[ $retval = 0 ]] && touch $dirinstalled/${1}
+            [[ $retval = 0 ]] && rm -f $dirremoved/${1}
             shift
        done
     ;;
@@ -206,7 +210,7 @@ case "$1" in
     -u|upgrade) # Upgrade de pacotes
         shift
         _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
-        while [[ -n "$1" ]]; do           
+        while [[ -n "$1" ]]; do
             _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
             _UPGRADE "$1" || exit 1
             shift
@@ -225,9 +229,9 @@ case "$1" in
         while [[ -n "$1" ]]; do
             _PRE_REMOVE "$1" || exit 1
             retval=${?}
-            [[ $retval = 0 ]] && _pkg=($(echo $dirmzinstalled/${1}*| sed 's|/| |g'|awk '{print $5}'))
-            [[ $retval = 0 ]] && rm -f $dirmzinstalled/${_pkg}
-            [[ $retval = 0 ]] && touch $dirmzremoved/${_pkg}
+            [[ $retval = 0 ]] && _pkg=($(echo $dirinstalled/${1}*| sed 's|/| |g'|awk '{print $5}'))
+            [[ $retval = 0 ]] && rm -f $dirinstalled/${_pkg}
+            [[ $retval = 0 ]] && touch $dirremoved/${_pkg}
             shift
         done
         exit 0

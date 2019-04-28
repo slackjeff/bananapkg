@@ -132,7 +132,7 @@ _SPINNER()
 		'banana wait.....go cofF'
 		'banana wait.....go coffE'
     )
-    
+
     while :; do
 		# Cores aleatorias
 		[[ "$inc" -gt '22' ]] && color="${red}"
@@ -160,7 +160,7 @@ _CAT()
 {
     # Tag para sinalizar que precisa parar.
     local end_of_file='EOF'
-    
+
     INPUT=( "${@:-"%"}" )
     for i in "${INPUT[@]}"; do
         if [[ "$i" != "%" ]]; then
@@ -185,7 +185,7 @@ _GREP()
     # ou variável.
     local expression="$1"
     local receive="$2"
-    
+
     # Testando e buscando expressão.
     if [[ -z "$expression" ]]; then
         { echo 'MODULE _GREP ERROR. Not found variable $expression'; exit 1 ;}
@@ -205,7 +205,7 @@ _WC()
 {
     local check="$@" # Recebendo args
     local inc='0'    # Var incremento
-    
+
     for x in $check; do
         let inc++
     done
@@ -231,13 +231,13 @@ print()
 _VERIFY_PACK_IS_XZ()
 {
     local verify_me="$1"
-    
+
     if ! [[ "$(file $verify_me)" =~ .*XZ ]]; then
         echo -e "${red}[ERROR]${end} This package was not created with Banana."
-        echo 'Check the package with the command: ${blue}file namePackage-version-build.mz${end}'
+        echo 'Check the package with the command: ${blue}file namePackage-version-build.${EXTENSAO}${end}'
         echo 'And contact the package builder. ABORTED.'
         return 1
-    fi    
+    fi
 }
 
 # Módulo para verificação de subshells =)
@@ -251,7 +251,7 @@ _SUBSHELL_STATUS()
 _VERBOSE()
 {
     local conf="$1"
-    
+
     if [[ "$VERBOSE" = '1' ]] || [[ "$conf" = '1' ]]; then
         exec 4>&1 3>&2
         printyeah='1'
@@ -287,9 +287,9 @@ _NAME_FORMAT_PKG()
 # como *desc*, e script de pós instalação *pos.sh*
 _MANAGE_SCRIPTS_AND_ARCHIVES()
 {
-    local packname="${1/%.mz/}"
-    local dir_desc="${local_list/list/desc}"  
-    
+#   local packname="${1/%.mz/}"
+    local packname="${1/%.${PKG_EXT}/}"
+    local dir_desc="${local_list/list/desc}"
     if ! [[ -e "/info/desc" ]]; then
         echo -e "${red}[ERROR!]${end} /info/desc does not exist. ABORT!"
         exit 1
@@ -342,13 +342,13 @@ _CREATE_LIST()
 {
     # Variáveis locais
     local packname="$1"
-    
+
     if ! tar tf "$packname" > "${dirlist}/${name_version_build}.list"; then
         echo -e "${red}[ERROR!]${end}\tNot Create ${dirlist}/${name_version_build}.list"
         return 1
     fi
     echo -e "${blue}[CREATE LIST]${end}\t On ${dirlist}/${name_version_build}.list"
-    return 0    
+    return 0
 }
 
 
@@ -360,7 +360,7 @@ _GENERATE_DESC()
     local DESC_PACKNAME="$1"
     local DESC_VERSION="$2"
     local DESC_BUILD="$3"
-    
+
     [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
     _CAT > "info/desc" << EOF
 ######################################################################
@@ -385,22 +385,29 @@ build='$DESC_BUILD'
 # LICENSE OF SOFTWARE
 license='$LICENSE'
 
+# LFS VERSION
+lfs_version='$LFS_VERSION'
+
+# LFS INIT
+lfs_init='$LFS_INIT'
+
+# DISTRO
+distro='$DISTRO'
+
 # SMALL Description of Software, NO Trespassing |
 #=============RULER=====================================================|
-desc=""
+desc="$DESC_PACKNAME-$DESC_VERSION"
 #=======================================================================|
 
 # URL SOFTWARE
-url=''
+url='$SITE'
 
 # What packages do your package need to run?
 dep=('')
 
-
 #####################################################
 # !!! Banana Infos, DONT EDIT!!!
 #####################################################
-
 BANANAVERSION="$VERSION"
 
 EOF
@@ -455,7 +462,7 @@ _VERIFY_ON()
   ( # Subshell marota
     local dir_info='info'  # Diretorio info que contem informações como (desc)
     local info_desc='desc' # Descrição do pacote
-    
+
     if [[ ! -d "$dir_info" ]]; then # Diretório info existe?
         echo -e "${red}[ERROR!]${end} ${pink}${dir_info}${end} directory\n"
         echo -e "It's necessary your package have the DIRECTORY ${pink}info${end}."
@@ -497,20 +504,26 @@ _VERIFY_ON()
             echo "Enter a url of project/software into variable url."
             exit 1
         fi
+
         # Conferindo se o nome do pacote e versão batem com o que
         # o usuario passou em linha, se não bater não devemos continuar.
         if [[ "$pkgname" != "$(echo "$package" | cut -d '-' -f '1')" ]]; then
             echo -e "Check ${pink}${info_desc}${end}, VARIABLE ${blue}pkgname${end} it different"
             echo "of the name you entered as an argument. Check and return ;)"
             exit 1
-        elif [[ "$version" != $(echo "$package" | cut -d '-' -f '2' | sed 's/\.mz//') ]]; then
+
+#       elif [[ "$version" != $(echo "$package" | cut -d '-' -f '2' | sed 's/\.mz//') ]]; then
+        elif [[ "$version" != $(echo "$package" | cut -d '-' -f '2' | sed 's/\.'${PKG_EXT}'//') ]]; then
             echo -e "Check ${pink}${info_desc}${end}, VARIABLE ${blue}version${end} it different"
             echo "of the version you entered as an argument. Check and return ;)"
             exit 1
-        elif [[ "$build" != $(echo "$package" | cut -d '-' -f '3' | sed 's/\.mz//') ]]; then
+
+#       elif [[ "$build" != $(echo "$package" | cut -d '-' -f '3' | sed 's/\.mz//') ]]; then
+        elif [[ "$build" != $(echo "$package" | cut -d '-' -f '3' | sed 's/\.'${PKG_EXT}'//') ]]; then
             echo -e "Check ${pink}${info_desc}${end}, VARIABLE ${blue}build${end} it different"
             echo "of the version you entered as an argument. Check and return ;)"
             exit 1
+
         else
             echo -e "${blue}[CHECK VARIABLES]${end} OK."
         fi
@@ -527,7 +540,7 @@ _VERIFY_ON()
    done
 
  )
- 
+
 _SUBSHELL_STATUS
 }
 
@@ -535,9 +548,9 @@ _LIST_ARCHIVES_DIRECTORIES()
 {
     local packname="${1}.list"
     local LIST_CLEAN_DIRECTORIES
-    
+
     echo -e "${cyan}[Clean]${end} List: ${dirlist}/${packname}"
-    
+
     # Apagando coisas desnecessárias na lista e substituindo.
     sed -i "
         s/^\.\///g
@@ -575,7 +588,7 @@ _LIST_ARCHIVES_DIRECTORIES()
         /^var\/lib\/banana\/list/d
         /^var\/lib\/banana\/remove/d
     " "${dirlist}/${packname}"
-    
+
     # Lista de diretórios para usar no loopzinho
     LIST_CLEAN_DIRECTORIES=(
         'var'
@@ -617,7 +630,8 @@ _CREATE_PKG()
 {
     # Pegando somente nome do pacote
     # sem extensão
-    local package="${1/%.mz/}"
+#   local package="${1/%.mz/}"
+    local package="${1/%.${PKG_EXT}/}"
     local ext_desc='desc'
 
     echo -e "${blue}[Create]${end} Now, create package for You! Wait..."
@@ -655,7 +669,6 @@ _CREATE_PKG()
 #####################################################################
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
 _INSTALL_PKG()
 {
   ( # Subshell Suicide
@@ -667,7 +680,7 @@ _INSTALL_PKG()
     # Chamando Animação e pegando PID do processo.
     _SPINNER &
     pid=$!
-    
+
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
     if ! tar xpmf "${packname}" -C "/tmp/" "./${descme}"; then
@@ -682,10 +695,10 @@ _INSTALL_PKG()
         { kill $pid; wait $pid 2>/dev/null; echo ;}
         return 1
     fi
-    
+
     { kill $pid; wait $pid 2>/dev/null; echo ;}
-    
-    
+
+
     # Variavel puxando de source...
     # Está variavel é importante se caso
     # o usuario passe um caminho completo do pacote exemplo:
@@ -700,9 +713,12 @@ _INSTALL_PKG()
     echo -e "${pink}Version:${end}\t$version"
     echo -e "${pink}Build-Package:${end}\t$build"
     echo -e "${pink}License:${end}\t${license:-Null}"
+    echo -e "${pink}LFS version:${end}\t${lfs_version:-Null}"
+    echo -e "${pink}LFS init:${end}\t${lfs_init:-Null}"
+    echo -e "${pink}Distro: ${end}\t${distro:-Null}"
     echo -e "${pink}Small Desc:${end}\t$desc"
     echo -e "#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#\n"
-    
+
    _MSG_DADDY # Mensagem aleátoria do pai! para exibir para o usuário
 
    # Vamos verificar se existe o script de pre instalação *pre.sh*
@@ -812,7 +828,8 @@ _UPGRADE()
             jj="$(( $jj + 1 ))" # Se não existir ela incrementa ;)
         fi
     done
-    local packname="${packname/%.mz/}" # Cortando extensão para imprimir certinho.
+#   local packname="${packname/%.mz/}" # Cortando extensão para imprimir certinho.
+    local packname="${packname/%.${PKG_EXT}/}" # Cortando extensão para imprimir certinho.
     [[ "$jj" -gt '0' ]] && { echo -e "${red}[NOT FOUND]${end} ${packname} in system for upgrade."; return 1 ;}
   ) # FIm da subshell meu precioso
   _SUBSHELL_STATUS
@@ -900,7 +917,8 @@ _PRE_REMOVE()
 # Módulo para remoção
 _REMOVE_NOW()
 {
-    local packname="${1/%.mz/}"
+#   local packname="${1/%.mz/}"
+    local packname="${1/%.${PKG_EXT}/}"
     local a='0' # Variavel incremento arquivos
     local d='0' # Variavel incremento diretorios vazios
     local l='0' # Variavel incremento link simbólico
@@ -1071,17 +1089,17 @@ _UPDATE_BANANA()
     local check_url='www.stallman.org'
     local tmp_dir_banana="/tmp/${PRG}pkg"
     local DOWNLOAD m
-    
+
     # Curl está no sistema?
     type -P curl &>/dev/null && CHECK_CONNECTION='ping -c 1' || CHECK_CONNECTION='wget -q --spider'
     $CHECK_CONNECTION "$check_url" &>/dev/null || { echo "Don't Have Internet. ABORTED."; return 1 ;}
     echo -e "Internet\t${cyan}[OK]${end}"
-    
+
     # Ok, Puxe o repositorio agora!
     pushd /tmp &>/dev/null
     git clone "$link"
     pushd "${tmp_dir_banana}" &>/dev/null
-    
+
     # Dando permissões e copiando arquivos para seus lugares.
     echo -e "\nPermission and Copy archives\n"
     for m in "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh' 'builtin.sh' "$PRG"; do
