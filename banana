@@ -28,10 +28,9 @@ export LC_ALL=C
 export LANG=C
 
 export PRG='banana'
-export VERSION='2.2.4.6_littlewitchbrown'
+export VERSION='2.2.4.7'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
-export local_list='var/lib/banana/list'  # Localização da lista
 
 # Caso o usuário deixou nulo vamos
 # inicializar as variáveis de configurações em modo default.
@@ -79,25 +78,12 @@ dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
 
 # Sem root não vai amiguinho.
 [[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
-
-# Qual a linguagem do cabra?
-if [[ "$LANG" = "pt-br" ]]; then
-    HELP="_HELP_PT"
-else
-    HELP="_HELP_US"
-fi
-
-# Inicializando o programa em silêncio...
- _VERBOSE '0'
  
 # Verificando quais argumentos passados pelo usuário
 # para pegar as variáveis necessárias
 for entry_parameter; do
     if [[ "$entry_parameter" = '-y' ]]; then
         AUTO_YES='1'
-    elif [[ "$entry_parameter" = '-v' ]] || [[ "$entry_parameter"  = 'verbose' ]]; then
-        VERBOSE='1'
-        _VERBOSE '1'
     elif [[ "$entry_parameter" = '-ol' ]] || [[ "$entry_parameter" = 'one-line' ]]; then
         ONE_LINE='1'
     else
@@ -186,7 +172,6 @@ case "$1" in
         while [[ -n "$1" ]]; do
             _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
             [[ ! -e "$1" ]] && { echo -e "${red}[ERROR]${end} Do not cheat me! This Package dont exist."; exit 1 ;}
-            _VERIFY_PACK_IS_XZ "$1" || exit 1 # Pacote É comprimido com XZ?
             _INSTALL_PKG "$1"  || exit 1
             shift
        done

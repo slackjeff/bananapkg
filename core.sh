@@ -69,7 +69,7 @@ _MSG_DADDY()
         "#bananapkg in silicon valley already."
         "La Revolution del Brazil"
         "Rich Package"
-		"1+1=Banana"
+		    "1+1=Banana"
         "I see bananas! how often? All the time"
         "I never lost control baby *.*"
         "You and I are bananas."
@@ -87,8 +87,10 @@ _MSG_DADDY()
         "Version: Take me if you can :O"
         "Free Beer? OMG."
         "A meteor is falling! Please wait while I install your package."
-		"My temple is banana."
-		"Está é a segunda frase em português, se você é gringo não entenderá. MUAHAHAHA"
+		    "My temple is banana."
+		    "Está é a segunda frase em português, se você é gringo não entenderá. MUAHAHAHA"
+        "Mage Pack"
+        "Keep it Simple, banana =)"
     )
     # Pegando o número de frases da lista.
     total_dialog_daddy=${#dialog_daddy[@]}
@@ -122,15 +124,15 @@ _SPINNER()
     	'banana wait...'
     	'banana wait....'
     	'banana wait.....'
-		'banana wait.....G'
-		'banana wait.....gO'
-		'banana wait.....go'
-		'banana wait.....go '
-		'banana wait.....go C'
-		'banana wait.....go cO'
-		'banana wait.....go coF'
-		'banana wait.....go cofF'
-		'banana wait.....go coffE'
+      'banana wait.....G'
+      'banana wait.....gO'
+      'banana wait.....go'
+      'banana wait.....go '
+      'banana wait.....go C'
+      'banana wait.....go cO'
+      'banana wait.....go coF'
+      'banana wait.....go cofF'
+      'banana wait.....go coffE'
     )
     
     while :; do
@@ -213,12 +215,6 @@ _WC()
     return 0
 }
 
-# Função para Printar.
-print()
-{
-    [[ "$printyeah" = '1' ]] && echo -e "$@"
-}
-
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
@@ -227,37 +223,11 @@ print()
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-# Módulo para verificar se pacote é um pacote Comprimido com XZ.
-_VERIFY_PACK_IS_XZ()
-{
-    local verify_me="$1"
-    
-    if ! [[ "$(file $verify_me)" =~ .*XZ ]]; then
-        echo -e "${red}[ERROR]${end} This package was not created with Banana."
-        echo 'Check the package with the command: ${blue}file namePackage-version-build.mz${end}'
-        echo 'And contact the package builder. ABORTED.'
-        return 1
-    fi    
-}
-
 # Módulo para verificação de subshells =)
 # importante para saber o exit code dos mesmos
 _SUBSHELL_STATUS()
 {
     [[ "$?" -ne '0' ]] && exit 1 || return 0
-}
-
-# Módulo para verbosidade
-_VERBOSE()
-{
-    local conf="$1"
-    
-    if [[ "$VERBOSE" = '1' ]] || [[ "$conf" = '1' ]]; then
-        exec 4>&1 3>&2
-        printyeah='1'
-    else
-        exec 4>/dev/null 3>&4
-    fi
 }
 
 
@@ -288,7 +258,7 @@ _NAME_FORMAT_PKG()
 _MANAGE_SCRIPTS_AND_ARCHIVES()
 {
     local packname="${1/%.mz/}"
-    local dir_desc="${local_list/list/desc}"  
+    local dir_desc="${dirlist/list/desc}"  
     
     if ! [[ -e "/info/desc" ]]; then
         echo -e "${red}[ERROR!]${end} /info/desc does not exist. ABORT!"
@@ -513,7 +483,7 @@ _VERIFY_ON()
    # Verificando se rm -rf está presente em um dos scripts.
    for check_script in 'pre.sh' 'pos.sh' 'rm.sh'; do
        if [[ -e "${dir_info}/${check_script}" ]]; then
-           if _GREP 'rm[[:space:]]+\-(rf|fr)' "${dir_info}/${check_script}" 1>&4 2>&3; then
+           if _GREP 'rm[[:space:]]+\-(rf|fr)' "${dir_info}/${check_script}"; then
                echo -e "${red}[CRAZY!]${end} $check_script contain command rm -rf. ABORTED NOW."
                exit 1
            fi
@@ -615,7 +585,9 @@ _CREATE_PKG()
     local ext_desc='desc'
 
     echo -e "${blue}[Create]${end} Now, create package for You! Wait..."
-    if tar cvpJf ../${package}.${format_pkg} . 1>&4 2>&3; then
+
+    # Criação do pacote, sem compressão.
+    if tar cf ../${package}.${format_pkg} .; then
         echo -e "${blue}[Create]${end} Your Package on: ../${package}.${format_pkg}"
         cp "$descme" ../${package}.${format_pkg}.${ext_desc} &>/dev/null
         echo -e "${blue}[Create]${end} Your .${ext_desc} on:   ../${package}.${format_pkg}.${ext_desc}"
@@ -664,7 +636,7 @@ _INSTALL_PKG()
     
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
-    if ! tar xpmf "${packname}" -C "/tmp/" "./${descme}"; then
+    if ! tar xf "${packname}" -C "/tmp/" "./${descme}"; then
         echo -e "${red}[ERROR!]${end} I could not unzip the file desc."
         { kill $pid; wait $pid 2>/dev/null; echo ;}
         return 1
@@ -702,20 +674,20 @@ _INSTALL_PKG()
    # Vamos verificar se existe o script de pre instalação *pre.sh*
    # Se ele existir o programa deve executalo.
    if tar tf "${packname}" "./info/$PRE_SH" &>/dev/null; then
-        if tar -xpvf "$packname" -C /tmp "./info/$PRE_SH" &>/dev/null; then
+        if tar -xf "$packname" -C /tmp "./info/$PRE_SH" &>/dev/null; then
             echo -e "${blue}[Pre-Installation]${end} The script pre.sh was found. Execute now!"
         else
             echo -e "${red}[Pre-Installation]${end} Cannot extract ${PRE_SH}, ABORT"
             return 1
         fi  
         bash "/tmp/info/$PRE_SH"
-        tar xvpmf "${packname}" -C / 1>&4 2>&3 || return 1
+        tar xf "${packname}" -C / || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
         _CREATE_LIST "$1" || return 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     else
         # Caiu aqui pode continuar normal.
-        tar xvpmf "${packname}" -C / | tee -a ${dirlist}/"${name_version_build}.list"  1>&4 2>&3 || return 1
+        tar xf "${packname}" -C /
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
         _CREATE_LIST "$1" || return 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
@@ -925,7 +897,7 @@ _REMOVE_NOW()
     
     while IFS= read thefile; do
         if [[ -f "$thefile" ]]; then
-            rm "$thefile" &>/dev/null && print "Delete\t${thefile}"
+            rm "$thefile" &>/dev/null && echo -e "Delete\t${thefile}"
         fi
     done < "${dirlist}/${packname}.list"
 
@@ -935,7 +907,7 @@ _REMOVE_NOW()
    # Removendo links simbólicos
     while IFS= read thelink; do
        if [[ -L "$thelink" ]]; then
-             unlink "$thelink" &>/dev/null && print "Delete\t${thelink}"
+             unlink "$thelink" &>/dev/null && echo -e "Delete\t${thelink}"
        fi
     done < "${dirlist}/${packname}.list"
 
@@ -946,7 +918,7 @@ _REMOVE_NOW()
     # toda hierarquia do pacote seja removido.
         while IFS= read thedir; do
             if [[ -d "$thedir" ]] && [[ -z "$(ls -A ${thedir})" ]]; then 
-                  rmdir -p "${thedir}" &>/dev/null && print "Delete\t${thedir}"
+                  rmdir -p "${thedir}" &>/dev/null && echo -e "Delete\t${thedir}"
             fi
     done < "${dirlist}/${packname}.list"
     
@@ -1037,7 +1009,7 @@ _PRINT_LIST(){
     local re="\b$package_\b"
     local searchlist
 
-    pushd "/${local_list}" &>/dev/null
+    pushd "/${dirlist}" &>/dev/null
     for searchlist in *; do
         if [[ "$searchlist" =~ ^${re} ]]; then
             echo -e "==========================$searchlist=========================="

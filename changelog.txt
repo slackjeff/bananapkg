@@ -1,3 +1,21 @@
+#----------------------------------25/05/2019--------------------------------------#
+(Versão 2.2.4.7)
+Está versão foi exclusiva para aumentar a velocidade na criação/instalação/atualização
+dos pacotes.
+Alguns módulos descenessários foram descartados e o formato do pacote mudou!
+Agora não comprimimos mais, apenas compactamos com tar. Isso deixa a velocidade 102%
+mais rápido.
+
+-[REMOVIDO]:        Suporte a outras linguagens, somente inglês agora.
+
+-[REMOVIDO]:        Verbose para aumentar velocidade de criação/instalação pacote.
+
+-[REMOVIDO]:        Módulo _VERIFY_PACK_IS_XZ
+
+-[SUBSTITUIDO]:     Compressão com XZ por apenas compactação tar.
+
+-[ADICIONADO]:      3 novas mensagens no módulo _MSG_DADDY
+
 #----------------------------------10/04/2019--------------------------------------#
 (Versão 2.2.4.6_bealtifulbrown)
 
