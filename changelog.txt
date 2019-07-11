@@ -1,3 +1,10 @@
+#----------------------------------11/07/2019--------------------------------------#
+(Versão 2.2.4.8)
+
+-[REMOVIDO]			Função _HELP_PT_BR, agora só trabalhamos com US.
+-[BUGFIX]  			Removido bug de inicialização do banana sem argumentos
+					proporcionado pela var $HELP obrigado VOVO (vini) pelo relato. 
+
 #----------------------------------25/05/2019--------------------------------------#
 (Versão 2.2.4.7)
 Está versão foi exclusiva para aumentar a velocidade na criação/instalação/atualização

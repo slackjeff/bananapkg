@@ -220,7 +220,7 @@ case "$1" in
 
     -V|version) echo "$PRG Version $VERSION" ;;
 
-    -h|help) "$HELP" ;;
+    -h|help) _HELP_US ;;
 
-    *) "$HELP" ;;
+    *) _HELP_US ;;
 esac
