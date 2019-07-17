@@ -7,7 +7,7 @@
 ### Para uma melhor Documentação consulte
 * [Site Oficial](https://bananapkg.github.io/)
 
-### DESENVOLVEDORES leia o Code-Style :ledger:
+### DESENVOLVEDORES: leiam o Code-Style :ledger:
 * [Code Style](https://bananapkg.github.io/code-style.html)
 
 ### Requisitos/Requirements :star:
@@ -24,10 +24,10 @@
 ----
 
 ### Instalação Direta :computer:
-**Clone Repo**<br/>
+**Clone o Repositório**<br/>
 git clone https://github.com/slackjeff/bananapkg<br/>
 <br/>
-**ON ROOT, Create a directories**<br/>
+**Como ROOT, crie os diretórios**<br/>
 mkdir -vp /var/lib/banana/{list,desc,remove}<br/>
 mkdir -v /etc/banana<br/>
 mkdir -v /usr/libexec/banana<br/>
@@ -41,7 +41,7 @@ cp -v banana.8 /usr/share/man/pt_BR/man8/<br/>
 *Enjoy ;)*
 
 ## Instalação Automática :computer:
-**Permission and Execute Script**<br>
+**Conceda permissões e execute o script**<br>
 chmod +x install.sh<br>
 bash install.sh
 
