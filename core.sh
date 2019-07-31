@@ -1034,18 +1034,19 @@ _PRINT_LIST(){
 _UPDATE_BANANA()
 {
     local link='https://github.com/slackjeff/bananapkg'
-    local check_url='www.stallman.org'
+    local connectivity="${red}[FAILED]${end}"
     local tmp_dir_banana="/tmp/${PRG}pkg"
     local DOWNLOAD m
     
-    # Curl está no sistema?
-    type -P curl &>/dev/null && CHECK_CONNECTION='ping -c 1' || CHECK_CONNECTION='wget -q --spider'
-    $CHECK_CONNECTION "$check_url" &>/dev/null || { echo "Don't Have Internet. ABORTED."; return 1 ;}
-    echo -e "Internet\t${cyan}[OK]${end}"
+    # Verifica conexão com internet usando networkmanager
+    if type -P nmcli &>/dev/null; then
+        [[ "$(nmcli -g connectivity g)" = "full"  ]] && connectivity="${cyan}[OK]${end}"
+        echo -e "Internet\t$connectivity"
+    fi
     
     # Ok, Puxe o repositorio agora!
     pushd /tmp &>/dev/null
-    git clone "$link"
+    git clone "$link" || return 1
     pushd "${tmp_dir_banana}" &>/dev/null
     
     # Dando permissões e copiando arquivos para seus lugares.
