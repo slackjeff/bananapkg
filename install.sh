@@ -34,8 +34,10 @@ echo -e "###################################################\n"
 for param in "$@"; do
     shift
     # Ex: DESTDIR=/caminho/para/dir ou DESTDIR /caminho/para/dir
-    if [[ "$param" = DESTDIR* ]]; then
-        [[ "$param" = *=* ]] && DESTDIR="${param#*=}" || DESTDIR=$1
+    if [[ "$param" = 'DESTDIR'* ]]; then
+        [[ "$param" = *'='* ]] && DESTDIR="${param#*=}" || DESTDIR="$1"
+        # remove ultima barra
+        DESTDIR="${DESTDIR%*/}"
     fi
 done
 
@@ -51,6 +53,5 @@ if [[ -e "${DESTDIR}/etc/banana/${prg}.conf" ]]; then
 else
     install -vDm644 -t "${DESTDIR}/etc/banana/" "${prg}.conf" || exit 1
 fi
-
 
 echo -e "\nFINNALY! WORK NOW, call banana"
