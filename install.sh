@@ -39,29 +39,18 @@ for param in "$@"; do
     fi
 done
 
-# Criando diretórios se não existirem.
-echo -e "Create Especial Directories...\n"
-for createdir in '/var/lib/banana/list' '/var/lib/banana/desc' '/var/lib/banana/remove' '/usr/libexec/banana' '/etc/banana'; do
-    [[ ! -d "${DESTDIR}${createdir}" ]] && mkdir -vp "${DESTDIR}${createdir}" || echo "${DESTDIR}${createdir} exist, skip."
-done
-
 # Dando permissões e copiando arquivos para seus lugares.
 echo -e "\nPermission and Copy archives\n"
-for m in "$prg" "${prg}.conf" 'banana.8' 'core.sh' 'help.sh'; do
-    [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
-    case $m in
-        (banana) cp -v "$m" "${DESTDIR}/sbin/" || exit 1    ;;
-        (banana.8)
-		if [[ -d "${DESTDIR}/usr/share/man/pt_BR/man8/" ]]; then
-		    cp -v "$m" "${DESTDIR}/usr/share/man/pt_BR/man8/" || exit 1
-                else
-                    mkdir -vp "${DESTDIR}/usr/share/man/pt_BR/man8/"
-		    cp -v "$m" "${DESTDIR}/usr/share/man/pt_BR/man8/" || exit 1
-                fi
-        ;;
-        (banana.conf) cp -v "$m" "${DESTDIR}/etc/banana/" || exit 1 ;;
-        (core.sh|help.sh|builtin.sh) cp -v "$m" "${DESTDIR}/usr/libexec/banana/" || exit 1 ;;
-    esac
-done
+install -vDm755 -t "${DESTDIR}/sbin/" "$prg" || exit 1
+install -vDm644 -t "${DESTDIR}/usr/share/man/pt_BR/man8/" 'banana.8' || exit 1
+install -vDm644 -t "${DESTDIR}/usr/libexec/banana/" {core,help}'.sh' || exit 1
+# Verifica se arquivo de configuração existe para cria-lo ou .new
+if [[ -e "${DESTDIR}/etc/banana/${prg}.conf" ]]; then
+    cmp -s "${prg}.conf" "${DESTDIR}/etc/banana/${prg}.conf" ||
+        install -vDm644 "${prg}.conf" "${DESTDIR}/etc/banana/${prg}.conf.new" || exit 1
+else
+    install -vDm644 -t "${DESTDIR}/etc/banana/" "${prg}.conf" || exit 1
+fi
+
 
 echo -e "\nFINNALY! WORK NOW, call banana"
