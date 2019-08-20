@@ -54,4 +54,7 @@ else
     install -vDm644 -t "${DESTDIR}/etc/banana/" "${prg}.conf" || exit 1
 fi
 
+# Criando diretórios se não existirem
+mkdir -vp "${DESTDIR}/var/lib/banana/"{list,desc,remove}
+
 echo -e "\nFINNALY! WORK NOW, call banana"
