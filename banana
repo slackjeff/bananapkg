@@ -195,7 +195,7 @@ case "$1" in
         shift # Rebaixa baby
         _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =) 
         # Se contiver um dos caracteres da lista, não poderá continuar.
-        [[ "$1" =~ .*(\*|@|#|,).* ]] && { echo 'Dont Use * or @ or #'; exit 1 ;}
+        [[ "$1" =~ .*(\*|@|\#|,).* ]] && { echo 'Dont Use * or @ or #'; exit 1 ;}
         while [[ -n "$1" ]]; do
             _PRE_REMOVE "$1" || exit 1
             shift
