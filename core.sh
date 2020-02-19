@@ -1044,7 +1044,7 @@ _UPDATE_BANANA()
         echo -e "Internet\t$connectivity"
     fi
 
-    # Verificar se /tmp/spm já existe
+    # Verificar se /tmp/banana já existe
     files=$(shopt -s nullglob dotglob; echo /tmp/banana/*)
     if (( ${#files} ))
     then
