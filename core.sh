@@ -134,7 +134,7 @@ _SPINNER()
       'banana wait.....go cofF'
       'banana wait.....go coffE'
     )
-    
+
     while :; do
 		# Cores aleatorias
 		[[ "$inc" -gt '22' ]] && color="${red}"
@@ -162,7 +162,7 @@ _CAT()
 {
     # Tag para sinalizar que precisa parar.
     local end_of_file='EOF'
-    
+
     INPUT=( "${@:-"%"}" )
     for i in "${INPUT[@]}"; do
         if [[ "$i" != "%" ]]; then
@@ -187,7 +187,7 @@ _GREP()
     # ou variável.
     local expression="$1"
     local receive="$2"
-    
+
     # Testando e buscando expressão.
     if [[ -z "$expression" ]]; then
         { echo 'MODULE _GREP ERROR. Not found variable $expression'; exit 1 ;}
@@ -207,7 +207,7 @@ _WC()
 {
     local check="$@" # Recebendo args
     local inc='0'    # Var incremento
-    
+
     for x in $check; do
         let inc++
     done
@@ -258,8 +258,8 @@ _NAME_FORMAT_PKG()
 _MANAGE_SCRIPTS_AND_ARCHIVES()
 {
     local packname="${1/%.mz/}"
-    local dir_desc="${dirlist/list/desc}"  
-    
+    local dir_desc="${dirlist/list/desc}"
+
     if ! [[ -e "/info/desc" ]]; then
         echo -e "${red}[ERROR!]${end} /info/desc does not exist. ABORT!"
         exit 1
@@ -312,13 +312,13 @@ _CREATE_LIST()
 {
     # Variáveis locais
     local packname="$1"
-    
+
     if ! tar tf "$packname" > "${dirlist}/${name_version_build}.list"; then
         echo -e "${red}[ERROR!]${end}\tNot Create ${dirlist}/${name_version_build}.list"
         return 1
     fi
     echo -e "${blue}[CREATE LIST]${end}\t On ${dirlist}/${name_version_build}.list"
-    return 0    
+    return 0
 }
 
 
@@ -330,7 +330,7 @@ _GENERATE_DESC()
     local DESC_PACKNAME="$1"
     local DESC_VERSION="$2"
     local DESC_BUILD="$3"
-    
+
     [[ ! -d "info" ]] && mkdir info # diretorio info não existe? crie.
     _CAT > "info/desc" << EOF
 ######################################################################
@@ -393,7 +393,7 @@ _GPG_SIGN()
 {
     local package="$1"
     local sig='sig'
-    
+
     # Pacote existe?
     if [[ ! -e "${package}.${format_pkg}" ]]; then
         echo "${red}[ERRO]${end} Unable to sign package. ${package}.${format_pkg}"
@@ -401,7 +401,7 @@ _GPG_SIGN()
         echo "For security reasons, do not pass the package on to third parties."
         return 1
     fi
-    
+
     # Gerando Assinatura no pacote
     gpg --detach-sign --pinentry-mode loopback "${package}.${format_pkg}" &>/dev/null || \
     gpg --detach-sign "${package}.${format_pkg}" || return 1
@@ -419,7 +419,7 @@ _VERIFY_ON()
   ( # Subshell marota
     local dir_info='info'  # Diretorio info que contem informações como (desc)
     local info_desc='desc' # Descrição do pacote
-    
+
     if [[ ! -d "$dir_info" ]]; then # Diretório info existe?
         echo -e "${red}[ERROR!]${end} ${pink}${dir_info}${end} directory\n"
         echo -e "It's necessary your package have the DIRECTORY ${pink}info${end}."
@@ -491,7 +491,7 @@ _VERIFY_ON()
    done
 
  )
- 
+
 _SUBSHELL_STATUS
 }
 
@@ -499,9 +499,9 @@ _LIST_ARCHIVES_DIRECTORIES()
 {
     local packname="${1}.list"
     local LIST_CLEAN_DIRECTORIES
-    
+
     echo -e "${cyan}[Clean]${end} List: ${dirlist}/${packname}"
-    
+
     # Apagando coisas desnecessárias na lista e substituindo.
     sed -i "
         s/^\.\///g
@@ -539,7 +539,7 @@ _LIST_ARCHIVES_DIRECTORIES()
         /^var\/lib\/banana\/list/d
         /^var\/lib\/banana\/remove/d
     " "${dirlist}/${packname}"
-    
+
     # Lista de diretórios para usar no loopzinho
     LIST_CLEAN_DIRECTORIES=(
         'var'
@@ -565,7 +565,7 @@ _LIST_ARCHIVES_DIRECTORIES()
         elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[3]}/(bin|etc|lib|lib\/(pkgconfig)|local|share|doc|include|libexec|sbin|src)$ ]]; then
             local view="${view//\//\\/}"
             sed -i "/^$view$/d" "${dirlist}/${packname}"
-        elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[4]}/(keymaps|fonts|pixmaps|applications|doc|man|man\/man[[:digit:]]+|man\/.{2})$ ]]; then      
+        elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[4]}/(keymaps|fonts|pixmaps|applications|doc|man|man\/man[[:digit:]]+|man\/.{2})$ ]]; then
             local view="${view//\//\\/}"
             sed -i "/^$view$/d" "${dirlist}/${packname}"
 		elif [[ "$view" =~ ^${LIST_CLEAN_DIRECTORIES[5]}/(www|httpd)$ ]]; then
@@ -633,7 +633,7 @@ _INSTALL_PKG()
     # Chamando Animação e pegando PID do processo.
     _SPINNER &
     pid=$!
-    
+
     # Descompactando desc primeiro para exibir informações do pacote.
     # e carregando o arquivo desc do programa ;)
     if ! tar xf "${packname}" -C "/tmp/" "./${descme}"; then
@@ -648,10 +648,10 @@ _INSTALL_PKG()
         { kill $pid; wait $pid 2>/dev/null; echo ;}
         return 1
     fi
-    
+
     { kill $pid; wait $pid 2>/dev/null; echo ;}
-    
-    
+
+
     # Variavel puxando de source...
     # Está variavel é importante se caso
     # o usuario passe um caminho completo do pacote exemplo:
@@ -668,7 +668,7 @@ _INSTALL_PKG()
     echo -e "${pink}License:${end}\t${license:-Null}"
     echo -e "${pink}Small Desc:${end}\t$desc"
     echo -e "#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#\n"
-    
+
    _MSG_DADDY # Mensagem aleátoria do pai! para exibir para o usuário
 
    # Vamos verificar se existe o script de pre instalação *pre.sh*
@@ -679,7 +679,7 @@ _INSTALL_PKG()
         else
             echo -e "${red}[Pre-Installation]${end} Cannot extract ${PRE_SH}, ABORT"
             return 1
-        fi  
+        fi
         bash "/tmp/info/$PRE_SH"
         tar xf "${packname}" -C / || return 1
         echo -e "${blue}[EXTRACT]${end}\t On Your root, OK."
@@ -692,11 +692,11 @@ _INSTALL_PKG()
         _CREATE_LIST "$1" || return 1 # Criando lista
         _MANAGE_SCRIPTS_AND_ARCHIVES "${name_version_build}" || return 1
     fi
-    
+
     # Ajustando lista.
     _LIST_ARCHIVES_DIRECTORIES "${name_version_build}"
  ) # Fim da subshell suicide
- 
+
 _SUBSHELL_STATUS
 }
 
@@ -849,7 +849,7 @@ _PRE_REMOVE()
                  search_pack="${search_pack/%.desc/}" # Cortando para impressão.
                  echo -e "${red}[FOUND]${end} $search_pack"
                  continue
-             
+
              fi
         else
             inc="$(( $inc + 1 ))"
@@ -886,7 +886,7 @@ _REMOVE_NOW()
         if [[ -e "${dirremove}/${packname}.rm" ]]; then
             rm "${dirremove}/${packname}.rm" && echo -e "${blue}[REMOVED]${end}\t${packname}.rm\n"
         fi
-    fi    
+    fi
 
     ###########################
     # Removendo:
@@ -894,7 +894,7 @@ _REMOVE_NOW()
     # Links simbólicos
     # Diretórios vazios
     ###########################
-    
+
     while IFS= read thefile; do
         if [[ -f "$thefile" ]]; then
             rm "$thefile" &>/dev/null && echo -e "Delete\t${thefile}"
@@ -917,11 +917,11 @@ _REMOVE_NOW()
     # Removendo diretórios vazios, e forçando para
     # toda hierarquia do pacote seja removido.
         while IFS= read thedir; do
-            if [[ -d "$thedir" ]] && [[ -z "$(ls -A ${thedir})" ]]; then 
+            if [[ -d "$thedir" ]] && [[ -z "$(ls -A ${thedir})" ]]; then
                   rmdir -p "${thedir}" &>/dev/null && echo -e "Delete\t${thedir}"
             fi
     done < "${dirlist}/${packname}.list"
-    
+
     echo -e "\nClean archives .desc and .list\n"
 
     # Removendo lista e Descrição
@@ -931,7 +931,7 @@ _REMOVE_NOW()
             list)   DIREC="$dirlist";;
         esac
         if [[ -e "${DIREC}/${packname}.${removeitem}" ]]; then
-            if rm "${DIREC}/${packname}.${removeitem}"; then 
+            if rm "${DIREC}/${packname}.${removeitem}"; then
                 echo -e "${blue}[REMOVE]${end} ${DIREC}/${packname}.${removeitem} SUCCESSFULLY"
             else
                 echo -e "\n${red}[ERROR]${end} It was not possible remove ${DIREC}/${packname}.list"
@@ -980,7 +980,7 @@ _SEARCH_PKG()
         elif [[ "$searchpkg" =~ ${re} ]] && [[ "$ONE_LINE" = '1' ]]; then
             inc=$(( $inc + 1 )) # Incrementando
             source $searchpkg # Carregando informações do pacote para impressão.
-            echo -e "${cyan}[FOUND]${end} ${pkgname}-${version}-${build}"       
+            echo -e "${cyan}[FOUND]${end} ${pkgname}-${version}-${build}"
         fi
     done
     if [[ "$inc" -eq '0' ]]; then
@@ -1037,18 +1037,25 @@ _UPDATE_BANANA()
     local connectivity="${red}[FAILED]${end}"
     local tmp_dir_banana="/tmp/${PRG}pkg"
     local DOWNLOAD m
-    
+
     # Verifica conexão com internet usando networkmanager
     if type -P nmcli &>/dev/null; then
         [[ "$(nmcli -g connectivity g)" = "full"  ]] && connectivity="${cyan}[OK]${end}"
         echo -e "Internet\t$connectivity"
     fi
-    
+
+    # Verificar se /tmp/banana já existe
+    files=$(shopt -s nullglob dotglob; echo /tmp/banana/*)
+    if (( ${#files} ))
+    then
+	     rm -rf /tmp/banana/;
+    fi
+
     # Ok, Puxe o repositorio agora!
     pushd /tmp &>/dev/null
     git clone "$link" || return 1
     pushd "${tmp_dir_banana}" &>/dev/null
-    
+
     # Dando permissões e copiando arquivos para seus lugares.
     echo -e "\nPermission and Copy archives\n"
     for m in "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh' 'builtin.sh' "$PRG"; do
@@ -1072,6 +1079,6 @@ _UPDATE_BANANA()
              (core.sh|help.sh) cp -v "$m" "/usr/libexec/banana/" || return 1 ;;
         esac
     done
-    
+
     [[ -d "${tmp_dir_banana}" ]] && rm -r "${tmp_dir_banana}"
 }
