@@ -44,7 +44,10 @@ done
 # Dando permissões e copiando arquivos para seus lugares.
 echo -e "\nPermission and Copy archives\n"
 install -vDm755 -t "${DESTDIR}/sbin/" "$prg" || exit 1
-install -vDm644 -t "${DESTDIR}/usr/share/man/pt_BR/man8/" 'banana.8' || exit 1
+if [ -d "/usr/share/man/man8/"]; then
+	mkdir /usr/share/man8/
+fi
+install -vDm644 -t "${DESTDIR}/usr/share/man/man8/" 'banana.8' || exit 1
 install -vDm644 -t "${DESTDIR}/usr/libexec/banana/" {core,help}'.sh' || exit 1
 # Verifica se arquivo de configuração existe para cria-lo ou .new
 if [[ -e "${DESTDIR}/etc/banana/${prg}.conf" ]]; then
