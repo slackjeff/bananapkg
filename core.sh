@@ -1044,11 +1044,9 @@ _UPDATE_BANANA()
         echo -e "Internet\t$connectivity"
     fi
 
-    # Verificar se /tmp/banana já existe
-    files=$(shopt -s nullglob dotglob; echo /tmp/banana/*)
-    if (( ${#files} ))
-    then
-	     rm -rf /tmp/banana/;
+    # Verifica se /tmp/bananapkg já existe
+    if [ -d "/tmp/bananapkg/" ]; then
+	     rm -rf /tmp/bananapkg/;
     fi
 
     # Ok, Puxe o repositorio agora!
