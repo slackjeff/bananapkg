@@ -11,12 +11,11 @@
 ######################################################################
 
 # ====================================================================
-#                   VARIÁVEIS ESPECIAIS
+#                     Variáveis Especiais
 # ====================================================================
 
 
-# Desabilitando suporte a unicode
-# Para melhor performance.
+# Desabilitando suporte a unicode para melhor performance.
 export LC_ALL=C
 export LANG=C
 
@@ -25,8 +24,8 @@ export VERSION='2.2.4.7'
 export format_pkg='mz'            # Extensão do pacote
 export descme='info/desc'         # Descrição do pacote
 
-# Caso o usuário deixou nulo vamos
-# inicializar as variáveis de configurações em modo default.
+# Caso o usuário deixou nulo vamos inicializar as variáveis de 
+#configurações em modo default.
 AUTO_YES="${AUTO_YES:=0}" # Desligado
 GPG_SIGN="${GPG_SIGN:=1}" # Ligado
 
@@ -43,8 +42,7 @@ readonly end='\033[m'
 #                       Bibliotecas
 # ====================================================================
 
-# Carregando bibliotecas necessárias
-# para o funcionamento do banana
+# Carregando bibliotecas necessárias para o funcionamento do banana
 heart_archives=(
     '/etc/banana/banana.conf'
     '/usr/libexec/banana/core.sh'
@@ -69,8 +67,8 @@ dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
 # Sem root não vai amiguinho.
 [[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
  
-# Verificando quais argumentos passados pelo usuário
-# para pegar as variáveis necessárias
+# Verificando quais argumentos passados pelo usuário para pegar as
+# variáveis necessárias
 for entry_parameter; do
     if [[ "$entry_parameter" = '-y' ]]; then
         AUTO_YES='1'
