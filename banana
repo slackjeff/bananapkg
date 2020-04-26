@@ -83,201 +83,134 @@ done
 set -- "${new_argument[@]}" # definindo novos argumentos sem opções =)
 
 # ====================================================================
-# Função responsável por criar o pacote .mz
-# ====================================================================
-
-function _CREATE() {
-   shift # Rebaixando
-   _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
-
-   # Se nome do pacote ter espaços não deve continuar
-   if [[ "$@" =~ .*[[:space:]]+.*-.* ]]; then
-       echo -e "${red}[Error!]${end} Unexpected character."
-       echo -e "Perfect Format name is: ${blue}Name-Version-Build.mz${end}"
-       echo -e "${red}DONT USE${end} symbols, space, tab etc.. in name of package."
-       echo "If you need more HELP, use -h or --help"
-       exit 1
-   fi
-
-   # Se nome do pacote não for letras ou se tiver
-   # espaços entre outras coisas, não pode continuar.
-   _NAME_FORMAT_PKG "$1" || exit 1
-
-   # Verificando quantos '-' existem e fazendo contagem
-   # com _WC
-   check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
-   check_var="$(_WC ${check_var})"
-   if [[ "$check_var" -lt '2' || "$check_var" -gt '2'  ]]; then
-       echo -e "${red}[Error!]${end} Unexpected ' - ' Count."
-       echo -e "USE ONLY TWO ' ${red}-${end} ' In the name of your package."
-       echo -e "EXAMPLE the perfect format: ${blue}leafpad${end}-${blue}2.6.8${end}-${blue}3${end}.${blue}mz${end}"
-       echo -e "If you need separate name of package prefer use ' ${red}_${end} '"
-       echo -e "EXAMPLE: firefox_quantum${blue}-${end}54.8.9${blue}-${end}1.mz"
-       echo "If you need more HELP, use -h or --help"
-       exit 1
-   else
-        # Verificação de tudo está aonde deveria estar, como diretório
-        # (info) e o arquivo de descrição (desc)
-        _VERIFY_ON "$1"
-        # Iniciando processo de criação do pacote
-        _CREATE_PKG "$1" || exit 1
-   fi
-   unset check_var
-}
-
-# ====================================================================
-# Função responsável por gerar o arquivo info/desc
-# ====================================================================
-
-function _GENERATE() {
-    shift
-    # Verificando se tem traços '-' a mais
-    # E dando um sermão ;D
-
-    check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
-    check_var="$(_WC ${check_var})"
-    if [[ -n "$1" ]] && [[ "$check_var" -lt '2' || "$check_var" -gt '2' ]]; then
-        echo -e "${red}[ERROR]${end} OPS! Could not generate file desc..."
-        echo -e "The Perfect Format name is: banana -g ${blue}name-version-build${end}"
-        echo "EXAMPLES:"
-        echo -e "[1] banana -g ${blue}firefox_quantum${end}-${blue}57.8.9${end}-${blue}1${end}"
-        echo -e "[2] banana -g ${blue}nano${end}-${blue}4.0${end}-${blue}2${end}"
-        echo -e "[3] banana -g ${blue}utox${end}-${blue}10.1.4.0bc${end}-${blue}2${end}"
-        echo "For more Details, man banana"
-        exit 1
-    elif [[ "$1" =~ .*-$ ]]; then # Termino com - ?
-        echo -e "${red}[ERROR]${end} Finish with numbers."
-        exit 1
-    fi
-    # Pegando os campos com delimitador ' - ' =)
-    inc='0' # Var incremento
-    for take in 'field_one' 'field_two' 'field_three'; do
-        inc=$(($inc + 1))
-        eval $take="$(echo "$1" | cut -d '-' -f ${inc})" # Expanda e pegue o seu devido valor
-    done
-    _GENERATE_DESC "$field_one" "$field_two" "$field_three" || exit 1
-    unset check_var
-}
-
-# ====================================================================
-# Função responsável por instalar os pacotes .mz
-# ====================================================================
-
-function _INSTALL() {
-    shift # Rebaixe baby
-    _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
-    while [[ -n "$1" ]]; do
-        _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
-        [[ ! -e "$1" ]] && { echo -e "${red}[ERROR]${end} Do not cheat me! This Package dont exist."; exit 1 ;}
-        _INSTALL_PKG "$1"  || exit 1
-        shift
-    done
-}
-
-# ====================================================================
-# Função responsável por atualizar os pacotes .mz
-# ====================================================================
-
-function _UPGRADE() {
-    shift
-    _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
-    while [[ -n "$1" ]]; do           
-        _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
-        _UPGRADE "$1" || exit 1
-        shift
-    done
-}
-
-# ====================================================================
-# Função responsável por atualizar o banana.
-# ====================================================================
-
-function _UPDATE() {
-    _UPDATE_BANANA && exit 0 || exit 1
-}
-
-# ====================================================================
-# Função responsável por remover os pacotes .mz
-# ====================================================================
-
-function _REMOVE() {
-    shift # Rebaixa baby
-    _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =) 
-    # Se contiver um dos caracteres da lista, não poderá continuar.
-    [[ "$1" =~ .*(\*|@|\#|,).* ]] && { echo 'Dont Use * or @ or #'; exit 1 ;}
-    while [[ -n "$1" ]]; do
-        _PRE_REMOVE "$1" || exit 1
-        shift
-    done
-    exit 0
-}
-
-# ====================================================================
-# Função responsável por procurar pacotes .mz instalados
-# ====================================================================
-
-function _SEARCH() {
-    shift # elaia, rebaixamos.
-    _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
-    while [[ -n "$1" ]]; do
-        _SEARCH_PKG "$1" # Chamando função de check
-        shift
-    done
-}
-
-# ====================================================================
-# Função PRINT
-# ====================================================================
-
-function _PRINT() {
-    shift # rebaixo
-    _INPUT_NULL_PARAMETER "$1"
-    _PRINT_LIST "$1" || exit 1
-}
-
-# ====================================================================
 #                           Inicio
 # ====================================================================
 
 case "$1" in
     -c|create)
-        _CREATE
+       shift # Rebaixando
+       _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
+       
+       # Se nome do pacote ter espaços não deve continuar
+       if [[ "$@" =~ .*[[:space:]]+.*-.* ]]; then
+           echo -e "${red}[Error!]${end} Unexpected character."
+           echo -e "Perfect Format name is: ${blue}Name-Version-Build.mz${end}"
+           echo -e "${red}DONT USE${end} symbols, space, tab etc.. in name of package."
+           echo "If you need more HELP, use -h or --help"
+           exit 1
+       fi
+       
+       # Se nome do pacote não for letras ou se tiver
+       # espaços entre outras coisas, não pode continuar.
+       _NAME_FORMAT_PKG "$1" || exit 1
+       
+       # Verificando quantos '-' existem e fazendo contagem
+       # com _WC
+       check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
+       check_var="$(_WC ${check_var})"
+       if [[ "$check_var" -lt '2' || "$check_var" -gt '2'  ]]; then
+           echo -e "${red}[Error!]${end} Unexpected ' - ' Count."
+           echo -e "USE ONLY TWO ' ${red}-${end} ' In the name of your package."
+           echo -e "EXAMPLE the perfect format: ${blue}leafpad${end}-${blue}2.6.8${end}-${blue}3${end}.${blue}mz${end}"
+           echo -e "If you need separate name of package prefer use ' ${red}_${end} '"
+           echo -e "EXAMPLE: firefox_quantum${blue}-${end}54.8.9${blue}-${end}1.mz"
+           echo "If you need more HELP, use -h or --help"
+           exit 1
+       else
+            # Verificação de tudo está aonde deveria estar, como diretório
+            # (info) e o arquivo de descrição (desc)
+            _VERIFY_ON "$1"
+            # Iniciando processo de criação do pacote
+            _CREATE_PKG "$1" || exit 1
+       fi
+       unset check_var
     ;;
 
     -g|generate)
-        _GENERATE
+        shift
+        # Verificando se tem traços '-' a mais
+        # E dando um sermão ;D
+        
+        check_var="$(printf '%s\n' ${1//[a-zA-Z0-9._|\\()@#\!~%;:]/ })"
+        check_var="$(_WC ${check_var})"
+        if [[ -n "$1" ]] && [[ "$check_var" -lt '2' || "$check_var" -gt '2' ]]; then
+            echo -e "${red}[ERROR]${end} OPS! Could not generate file desc..."
+            echo -e "The Perfect Format name is: banana -g ${blue}name-version-build${end}"
+            echo "EXAMPLES:"
+            echo -e "[1] banana -g ${blue}firefox_quantum${end}-${blue}57.8.9${end}-${blue}1${end}"
+            echo -e "[2] banana -g ${blue}nano${end}-${blue}4.0${end}-${blue}2${end}"
+            echo -e "[3] banana -g ${blue}utox${end}-${blue}10.1.4.0bc${end}-${blue}2${end}"
+            echo "For more Details, man banana"
+            exit 1
+        elif [[ "$1" =~ .*-$ ]]; then # Termino com - ?
+            echo -e "${red}[ERROR]${end} Finish with numbers."
+            exit 1
+        fi
+        # Pegando os campos com delimitador ' - ' =)
+        inc='0' # Var incremento
+        for take in 'field_one' 'field_two' 'field_three'; do
+            inc=$(($inc + 1))
+            eval $take="$(echo "$1" | cut -d '-' -f ${inc})" # Expanda e pegue o seu devido valor
+        done
+        _GENERATE_DESC "$field_one" "$field_two" "$field_three" || exit 1
+        unset check_var
     ;;
 
     -i|install) # Instalação de pacotes
-        _INSTALL
+        shift # Rebaixe baby
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
+        while [[ -n "$1" ]]; do
+            _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
+            [[ ! -e "$1" ]] && { echo -e "${red}[ERROR]${end} Do not cheat me! This Package dont exist."; exit 1 ;}
+            _INSTALL_PKG "$1"  || exit 1
+            shift
+       done
     ;;
 
     -u|upgrade) # Upgrade de pacotes
-        _UPGRADE
+        shift
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
+        while [[ -n "$1" ]]; do           
+            _NAME_FORMAT_PKG "$1" || exit 1 # Função de configuração de entrada!
+            _UPGRADE "$1" || exit 1
+            shift
+        done
     ;;
 
     update) # Update do banana
-        _UPDATE
+        _UPDATE_BANANA && exit 0 || exit 1
     ;;
 
     -r|remove)
-        _REMOVE
+        shift # Rebaixa baby
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =) 
+        # Se contiver um dos caracteres da lista, não poderá continuar.
+        [[ "$1" =~ .*(\*|@|\#|,).* ]] && { echo 'Dont Use * or @ or #'; exit 1 ;}
+        while [[ -n "$1" ]]; do
+            _PRE_REMOVE "$1" || exit 1
+            shift
+        done
+        exit 0
     ;;
 
     -s|search)
+        shift # elaia, rebaixamos.
+        _INPUT_NULL_PARAMETER "$1" # Se ta nulo o help precisa ser chamado =)
+        while [[ -n "$1" ]]; do
+            _SEARCH_PKG "$1" # Chamando função de check
+            shift
+        done
     ;;
 
     -pl|print)
-        _PRINT
+        shift # rebaixo
+        _INPUT_NULL_PARAMETER "$1"
+        _PRINT_LIST "$1" || exit 1
     ;;
 
-    -V|version)
-        echo "$PRG Version $VERSION"
-    ;;
+    -V|version) echo "$PRG Version $VERSION" ;;
 
-    -h|help)
-        _HELP_US
-    ;;
+    -h|help) _HELP_US ;;
 
     *) _HELP_US ;;
 esac
