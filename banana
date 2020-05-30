@@ -1,26 +1,19 @@
 #!/usr/bin/env bash
-#=====================HEADER=========================================|
-#AUTOR
-# Jefferson 'slackjeff' Rocha <root@slackjeff.com.br>
-#
-#LICENÇA
-# MIT
-#
-#MUDANÇAS?
-# changelog.txt
-#
-#VERSIONAMENTO
-# versions.txt
-#
-#SITE
-# https://bananapkg.github.io
-#
-#VELOCIDADE, SEGURANÇA, FINO.
-#====================================================================|
 
-##########################################
-#================= VARIÁVEIS ESPECIAIS
-##########################################
+######################################################################
+# AUTOR        : Jefferson 'slackjeff' Rocha <root@slackjeff.com.br> #
+# LICENÇA      : MIT                                                 #
+# MUDANÇAS     : changelog.txt                                       #
+# VERSIONAMENTO: versions.txt                                        #
+# SITE         : https://bananapkg.github.io                         #
+#                                                                    #
+#                   VELOCIDADE, SEGURANÇA, FINO.                     #
+######################################################################
+
+# ====================================================================
+#                   VARIÁVEIS ESPECIAIS
+# ====================================================================
+
 
 # Desabilitando suporte a unicode
 # Para melhor performance.
@@ -37,10 +30,7 @@ export descme='info/desc'         # Descrição do pacote
 AUTO_YES="${AUTO_YES:=0}" # Desligado
 GPG_SIGN="${GPG_SIGN:=1}" # Ligado
 
-########################################
-#=================== CORES
-########################################
-
+# Cores
 readonly red='\033[31;1m'
 readonly yellow='\033[33;1m'
 readonly blue='\033[34;1m'
@@ -49,9 +39,9 @@ readonly cyan='\033[36;1m'
 readonly white='\033[37;1m'
 readonly end='\033[m'
 
-########################################
-#===============BIBLIOTECAS
-########################################
+# ====================================================================
+#                       Bibliotecas
+# ====================================================================
 
 # Carregando bibliotecas necessárias
 # para o funcionamento do banana
@@ -64,17 +54,17 @@ for heart_load in "${heart_archives[@]}"; do
     source "$heart_load" || { echo "ERROR ON LOAD \"$heart_load\", ABORT"; exit 1 ;}
 done
 
-#######################################
-#============ DIRETÓRIOS ESPECIAIS
-#######################################
+# ====================================================================
+#                     Diretórios Especiais
+# ====================================================================
 
 dirlist='/var/lib/banana/list'       # Lista do pacote 'pack.list'
 dirdesc='/var/lib/banana/desc'       # Descrição do pacote 'pack.desc'
 dirremove='/var/lib/banana/remove'   # Script de remoção do pacote 'rm.sh'
 
-########################################
-#===============TESTES
-########################################
+# ====================================================================
+#                           Testes
+# ====================================================================
 
 # Sem root não vai amiguinho.
 [[ "$UID" -ne '0' ]] && { echo "Root is required."; exit 1 ;}
@@ -92,9 +82,9 @@ for entry_parameter; do
 done
 set -- "${new_argument[@]}" # definindo novos argumentos sem opções =)
 
-########################################
-#==================INICIO
-########################################
+# ====================================================================
+#                           Inicio
+# ====================================================================
 
 case "$1" in
     -c|create)
