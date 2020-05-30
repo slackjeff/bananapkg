@@ -1044,11 +1044,9 @@ _UPDATE_BANANA()
         echo -e "Internet\t$connectivity"
     fi
 
-    # Verificar se /tmp/banana já existe
-    files=$(shopt -s nullglob dotglob; echo /tmp/banana/*)
-    if (( ${#files} ))
-    then
-	     rm -rf /tmp/banana/;
+    # Verifica se /tmp/bananapkg já existe
+    if [[ -d "/tmp/bananapkg/" ]]; then
+	     rm -rf /tmp/bananapkg/;
     fi
 
     # Ok, Puxe o repositorio agora!
@@ -1057,6 +1055,7 @@ _UPDATE_BANANA()
     pushd "${tmp_dir_banana}" &>/dev/null
 
     # Dando permissões e copiando arquivos para seus lugares.
+    cd /tmp/bananapkg/;
     echo -e "\nPermission and Copy archives\n"
     for m in "${PRG}.conf" "${PRG}.8" 'core.sh' 'help.sh' 'builtin.sh' "$PRG"; do
         [[ -e "$m" ]] && [[ "$m" != "core.sh" ]] && chmod +x $m
