@@ -208,6 +208,22 @@ case "$1" in
         _PRINT_LIST "$1" || exit 1
     ;;
 
+    -l|list)
+        pacotes="$(cd ${dirdesc};echo * | uniq)"
+
+        echo -e "\n==================================================================================="
+        echo -e " ${yellow}Name${end} \t ${pink}Version${end} \t ${blue}Description${end}"
+        echo "==================================================================================="
+
+        for pacote in ${pacotes[@]}; do
+            PKGNAME=$(grep 'pkgname=' ${dirdesc}/${pacote} | cut -d "'" -f2)
+            VERSION=$(grep 'version=' ${dirdesc}/${pacote} | cut -d "'" -f2)
+            DESC=$(grep 'desc=' ${dirdesc}/${pacote} | cut -d '"' -f2)
+
+        echo -e " ${yellow}${PKGNAME}${end}  ${pink}${VERSION}${end}  ${blue}${DESC:0:60}${end}"
+        done
+    ;;
+
     -V|version) echo "$PRG Version $VERSION" ;;
 
     -h|help) _HELP_US ;;
