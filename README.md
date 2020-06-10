@@ -24,26 +24,33 @@
 ----
 
 ### Instalação Direta :computer:
-**Clone o Repositório**<br/>
-git clone https://github.com/slackjeff/bananapkg<br/>
-<br/>
-**Como ROOT, crie os diretórios**<br/>
-mkdir -vp /var/lib/banana/{list,desc,remove}<br/>
-mkdir -v /etc/banana<br/>
-mkdir -v /usr/libexec/banana<br/>
-<br/>
+**Clone o Repositório**
+```bash
+git clone https://github.com/slackjeff/bananapkg
+```
 
-**Copie os arquivos**<br/>
-cp -v banana /sbin/<br/>
-cp -v banana.conf /etc/banana<br/>
-cp -v {core,help}.sh /usr/libexec/banana<br/>
-cp -v banana.8 /usr/share/man/pt_BR/man8/<br/>
+**Como ROOT, crie os diretórios**
+```bash
+mkdir -vp /var/lib/banana/{list,desc,remove}
+mkdir -v /etc/banana
+mkdir -v /usr/libexec/banana
+```
+
+**Copie os arquivos**
+```bash
+cp -v banana /sbin/
+cp -v banana.conf /etc/banana
+cp -v {core,help}.sh /usr/libexec/banana
+cp -v banana.8 /usr/share/man/pt_BR/man8/
+```
 *Enjoy ;)*
 
 ## Instalação Automática :computer:
-**Conceda permissões e execute o script**<br>
-chmod +x install.sh<br>
+**Conceda permissões e execute o script**
+```bash
+chmod +x install.sh
 bash install.sh
+```
 
 [Banner]: https://raw.githubusercontent.com/slackjeff/bananapkg/master/imgs/banners/bananabanner.png
 [Bash4.4.18-shield]: https://img.shields.io/badge/Bash-4.4.18%2B-brightgreen.svg "Bash 4.4.18 Ou superior"
