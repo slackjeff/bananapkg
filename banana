@@ -216,9 +216,9 @@ case "$1" in
         echo "==================================================================================="
 
         for pacote in ${pacotes[@]}; do
-            PKGNAME=$(grep 'pkgname=' ${dirdesc}/${pacote} | cut -d "'" -f2)
-            VERSION=$(grep 'version=' ${dirdesc}/${pacote} | cut -d "'" -f2)
-            DESC=$(grep 'desc=' ${dirdesc}/${pacote} | cut -d '"' -f2)
+            PKGNAME=$(grep 'pkgname=' ${dirdesc}/${pacote} 2>/dev/null | cut -d "'" -f2)
+            VERSION=$(grep 'version=' ${dirdesc}/${pacote}  2>/dev/null | cut -d "'" -f2)
+            DESC=$(grep 'desc=' ${dirdesc}/${pacote}  2>/dev/null | cut -d '"' -f2)
 
         echo -e " ${yellow}${PKGNAME}${end}  ${pink}${VERSION}${end}  ${blue}${DESC:0:60}${end}"
         done
