@@ -28,11 +28,13 @@ MAIN ARGUMENTS
     -r, remove
           Remove Package
     -s, search
-          Search Package        
+          Search Package
     -ol, one-line
           Use in -s, search for print one line search.
-          program-version-build       
+          program-version-build
     -v, verbose
           Look more
+    -l, list
+          Shows all programs installed with banana.
 EOF
 }
